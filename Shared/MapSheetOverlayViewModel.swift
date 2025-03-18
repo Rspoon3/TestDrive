@@ -28,7 +28,12 @@ final class MapSheetOverlayViewModel: ObservableObject {
         }
     }
     
-    @Published var destinationCoordinate: CLLocationCoordinate2D?
+    @Published var destinationCoordinate: CLLocationCoordinate2D? {
+        didSet {
+            guard destinationCoordinate != nil else { return }
+            updateCalculations()
+        }
+    }
     @Published var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194), // Default: San Francisco
         span: MKCoordinateSpan(latitudeDelta: 10, longitudeDelta: 10)

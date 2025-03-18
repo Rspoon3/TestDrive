@@ -34,10 +34,6 @@ struct MapSheetOverlay: View {
                         LabeledContent("Bearing", value: viewModel.bearing.formatted())
                         LabeledContent("Distance", value: viewModel.distance.formatted())
                     }
-                    
-                    Section("Recents") {
-                        
-                    }
                 } else {
                     List(viewModel.results, id: \.self) { item in
                         Button {
