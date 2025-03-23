@@ -9,9 +9,13 @@ import Foundation
 
 struct CSRFTokenExtractor {
     
+    // MARK: - Public
+    
     func extract(from html: String) -> String? {
         extractFromMetaTag(html: html) ?? extractFromJavaScript(html: html)
     }
+    
+    // MARK: - Private
     
     private func extractFromMetaTag(html: String) -> String? {
         guard let range = html.range(of: #"<meta name="csrf-token" content="([^"]+)""#, options: .regularExpression) else {

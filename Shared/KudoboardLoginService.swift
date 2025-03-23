@@ -98,7 +98,6 @@ final class KudoboardLoginService {
         
         request.httpBody = bodyString.data(using: .utf8)
         
-        
         let (data, response) = try await session.data(for: request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
@@ -135,31 +134,24 @@ final class KudoboardLoginService {
             }
         }
         
+        guard let responseHTML = stringData else {
+            return
+        }
+        
         // Validate login success by checking for success indicators in the HTML
-        if let responseHTML = stringData {
-            // If we find indications of a successful login in the HTML
-            if responseHTML.contains("logout") || responseHTML.contains("dashboard") ||
-                !responseHTML.contains("Invalid credentials") {
-                print("✅ Login appears successful based on response content")
-            } else if responseHTML.contains("Invalid credentials") ||
-                        responseHTML.contains("These credentials do not match our records") {
-                throw KudoboardError.loginFailed("Invalid credentials")
-            }
+        // If we find indications of a successful login in the HTML
+        if responseHTML.contains("logout") || responseHTML.contains("dashboard") ||
+            !responseHTML.contains("Invalid credentials") {
+            print("✅ Login appears successful based on response content")
+        } else if responseHTML.contains("Invalid credentials") ||
+                    responseHTML.contains("These credentials do not match our records") {
+            throw KudoboardError.loginFailed("Invalid credentials")
         }
         
         // Also try to extract a new CSRF token from the HTML
-        if let responseHTML = stringData {
-            let oldToken = self.csrfToken
-            
-            if let token = extractor.extract(from: responseHTML) {
-                csrfToken = token
-            }
-            
-            if self.csrfToken != oldToken {
-                print("✅ Updated CSRF token from HTML: \(self.csrfToken)")
-            }
-        }
-        
+        guard let token = extractor.extract(from: responseHTML) else { return }
+        csrfToken = token
+        print("✅ Updated CSRF token from HTML: \(self.csrfToken)")
     }
     
     // Step 3: Visit the board page to get a fresh CSRF token

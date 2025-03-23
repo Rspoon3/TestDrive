@@ -27,7 +27,7 @@ struct TestingApp: App {
     func send() async throws {
         // Define the board ID and message to post
         let boardID = "BDk2ACtk"
-        let message = "<p>Shes back with food!</p>"
+        let message = "<p>Again</p>"
         
         // Main execution function using async/await
         // Step 1: Get login page
