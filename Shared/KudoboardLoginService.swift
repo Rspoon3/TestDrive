@@ -7,10 +7,10 @@
 
 import Foundation
 
-actor KudoboardLoginService {
+final class KudoboardLoginService {
     private let baseURL = "https://www.kudoboard.com"
     private var cookies: [HTTPCookie] = []
-    var csrfToken: String = ""
+    private(set) var csrfToken: String = ""
     private let extractor = CSRFTokenExtractor()
     
     // Store the cookies in a session configuration
@@ -27,49 +27,42 @@ actor KudoboardLoginService {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        do {
-            let (data, response) = try await session.data(for: request)
-            
-            guard let httpResponse = response as? HTTPURLResponse else {
-                throw KudoboardError.networkError("Invalid HTTP response")
-            }
-            
-            // Extract cookies from response
-            let responseCookies = httpResponse.allCookies()
-            self.cookies.append(contentsOf: responseCookies)
-            
-            // Store cookies in the cookie storage
-            HTTPCookieStorage.shared.setCookies(responseCookies, for: url, mainDocumentURL: nil)
-            
-            // Try to extract CSRF token from response data or cookies
-            if let htmlString = String(data: data, encoding: .utf8), let token = extractor.extract(from: htmlString) {
-                csrfToken = token
-            }
-            
-            // Look for XSRF-TOKEN in cookies if not found in HTML
-            if self.csrfToken.isEmpty {
-                for cookie in responseCookies {
-                    if cookie.name == "XSRF-TOKEN" {
-                        if let value = cookie.value.removingPercentEncoding {
-                            self.csrfToken = value
-                        }
+        let (data, response) = try await session.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw KudoboardError.networkError("Invalid HTTP response")
+        }
+        
+        // Extract cookies from response
+        let responseCookies = httpResponse.allCookies()
+        self.cookies.append(contentsOf: responseCookies)
+        
+        // Store cookies in the cookie storage
+        HTTPCookieStorage.shared.setCookies(responseCookies, for: url, mainDocumentURL: nil)
+        
+        // Try to extract CSRF token from response data or cookies
+        if let htmlString = String(data: data, encoding: .utf8), let token = extractor.extract(from: htmlString) {
+            csrfToken = token
+        }
+        
+        // Look for XSRF-TOKEN in cookies if not found in HTML
+        if self.csrfToken.isEmpty {
+            for cookie in responseCookies {
+                if cookie.name == "XSRF-TOKEN" {
+                    if let value = cookie.value.removingPercentEncoding {
+                        self.csrfToken = value
                     }
                 }
             }
-            
-            print("GET request completed with status code: \(httpResponse.statusCode)")
-            print("Cookies obtained: \(self.cookies.map { $0.name })")
-            print("CSRF Token: \(self.csrfToken)")
-            
-            // Check if we have a token
-            if self.csrfToken.isEmpty {
-                throw KudoboardError.csrfTokenNotFound
-            }
-            
-        } catch let error as KudoboardError {
-            throw error
-        } catch {
-            throw KudoboardError.networkError(error.localizedDescription)
+        }
+        
+        print("GET request completed with status code: \(httpResponse.statusCode)")
+        print("Cookies obtained: \(self.cookies.map { $0.name })")
+        print("CSRF Token: \(self.csrfToken)")
+        
+        // Check if we have a token
+        if self.csrfToken.isEmpty {
+            throw KudoboardError.csrfTokenNotFound
         }
     }
     
@@ -105,72 +98,68 @@ actor KudoboardLoginService {
         
         request.httpBody = bodyString.data(using: .utf8)
         
-        do {
-            let (data, response) = try await session.data(for: request)
-            
-            guard let httpResponse = response as? HTTPURLResponse else {
-                throw KudoboardError.networkError("Invalid HTTP response")
-            }
-            
-            print("POST request completed with status code: \(httpResponse.statusCode)")
-            
-            // Handle the HTML response and extract cookies
-            if httpResponse.statusCode == 200 || httpResponse.statusCode == 302 {
-                let stringData = String(data: data, encoding: .utf8)
-                print("POST request response: \(stringData?.prefix(200) ?? "No data returned")")
-                
-                // Extract new cookies from the response headers
-                if let headerFields = httpResponse.allHeaderFields as? [String: String] {
-                    let newCookies = HTTPCookie.cookies(withResponseHeaderFields: headerFields, for: url)
-                    if !newCookies.isEmpty {
-                        self.cookies.append(contentsOf: newCookies)
-                        
-                        // Update CSRF token from new cookies
-                        for cookie in newCookies {
-                            if cookie.name == "XSRF-TOKEN" {
-                                self.csrfToken = cookie.value.removingPercentEncoding ?? cookie.value
-                                print("✅ Updated CSRF token from login response: \(self.csrfToken)")
-                            }
-                        }
-                        
-                        // Store cookies in the cookie storage
-                        HTTPCookieStorage.shared.setCookies(newCookies, for: url, mainDocumentURL: nil)
-                        print("✅ Updated cookies: \(newCookies.map { $0.name })")
-                    }
-                }
-                
-                // Validate login success by checking for success indicators in the HTML
-                if let responseHTML = stringData {
-                    // If we find indications of a successful login in the HTML
-                    if responseHTML.contains("logout") || responseHTML.contains("dashboard") ||
-                        !responseHTML.contains("Invalid credentials") {
-                        print("✅ Login appears successful based on response content")
-                    } else if responseHTML.contains("Invalid credentials") ||
-                                responseHTML.contains("These credentials do not match our records") {
-                        throw KudoboardError.loginFailed("Invalid credentials")
-                    }
-                }
-                
-                // Also try to extract a new CSRF token from the HTML
-                if let responseHTML = stringData {
-                    let oldToken = self.csrfToken
-                    
-                    if let token = extractor.extract(from: responseHTML) {
-                        csrfToken = token
-                    }
-                    
-                    if self.csrfToken != oldToken {
-                        print("✅ Updated CSRF token from HTML: \(self.csrfToken)")
-                    }
-                }
-            } else {
-                throw KudoboardError.httpError(httpResponse.statusCode, "HTTP error")
-            }
-        } catch let error as KudoboardError {
-            throw error
-        } catch {
-            throw KudoboardError.networkError(error.localizedDescription)
+        
+        let (data, response) = try await session.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw KudoboardError.networkError("Invalid HTTP response")
         }
+        
+        print("POST request completed with status code: \(httpResponse.statusCode)")
+        
+        // Handle the HTML response and extract cookies
+        guard httpResponse.statusCode == 200 || httpResponse.statusCode == 302 else {
+            throw KudoboardError.httpError(httpResponse.statusCode, "HTTP error")
+        }
+        
+        let stringData = String(data: data, encoding: .utf8)
+        print("POST request response: \(stringData?.prefix(200) ?? "No data returned")")
+        
+        // Extract new cookies from the response headers
+        if let headerFields = httpResponse.allHeaderFields as? [String: String] {
+            let newCookies = HTTPCookie.cookies(withResponseHeaderFields: headerFields, for: url)
+            if !newCookies.isEmpty {
+                self.cookies.append(contentsOf: newCookies)
+                
+                // Update CSRF token from new cookies
+                for cookie in newCookies {
+                    if cookie.name == "XSRF-TOKEN" {
+                        self.csrfToken = cookie.value.removingPercentEncoding ?? cookie.value
+                        print("✅ Updated CSRF token from login response: \(self.csrfToken)")
+                    }
+                }
+                
+                // Store cookies in the cookie storage
+                HTTPCookieStorage.shared.setCookies(newCookies, for: url, mainDocumentURL: nil)
+                print("✅ Updated cookies: \(newCookies.map { $0.name })")
+            }
+        }
+        
+        // Validate login success by checking for success indicators in the HTML
+        if let responseHTML = stringData {
+            // If we find indications of a successful login in the HTML
+            if responseHTML.contains("logout") || responseHTML.contains("dashboard") ||
+                !responseHTML.contains("Invalid credentials") {
+                print("✅ Login appears successful based on response content")
+            } else if responseHTML.contains("Invalid credentials") ||
+                        responseHTML.contains("These credentials do not match our records") {
+                throw KudoboardError.loginFailed("Invalid credentials")
+            }
+        }
+        
+        // Also try to extract a new CSRF token from the HTML
+        if let responseHTML = stringData {
+            let oldToken = self.csrfToken
+            
+            if let token = extractor.extract(from: responseHTML) {
+                csrfToken = token
+            }
+            
+            if self.csrfToken != oldToken {
+                print("✅ Updated CSRF token from HTML: \(self.csrfToken)")
+            }
+        }
+        
     }
     
     // Step 3: Visit the board page to get a fresh CSRF token
@@ -189,48 +178,41 @@ actor KudoboardLoginService {
         request.setValue("text/html,application/xhtml+xml", forHTTPHeaderField: "Accept")
         request.setValue("Mozilla/5.0 (Macintosh; Intel Mac OS X 13_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15", forHTTPHeaderField: "User-Agent")
         
-        do {
             let (data, response) = try await session.data(for: request)
             
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw KudoboardError.networkError("Invalid HTTP response")
             }
+        
+        print("Board page visit completed with status code: \(httpResponse.statusCode)")
+        
+        guard httpResponse.statusCode == 200 else {
+            throw KudoboardError.httpError(httpResponse.statusCode, "Failed to load board page")
+        }
+        // Update cookies from response
+        let newCookies = httpResponse.allCookies()
+        if !newCookies.isEmpty {
+            self.cookies = newCookies
+            HTTPCookieStorage.shared.setCookies(newCookies, for: url, mainDocumentURL: nil)
             
-            print("Board page visit completed with status code: \(httpResponse.statusCode)")
-            
-            if httpResponse.statusCode == 200 {
-                // Update cookies from response
-                let newCookies = httpResponse.allCookies()
-                if !newCookies.isEmpty {
-                    self.cookies = newCookies
-                    HTTPCookieStorage.shared.setCookies(newCookies, for: url, mainDocumentURL: nil)
-                    
-                    // Update CSRF token from cookies
-                    if let xsrfCookie = newCookies.first(where: { $0.name == "XSRF-TOKEN" }) {
-                        self.csrfToken = xsrfCookie.value.removingPercentEncoding ?? xsrfCookie.value
-                        print("✅ Updated CSRF token from board page: \(self.csrfToken)")
-                    }
-                }
-                
-                // Also try to extract CSRF token from HTML if available
-                if let htmlString = String(data: data, encoding: .utf8) {
-                    let oldToken = self.csrfToken
-                    
-                    if let token = extractor.extract(from: htmlString) {
-                        csrfToken = token
-                    }
-
-                    if self.csrfToken != oldToken {
-                        print("✅ Updated CSRF token from HTML: \(self.csrfToken)")
-                    }
-                }
-            } else {
-                throw KudoboardError.httpError(httpResponse.statusCode, "Failed to load board page")
+            // Update CSRF token from cookies
+            if let xsrfCookie = newCookies.first(where: { $0.name == "XSRF-TOKEN" }) {
+                self.csrfToken = xsrfCookie.value.removingPercentEncoding ?? xsrfCookie.value
+                print("✅ Updated CSRF token from board page: \(self.csrfToken)")
             }
-        } catch let error as KudoboardError {
-            throw error
-        } catch {
-            throw KudoboardError.networkError(error.localizedDescription)
+        }
+        
+        // Also try to extract CSRF token from HTML if available
+        if let htmlString = String(data: data, encoding: .utf8) {
+            let oldToken = self.csrfToken
+            
+            if let token = extractor.extract(from: htmlString) {
+                csrfToken = token
+            }
+            
+            if self.csrfToken != oldToken {
+                print("✅ Updated CSRF token from HTML: \(self.csrfToken)")
+            }
         }
     }
     
@@ -285,28 +267,22 @@ actor KudoboardLoginService {
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
         request.httpBody = body
         
-        do {
-            let (data, response) = try await session.data(for: request)
-            
-            guard let httpResponse = response as? HTTPURLResponse else {
-                throw KudoboardError.networkError("Invalid HTTP response")
+        let (data, response) = try await session.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw KudoboardError.networkError("Invalid HTTP response")
+        }
+        
+        print("POST kudos completed with status code: \(httpResponse.statusCode)")
+        
+        if httpResponse.statusCode == 200 || httpResponse.statusCode == 201 || httpResponse.statusCode == 302 {
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("Success response: \(responseString)")
             }
-            
-            print("POST kudos completed with status code: \(httpResponse.statusCode)")
-            
-            if httpResponse.statusCode == 200 || httpResponse.statusCode == 201 || httpResponse.statusCode == 302 {
-                if let responseString = String(data: data, encoding: .utf8) {
-                    print("Success response: \(responseString)")
-                }
-            } else {
-                let responseText = String(data: data, encoding: .utf8) ?? "No body"
-                print("Failed response: \(responseText)")
-                throw KudoboardError.httpError(httpResponse.statusCode, responseText)
-            }
-        } catch let error as KudoboardError {
-            throw error
-        } catch {
-            throw KudoboardError.networkError(error.localizedDescription)
+        } else {
+            let responseText = String(data: data, encoding: .utf8) ?? "No body"
+            print("Failed response: \(responseText)")
+            throw KudoboardError.httpError(httpResponse.statusCode, responseText)
         }
     }
 }
