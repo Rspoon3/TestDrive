@@ -170,11 +170,11 @@ final class KudoboardLoginService {
         request.setValue("text/html,application/xhtml+xml", forHTTPHeaderField: "Accept")
         request.setValue("Mozilla/5.0 (Macintosh; Intel Mac OS X 13_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15", forHTTPHeaderField: "User-Agent")
         
-            let (data, response) = try await session.data(for: request)
-            
-            guard let httpResponse = response as? HTTPURLResponse else {
-                throw KudoboardError.networkError("Invalid HTTP response")
-            }
+        let (data, response) = try await session.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw KudoboardError.networkError("Invalid HTTP response")
+        }
         
         print("Board page visit completed with status code: \(httpResponse.statusCode)")
         
@@ -195,17 +195,15 @@ final class KudoboardLoginService {
         }
         
         // Also try to extract CSRF token from HTML if available
-        if let htmlString = String(data: data, encoding: .utf8) {
-            let oldToken = self.csrfToken
-            
-            if let token = extractor.extract(from: htmlString) {
-                csrfToken = token
-            }
-            
-            if self.csrfToken != oldToken {
-                print("✅ Updated CSRF token from HTML: \(self.csrfToken)")
-            }
+        guard
+            let htmlString = String(data: data, encoding: .utf8),
+            let token = extractor.extract(from: htmlString)
+        else {
+            return
         }
+        
+        csrfToken = token
+        print("✅ Updated CSRF token from HTML: \(self.csrfToken)")
     }
     
     // Step 4: Post kudo to the board
