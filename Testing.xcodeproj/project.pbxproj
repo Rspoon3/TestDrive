@@ -13,6 +13,8 @@
 		94474FCC2D8FA86F0068DB2C /* HTTPURLResponse+AllCookies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94474FCA2D8FA86F0068DB2C /* HTTPURLResponse+AllCookies.swift */; };
 		94474FCE2D8FA89B0068DB2C /* KudoboardLoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94474FCD2D8FA89B0068DB2C /* KudoboardLoginService.swift */; };
 		94474FCF2D8FA89B0068DB2C /* KudoboardLoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94474FCD2D8FA89B0068DB2C /* KudoboardLoginService.swift */; };
+		94474FD42D8FB5620068DB2C /* CSRFTokenExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94474FD32D8FB5620068DB2C /* CSRFTokenExtractor.swift */; };
+		94474FD52D8FB5620068DB2C /* CSRFTokenExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94474FD32D8FB5620068DB2C /* CSRFTokenExtractor.swift */; };
 		A6A262F024E0BCB30091EA92 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262EF24E0BCB30091EA92 /* Tests_iOS.swift */; };
 		A6A262FB24E0BCB30091EA92 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262FA24E0BCB30091EA92 /* Tests_macOS.swift */; };
 		A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D424E0BCB20091EA92 /* TestingApp.swift */; };
@@ -42,6 +44,7 @@
 		94474FC72D8FA7F60068DB2C /* KudoboardError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KudoboardError.swift; sourceTree = "<group>"; };
 		94474FCA2D8FA86F0068DB2C /* HTTPURLResponse+AllCookies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HTTPURLResponse+AllCookies.swift"; sourceTree = "<group>"; };
 		94474FCD2D8FA89B0068DB2C /* KudoboardLoginService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KudoboardLoginService.swift; sourceTree = "<group>"; };
+		94474FD32D8FB5620068DB2C /* CSRFTokenExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSRFTokenExtractor.swift; sourceTree = "<group>"; };
 		A6A0310D266EBC6D001CBE2A /* Testing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Testing.entitlements; sourceTree = "<group>"; };
 		A6A262D424E0BCB20091EA92 /* TestingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingApp.swift; sourceTree = "<group>"; };
 		A6A262D624E0BCB30091EA92 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -117,6 +120,7 @@
 				A6A262D424E0BCB20091EA92 /* TestingApp.swift */,
 				94474FC72D8FA7F60068DB2C /* KudoboardError.swift */,
 				94474FCD2D8FA89B0068DB2C /* KudoboardLoginService.swift */,
+				94474FD32D8FB5620068DB2C /* CSRFTokenExtractor.swift */,
 				94474FCA2D8FA86F0068DB2C /* HTTPURLResponse+AllCookies.swift */,
 				A6A262D624E0BCB30091EA92 /* Assets.xcassets */,
 			);
@@ -333,6 +337,7 @@
 			files = (
 				94474FCC2D8FA86F0068DB2C /* HTTPURLResponse+AllCookies.swift in Sources */,
 				94474FC92D8FA7F60068DB2C /* KudoboardError.swift in Sources */,
+				94474FD42D8FB5620068DB2C /* CSRFTokenExtractor.swift in Sources */,
 				A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */,
 				94474FCF2D8FA89B0068DB2C /* KudoboardLoginService.swift in Sources */,
 			);
@@ -344,6 +349,7 @@
 			files = (
 				94474FCB2D8FA86F0068DB2C /* HTTPURLResponse+AllCookies.swift in Sources */,
 				94474FC82D8FA7F60068DB2C /* KudoboardError.swift in Sources */,
+				94474FD52D8FB5620068DB2C /* CSRFTokenExtractor.swift in Sources */,
 				A6A262FE24E0BCB30091EA92 /* TestingApp.swift in Sources */,
 				94474FCE2D8FA89B0068DB2C /* KudoboardLoginService.swift in Sources */,
 			);

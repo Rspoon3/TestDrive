@@ -11,6 +11,7 @@ actor KudoboardLoginService {
     private let baseURL = "https://www.kudoboard.com"
     private var cookies: [HTTPCookie] = []
     var csrfToken: String = ""
+    private let extractor = CSRFTokenExtractor()
     
     // Store the cookies in a session configuration
     private lazy var session: URLSession = {
@@ -41,8 +42,8 @@ actor KudoboardLoginService {
             HTTPCookieStorage.shared.setCookies(responseCookies, for: url, mainDocumentURL: nil)
             
             // Try to extract CSRF token from response data or cookies
-            if let htmlString = String(data: data, encoding: .utf8) {
-                self.extractCSRFToken(from: htmlString)
+            if let htmlString = String(data: data, encoding: .utf8), let token = extractor.extract(from: htmlString) {
+                csrfToken = token
             }
             
             // Look for XSRF-TOKEN in cookies if not found in HTML
@@ -69,34 +70,6 @@ actor KudoboardLoginService {
             throw error
         } catch {
             throw KudoboardError.networkError(error.localizedDescription)
-        }
-    }
-    
-    // Extract CSRF token from HTML
-    private func extractCSRFToken(from html: String) {
-        // Look for meta tag with name="csrf-token"
-        if let range = html.range(of: #"<meta name="csrf-token" content="([^"]+)""#, options: .regularExpression) {
-            let metaTag = html[range]
-            if let tokenRange = metaTag.range(of: #"content="([^"]+)""#, options: .regularExpression) {
-                let tokenPart = metaTag[tokenRange]
-                if let actualTokenRange = tokenPart.range(of: #""([^"]+)""#, options: .regularExpression) {
-                    let token = tokenPart[actualTokenRange]
-                    // Remove quotes
-                    self.csrfToken = String(token).replacingOccurrences(of: "\"", with: "")
-                }
-            }
-        }
-        
-        // If not found in meta tag, look for JavaScript variable
-        if self.csrfToken.isEmpty {
-            let pattern = #"_token\s*=\s*['"]([^'"]+)['"]"#
-            if let range = html.range(of: pattern, options: .regularExpression) {
-                let match = html[range]
-                if let valueRange = match.range(of: #"['"]([^'"]+)['"]"#, options: .regularExpression) {
-                    let valueMatch = match[valueRange]
-                    self.csrfToken = String(valueMatch).replacingOccurrences(of: #"['"](.*)['"]{1}"#, with: "$1", options: .regularExpression)
-                }
-            }
         }
     }
     
@@ -181,7 +154,11 @@ actor KudoboardLoginService {
                 // Also try to extract a new CSRF token from the HTML
                 if let responseHTML = stringData {
                     let oldToken = self.csrfToken
-                    self.extractCSRFToken(from: responseHTML)
+                    
+                    if let token = extractor.extract(from: responseHTML) {
+                        csrfToken = token
+                    }
+                    
                     if self.csrfToken != oldToken {
                         print("✅ Updated CSRF token from HTML: \(self.csrfToken)")
                     }
@@ -238,7 +215,11 @@ actor KudoboardLoginService {
                 // Also try to extract CSRF token from HTML if available
                 if let htmlString = String(data: data, encoding: .utf8) {
                     let oldToken = self.csrfToken
-                    self.extractCSRFToken(from: htmlString)
+                    
+                    if let token = extractor.extract(from: htmlString) {
+                        csrfToken = token
+                    }
+
                     if self.csrfToken != oldToken {
                         print("✅ Updated CSRF token from HTML: \(self.csrfToken)")
                     }
