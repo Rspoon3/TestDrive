@@ -21,6 +21,10 @@ final class KudoboardLoginService {
         return URLSession(configuration: configuration)
     }()
     
+    init() {
+        loadSession()
+    }
+    
     // Step 1: Make GET request to login page to get cookies and CSRF token
     func getLoginPage() async throws {
         let url = URL(string: "\(baseURL)/auth/login")!
@@ -152,6 +156,8 @@ final class KudoboardLoginService {
         guard let token = extractor.extract(from: responseHTML) else { return }
         csrfToken = token
         print("✅ Updated CSRF token from HTML: \(self.csrfToken)")
+        
+        self.saveSession()
     }
     
     // Step 3: Visit the board page to get a fresh CSRF token
@@ -204,5 +210,46 @@ final class KudoboardLoginService {
         
         csrfToken = token
         print("✅ Updated CSRF token from HTML: \(self.csrfToken)")
+    }
+}
+
+
+// MARK: - Persistence
+
+extension KudoboardLoginService {
+    
+    private var cookiesKey: String { "KudoboardCookies" }
+    private var csrfTokenKey: String { "KudoboardCSRFToken" }
+
+    func saveSession() {
+        // Save cookies
+        let cookieData = cookies.compactMap { try? NSKeyedArchiver.archivedData(withRootObject: $0, requiringSecureCoding: false) }
+        UserDefaults.standard.set(cookieData, forKey: cookiesKey)
+
+        // Save CSRF token
+        UserDefaults.standard.set(csrfToken, forKey: csrfTokenKey)
+    }
+
+    func loadSession() {
+        // Load cookies
+        if let cookieDataArray = UserDefaults.standard.array(forKey: cookiesKey) as? [Data] {
+            let loadedCookies = cookieDataArray.compactMap { data in
+                try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? HTTPCookie
+            }
+            self.cookies = loadedCookies
+            loadedCookies.forEach {
+                HTTPCookieStorage.shared.setCookie($0)
+            }
+        }
+
+        // Load CSRF token
+        if let token = UserDefaults.standard.string(forKey: csrfTokenKey) {
+            self.csrfToken = token
+        }
+    }
+
+    func clearSession() {
+        UserDefaults.standard.removeObject(forKey: cookiesKey)
+        UserDefaults.standard.removeObject(forKey: csrfTokenKey)
     }
 }

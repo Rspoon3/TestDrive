@@ -18,9 +18,9 @@ struct TestingApp: App {
                     try await send()
                 }
             }
-            .task {
-                try? await send()
-            }
+//            .task {
+//                try? await send()
+//            }
         }
     }
     
