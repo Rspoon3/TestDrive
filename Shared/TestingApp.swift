@@ -27,7 +27,7 @@ struct TestingApp: App {
     func send() async throws {
         // Define the board ID and message to post
         let boardID = "BDk2ACtk"
-        let message = "<p>bobby</p>"
+        let message = "Nice work!"
         
         let poster = KudoboardPoster(loginService: loginService)
         try await poster.postKudo(to: boardID, messageHTML: message)

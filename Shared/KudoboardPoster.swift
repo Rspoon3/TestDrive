@@ -80,7 +80,7 @@ final class KudoboardPoster {
         
         // Include the CSRF token as a form field (important for Laravel)
         appendFormField(name: "_token", value: self.csrfToken)
-        appendFormField(name: "message", value: messageHTML)
+        appendFormField(name: "message", value: "<p>\(messageHTML)</p>")
         appendFormField(name: "recipients", value: "[]")
         appendFormField(name: "hashtags", value: "")
         appendFormField(name: "custom_fields", value: "{}")
