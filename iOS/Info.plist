@@ -46,5 +46,13 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>This app uses Screen Time APIs to help you manage your app usage.</string>
+    <key>com.apple.developer.family-controls</key>
+    <true/>
+    <key>com.apple.developer.device-activity.monitoring</key>
+    <true/>
+    <key>com.apple.developer.shield.app-configuration</key>
+    <true/>
 </dict>
 </plist>
