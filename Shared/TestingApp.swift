@@ -9,9 +9,15 @@ import SwiftUI
 
 @main
 struct TestingApp: App {
+    private let stepGoalMonitor = StepGoalMonitor()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .task {
+                    try? await stepGoalMonitor.requestNotifications()
+                    stepGoalMonitor.startMonitoring()
+                }
         }
     }
 }

@@ -14,6 +14,8 @@
 		94AD9E522DA93CE7000DAD3E /* TestingDeviceActivityMonitor.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 94AD9E482DA93CE7000DAD3E /* TestingDeviceActivityMonitor.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		94AD9E592DA93D7A000DAD3E /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94AD9E572DA93D7A000DAD3E /* AppModel.swift */; };
 		94AD9E5A2DA93DA2000DAD3E /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94AD9E572DA93D7A000DAD3E /* AppModel.swift */; };
+		94ADCDD92DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADCDD82DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift */; };
+		94ADCE632DAC37E6000DAD3E /* StepGoalMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADCE622DAC37E6000DAD3E /* StepGoalMonitor.swift */; };
 		A6A262F024E0BCB30091EA92 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262EF24E0BCB30091EA92 /* Tests_iOS.swift */; };
 		A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D424E0BCB20091EA92 /* TestingApp.swift */; };
 		A6A262FF24E0BCB30091EA92 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D524E0BCB20091EA92 /* ContentView.swift */; };
@@ -66,19 +68,17 @@
 		94AD9E482DA93CE7000DAD3E /* TestingDeviceActivityMonitor.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TestingDeviceActivityMonitor.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		94AD9E492DA93CE7000DAD3E /* DeviceActivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DeviceActivity.framework; path = System/Library/Frameworks/DeviceActivity.framework; sourceTree = SDKROOT; };
 		94AD9E572DA93D7A000DAD3E /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		94ADCDD82DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRingViewRepresentable.swift; sourceTree = "<group>"; };
+		94ADCE622DAC37E6000DAD3E /* StepGoalMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepGoalMonitor.swift; sourceTree = "<group>"; };
 		A6A0310D266EBC6D001CBE2A /* Testing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Testing.entitlements; sourceTree = "<group>"; };
 		A6A262D424E0BCB20091EA92 /* TestingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingApp.swift; sourceTree = "<group>"; };
 		A6A262D524E0BCB20091EA92 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A6A262D624E0BCB30091EA92 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A6A262DB24E0BCB30091EA92 /* Testing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Testing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6A262DE24E0BCB30091EA92 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A6A262E524E0BCB30091EA92 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A6A262E624E0BCB30091EA92 /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
 		A6A262EB24E0BCB30091EA92 /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6A262EF24E0BCB30091EA92 /* Tests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOS.swift; sourceTree = "<group>"; };
 		A6A262F124E0BCB30091EA92 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A6A262FA24E0BCB30091EA92 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
-		A6A262FC24E0BCB30091EA92 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -154,9 +154,7 @@
 				A6A0310D266EBC6D001CBE2A /* Testing.entitlements */,
 				A6A262D324E0BCB20091EA92 /* Shared */,
 				A6A262DD24E0BCB30091EA92 /* iOS */,
-				A6A262E424E0BCB30091EA92 /* macOS */,
 				A6A262EE24E0BCB30091EA92 /* Tests iOS */,
-				A6A262F924E0BCB30091EA92 /* Tests macOS */,
 				94AD9E372DA93617000DAD3E /* TestingShieldConfiguration */,
 				94AD9E4B2DA93CE7000DAD3E /* TestingDeviceActivityMonitor */,
 				A6A262DC24E0BCB30091EA92 /* Products */,
@@ -169,6 +167,8 @@
 			children = (
 				A6A262D424E0BCB20091EA92 /* TestingApp.swift */,
 				A6A262D524E0BCB20091EA92 /* ContentView.swift */,
+				94ADCDD82DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift */,
+				94ADCE622DAC37E6000DAD3E /* StepGoalMonitor.swift */,
 				94AD9E572DA93D7A000DAD3E /* AppModel.swift */,
 				A6A262D624E0BCB30091EA92 /* Assets.xcassets */,
 			);
@@ -194,15 +194,6 @@
 			path = iOS;
 			sourceTree = "<group>";
 		};
-		A6A262E424E0BCB30091EA92 /* macOS */ = {
-			isa = PBXGroup;
-			children = (
-				A6A262E524E0BCB30091EA92 /* Info.plist */,
-				A6A262E624E0BCB30091EA92 /* macOS.entitlements */,
-			);
-			path = macOS;
-			sourceTree = "<group>";
-		};
 		A6A262EE24E0BCB30091EA92 /* Tests iOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -210,15 +201,6 @@
 				A6A262F124E0BCB30091EA92 /* Info.plist */,
 			);
 			path = "Tests iOS";
-			sourceTree = "<group>";
-		};
-		A6A262F924E0BCB30091EA92 /* Tests macOS */ = {
-			isa = PBXGroup;
-			children = (
-				A6A262FA24E0BCB30091EA92 /* Tests_macOS.swift */,
-				A6A262FC24E0BCB30091EA92 /* Info.plist */,
-			);
-			path = "Tests macOS";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -409,7 +391,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A6A262FF24E0BCB30091EA92 /* ContentView.swift in Sources */,
+				94ADCE632DAC37E6000DAD3E /* StepGoalMonitor.swift in Sources */,
 				94AD9E592DA93D7A000DAD3E /* AppModel.swift in Sources */,
+				94ADCDD92DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift in Sources */,
 				A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

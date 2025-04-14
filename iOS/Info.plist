@@ -54,5 +54,7 @@
     <true/>
     <key>com.apple.developer.shield.app-configuration</key>
     <true/>
+    <key>NSHealthShareUsageDescription</key>
+    <string>This app uses your Apple Watch activity data to determine when to unlock selected apps.</string>
 </dict>
 </plist>
