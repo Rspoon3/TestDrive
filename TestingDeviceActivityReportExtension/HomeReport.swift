@@ -35,7 +35,6 @@ struct HomeReport: DeviceActivityReportScene {
             for await a in d.activitySegments{
                 for await c in a.categories {
                     let category = c.category
-                    let hash = c.hashValue
                     let catDurationInMins = c.totalActivityDuration/60
                     
                     if catDurationInMins > 2.0{
@@ -67,7 +66,16 @@ struct HomeReport: DeviceActivityReportScene {
                        
                         let numberOfPickups = ap.numberOfPickups
                         let notifs = ap.numberOfNotifications
-                        let app = AppDeviceActivity(id: bundle, token: token, displayName: appName, duration: formatedDuration, durationInterval: durationInterval, numberOfPickups: numberOfPickups,category: category, numberOfNotifs: notifs)
+                        let app = AppDeviceActivity(
+                            id: bundle,
+                            token: token,
+                            displayName: appName,
+                            duration: formatedDuration,
+                            durationInterval: durationInterval,
+                            numberOfPickups: numberOfPickups,
+                            category: category,
+                            numberOfNotifs: notifs
+                        )
                         appList.append(app)
                        
                     }
@@ -79,7 +87,16 @@ struct HomeReport: DeviceActivityReportScene {
         appList.sort(by:sortApps)
         
         
-        return ChartAndTopThreeReport(totalDuration: totalActivityDuration, categoryChartData: categoryChartData, appChartData:appChartData, topApps: [appList[0], appList[1], appList[2]])
+        return ChartAndTopThreeReport(
+            totalDuration: totalActivityDuration,
+            categoryChartData: categoryChartData,
+            appChartData:appChartData,
+            topApps: [
+                appList[0],
+                appList[1],
+                appList[2]
+            ]
+        )
     }
     
 }

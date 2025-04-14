@@ -57,7 +57,16 @@ struct TopAppsReport: DeviceActivityReportScene {
                        
                         let numberOfPickups = ap.numberOfPickups
                         let notifs = ap.numberOfNotifications
-                        let app = AppDeviceActivity(id: bundle, token: token, displayName: appName, duration: formatedDuration, durationInterval: durationInterval, numberOfPickups: numberOfPickups,category: category, numberOfNotifs: notifs)
+                        let app = AppDeviceActivity(
+                            id: bundle,
+                            token: token,
+                            displayName: appName,
+                            duration: formatedDuration,
+                            durationInterval: durationInterval,
+                            numberOfPickups: numberOfPickups,
+                            category: category,
+                            numberOfNotifs: notifs
+                        )
                         list.append(app)
                     }
                 }
@@ -78,10 +87,3 @@ struct TopAppsReport: DeviceActivityReportScene {
         return TopThreeReport(apps: [list[0], list[1], list[2]])
     }
 }
-
-
-
-
-
-
-

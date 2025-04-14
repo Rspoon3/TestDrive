@@ -62,7 +62,16 @@ struct TotalPickupsReport: DeviceActivityReportScene {
                         let notifs = ap.numberOfNotifications
                         
                         // Create stuct with all app information the api gives us
-                        let app = AppDeviceActivity(id: bundle, token: token, displayName: appName, duration: formatedDuration, durationInterval: durationInterval, numberOfPickups: numberOfPickups,category: category, numberOfNotifs: notifs)
+                        let app = AppDeviceActivity(
+                            id: bundle,
+                            token: token,
+                            displayName: appName,
+                            duration: formatedDuration,
+                            durationInterval: durationInterval,
+                            numberOfPickups: numberOfPickups,
+                            category: category,
+                            numberOfNotifs: notifs
+                        )
                         appList.append(app)
                     }
                 }
@@ -84,15 +93,17 @@ struct TotalPickupsReport: DeviceActivityReportScene {
         formatter2.allowedUnits = [.hour, .minute, .second]
         formatter2.unitsStyle = .full
        
-        return MoreInsightsReport(apps: appList,
-                                  categories: catsList,
-                                  firstPickup: dateString,
-                                  totalPickupsWithoutApplicationActivity: totalPickupsWithout,
-                                  longestActivity: formatter2.string(for: longestActivity),
-                                  pickupsChartData: pChartData,
-                                  notifsChartData: nChartData,
-                                  pickupsAppChartData: pAppChartData,
-                                  notifsAppChartData:nAppChartData)
+        return MoreInsightsReport(
+            apps: appList,
+            categories: catsList,
+            firstPickup: dateString,
+            totalPickupsWithoutApplicationActivity: totalPickupsWithout,
+            longestActivity: formatter2.string(for: longestActivity),
+            pickupsChartData: pChartData,
+            notifsChartData: nChartData,
+            pickupsAppChartData: pAppChartData,
+            notifsAppChartData:nAppChartData
+        )
     }
     
     func formatDuration(duration:Int) -> String{

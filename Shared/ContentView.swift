@@ -1,34 +1,43 @@
 import SwiftUI
+import ManagedSettings
 import FamilyControls
 import DeviceActivity
 
 struct ContentView: View {
     @StateObject var model = AppModel.shared
 
-    var body: some View {    
+    var body2: some View {
         DeviceActivityReport(.home)
     }
 
-    var body1: some View {
+    var body: some View {
         NavigationStack {
-            VStack(spacing: 24) {
-
-                if let summary = model.activitySummary {
-                    ActivityRingViewRepresentable(summary: summary)
-                        .frame(width: 150, height: 150)
-                }
-                
-                FamilyActivityPicker(selection: $model.selection)
-                    .frame(height: 300)
-                
-                Button("Check Rings & Steps Now") {
-                    Task {
-                        try await model.requestHealthKitAuthorization()
+            ScrollView {
+                VStack(spacing: 24) {
+                    
+                    if let summary = model.activitySummary {
+                        ActivityRingViewRepresentable(summary: summary)
+                            .frame(width: 150, height: 150)
                     }
-                }
-                
-                Button("Unblock") {
-                    model.unblockAll()
+                    
+                    ForEach(Array(model.savedAppTokens), id: \.self) { token in
+                        Label(token)
+                            .labelStyle(.iconOnly)
+                            .scaleEffect(1.75)
+                    }
+                    
+                    FamilyActivityPicker(selection: $model.selection)
+                        .frame(height: 300)
+                    
+                    Button("Check Rings & Steps Now") {
+                        Task {
+                            try await model.requestHealthKitAuthorization()
+                        }
+                    }
+                    
+                    Button("Unblock") {
+                        model.unblockAll()
+                    }
                 }
             }
             .navigationTitle("Ring-Rewards")
