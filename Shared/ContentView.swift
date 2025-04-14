@@ -1,5 +1,6 @@
 import SwiftUI
 import FamilyControls
+import DeviceActivity
 
 struct ContentView: View {
     @StateObject var model = AppModel.shared
@@ -7,6 +8,8 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
+                DeviceActivityReport(.init("Total Activity"))
+
                 if let summary = model.activitySummary {
                     ActivityRingViewRepresentable(summary: summary)
                         .frame(width: 150, height: 150)

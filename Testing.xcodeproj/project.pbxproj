@@ -16,6 +16,8 @@
 		94AD9E5A2DA93DA2000DAD3E /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94AD9E572DA93D7A000DAD3E /* AppModel.swift */; };
 		94ADCDD92DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADCDD82DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift */; };
 		94ADCE632DAC37E6000DAD3E /* StepGoalMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADCE622DAC37E6000DAD3E /* StepGoalMonitor.swift */; };
+		94ADCE742DACA2DB000DAD3E /* TestingDeviceActivityReportExtension.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 94ADCE682DACA2DA000DAD3E /* TestingDeviceActivityReportExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		94ADCE7B2DACA3F1000DAD3E /* ExampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADCE7A2DACA3F1000DAD3E /* ExampleView.swift */; };
 		A6A262F024E0BCB30091EA92 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262EF24E0BCB30091EA92 /* Tests_iOS.swift */; };
 		A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D424E0BCB20091EA92 /* TestingApp.swift */; };
 		A6A262FF24E0BCB30091EA92 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D524E0BCB20091EA92 /* ContentView.swift */; };
@@ -36,6 +38,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 94AD9E472DA93CE7000DAD3E;
 			remoteInfo = TestingDeviceActivityMonitor;
+		};
+		94ADCE722DACA2DB000DAD3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A6A262CF24E0BCB20091EA92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 94ADCE672DACA2DA000DAD3E;
+			remoteInfo = TestingDeviceActivityReportExtension;
 		};
 		A6A262EC24E0BCB30091EA92 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -59,6 +68,17 @@
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		94ADCE792DACA2DB000DAD3E /* Embed ExtensionKit Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(EXTENSIONS_FOLDER_PATH)";
+			dstSubfolderSpec = 16;
+			files = (
+				94ADCE742DACA2DB000DAD3E /* TestingDeviceActivityReportExtension.appex in Embed ExtensionKit Extensions */,
+			);
+			name = "Embed ExtensionKit Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +90,8 @@
 		94AD9E572DA93D7A000DAD3E /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		94ADCDD82DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRingViewRepresentable.swift; sourceTree = "<group>"; };
 		94ADCE622DAC37E6000DAD3E /* StepGoalMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepGoalMonitor.swift; sourceTree = "<group>"; };
+		94ADCE682DACA2DA000DAD3E /* TestingDeviceActivityReportExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = TestingDeviceActivityReportExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		94ADCE7A2DACA3F1000DAD3E /* ExampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleView.swift; sourceTree = "<group>"; };
 		A6A0310D266EBC6D001CBE2A /* Testing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Testing.entitlements; sourceTree = "<group>"; };
 		A6A262D424E0BCB20091EA92 /* TestingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingApp.swift; sourceTree = "<group>"; };
 		A6A262D524E0BCB20091EA92 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -96,11 +118,19 @@
 			);
 			target = 94AD9E472DA93CE7000DAD3E /* TestingDeviceActivityMonitor */;
 		};
+		94ADCE752DACA2DB000DAD3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 94ADCE672DACA2DA000DAD3E /* TestingDeviceActivityReportExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		94AD9E372DA93617000DAD3E /* TestingShieldConfiguration */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (94AD9E422DA93617000DAD3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TestingShieldConfiguration; sourceTree = "<group>"; };
 		94AD9E4B2DA93CE7000DAD3E /* TestingDeviceActivityMonitor */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (94AD9E532DA93CE7000DAD3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TestingDeviceActivityMonitor; sourceTree = "<group>"; };
+		94ADCE692DACA2DA000DAD3E /* TestingDeviceActivityReportExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (94ADCE752DACA2DB000DAD3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TestingDeviceActivityReportExtension; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +148,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				94AD9E4A2DA93CE7000DAD3E /* DeviceActivity.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		94ADCE652DACA2DA000DAD3E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -157,6 +194,7 @@
 				A6A262EE24E0BCB30091EA92 /* Tests iOS */,
 				94AD9E372DA93617000DAD3E /* TestingShieldConfiguration */,
 				94AD9E4B2DA93CE7000DAD3E /* TestingDeviceActivityMonitor */,
+				94ADCE692DACA2DA000DAD3E /* TestingDeviceActivityReportExtension */,
 				A6A262DC24E0BCB30091EA92 /* Products */,
 				9416F28C2BF5AF1B00028457 /* Frameworks */,
 			);
@@ -169,6 +207,7 @@
 				A6A262D524E0BCB20091EA92 /* ContentView.swift */,
 				94ADCDD82DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift */,
 				94ADCE622DAC37E6000DAD3E /* StepGoalMonitor.swift */,
+				94ADCE7A2DACA3F1000DAD3E /* ExampleView.swift */,
 				94AD9E572DA93D7A000DAD3E /* AppModel.swift */,
 				A6A262D624E0BCB30091EA92 /* Assets.xcassets */,
 			);
@@ -182,6 +221,7 @@
 				A6A262EB24E0BCB30091EA92 /* Tests iOS.xctest */,
 				94AD9E322DA93617000DAD3E /* TestingShieldConfiguration.appex */,
 				94AD9E482DA93CE7000DAD3E /* TestingDeviceActivityMonitor.appex */,
+				94ADCE682DACA2DA000DAD3E /* TestingDeviceActivityReportExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -250,6 +290,28 @@
 			productReference = 94AD9E482DA93CE7000DAD3E /* TestingDeviceActivityMonitor.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		94ADCE672DACA2DA000DAD3E /* TestingDeviceActivityReportExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 94ADCE762DACA2DB000DAD3E /* Build configuration list for PBXNativeTarget "TestingDeviceActivityReportExtension" */;
+			buildPhases = (
+				94ADCE642DACA2DA000DAD3E /* Sources */,
+				94ADCE652DACA2DA000DAD3E /* Frameworks */,
+				94ADCE662DACA2DA000DAD3E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				94ADCE692DACA2DA000DAD3E /* TestingDeviceActivityReportExtension */,
+			);
+			name = TestingDeviceActivityReportExtension;
+			packageProductDependencies = (
+			);
+			productName = TestingDeviceActivityReportExtension;
+			productReference = 94ADCE682DACA2DA000DAD3E /* TestingDeviceActivityReportExtension.appex */;
+			productType = "com.apple.product-type.extensionkit-extension";
+		};
 		A6A262DA24E0BCB30091EA92 /* Testing (iOS) */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A6A2630524E0BCB30091EA92 /* Build configuration list for PBXNativeTarget "Testing (iOS)" */;
@@ -258,12 +320,14 @@
 				A6A262D824E0BCB30091EA92 /* Frameworks */,
 				A6A262D924E0BCB30091EA92 /* Resources */,
 				94AD9E3F2DA93617000DAD3E /* Embed Foundation Extensions */,
+				94ADCE792DACA2DB000DAD3E /* Embed ExtensionKit Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				94AD9E3D2DA93617000DAD3E /* PBXTargetDependency */,
 				94AD9E512DA93CE7000DAD3E /* PBXTargetDependency */,
+				94ADCE732DACA2DB000DAD3E /* PBXTargetDependency */,
 			);
 			name = "Testing (iOS)";
 			productName = "Testing (iOS)";
@@ -306,6 +370,9 @@
 					94AD9E472DA93CE7000DAD3E = {
 						CreatedOnToolsVersion = 16.3;
 					};
+					94ADCE672DACA2DA000DAD3E = {
+						CreatedOnToolsVersion = 16.3;
+					};
 					A6A262DA24E0BCB30091EA92 = {
 						CreatedOnToolsVersion = 12.0;
 					};
@@ -334,6 +401,7 @@
 				A6A262EA24E0BCB30091EA92 /* Tests iOS */,
 				94AD9E312DA93617000DAD3E /* TestingShieldConfiguration */,
 				94AD9E472DA93CE7000DAD3E /* TestingDeviceActivityMonitor */,
+				94ADCE672DACA2DA000DAD3E /* TestingDeviceActivityReportExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -347,6 +415,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		94AD9E462DA93CE7000DAD3E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		94ADCE662DACA2DA000DAD3E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -386,6 +461,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		94ADCE642DACA2DA000DAD3E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A6A262D724E0BCB30091EA92 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -395,6 +477,7 @@
 				94AD9E592DA93D7A000DAD3E /* AppModel.swift in Sources */,
 				94ADCDD92DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift in Sources */,
 				A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */,
+				94ADCE7B2DACA3F1000DAD3E /* ExampleView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,6 +501,11 @@
 			isa = PBXTargetDependency;
 			target = 94AD9E472DA93CE7000DAD3E /* TestingDeviceActivityMonitor */;
 			targetProxy = 94AD9E502DA93CE7000DAD3E /* PBXContainerItemProxy */;
+		};
+		94ADCE732DACA2DB000DAD3E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 94ADCE672DACA2DA000DAD3E /* TestingDeviceActivityReportExtension */;
+			targetProxy = 94ADCE722DACA2DB000DAD3E /* PBXContainerItemProxy */;
 		};
 		A6A262ED24E0BCB30091EA92 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -552,6 +640,72 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rspoon3.Testing.TestingDeviceActivityMonitor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		94ADCE772DACA2DB000DAD3E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = TestingDeviceActivityReportExtension/TestingDeviceActivityReportExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 29BB6CT754;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TestingDeviceActivityReportExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TestingDeviceActivityReportExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rspoon3.Testing.TestingDeviceActivityReportExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		94ADCE782DACA2DB000DAD3E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = TestingDeviceActivityReportExtension/TestingDeviceActivityReportExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 29BB6CT754;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TestingDeviceActivityReportExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TestingDeviceActivityReportExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rspoon3.Testing.TestingDeviceActivityReportExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -793,6 +947,15 @@
 			buildConfigurations = (
 				94AD9E552DA93CE7000DAD3E /* Debug */,
 				94AD9E562DA93CE7000DAD3E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		94ADCE762DACA2DB000DAD3E /* Build configuration list for PBXNativeTarget "TestingDeviceActivityReportExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				94ADCE772DACA2DB000DAD3E /* Debug */,
+				94ADCE782DACA2DB000DAD3E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
