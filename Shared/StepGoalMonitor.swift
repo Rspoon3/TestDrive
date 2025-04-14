@@ -14,8 +14,6 @@ final class StepGoalMonitor {
     private var queryAnchor: HKQueryAnchor? // You should persist this between launches
     private let userNotificationCenter = UNUserNotificationCenter.current()
     
-    private let stepGoal = 10_000
-
     // MARK: - Public
 
     func requestNotifications() async throws {

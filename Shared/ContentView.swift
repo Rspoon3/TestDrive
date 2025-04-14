@@ -5,6 +5,7 @@ import DeviceActivity
 
 struct ContentView: View {
     @StateObject var model = AppModel.shared
+    @State private var showPicker = false
 
     var body2: some View {
         DeviceActivityReport(.home)
@@ -13,36 +14,62 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 24) {
-                    
+                VStack {
                     if let summary = model.activitySummary {
                         ActivityRingViewRepresentable(summary: summary)
                             .frame(width: 150, height: 150)
                     }
                     
-                    ForEach(Array(model.savedAppTokens), id: \.self) { token in
-                        Label(token)
-                            .labelStyle(.iconOnly)
-                            .scaleEffect(1.75)
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Image(systemName: "figure.walk")
+                            Text("Steps: \(model.totalStepsToday.formatted()) / \(model.stepGoal.formatted())")
+                        }
+
+                        HStack {
+                            Image(systemName: "brain.head.profile")
+                            Text("Mindful Minutes: \(model.mindfulMinutesToday.formatted()) / 5")
+                        }
                     }
+                    .padding(.top)
+                    .font(.subheadline)
                     
-                    FamilyActivityPicker(selection: $model.selection)
-                        .frame(height: 300)
+                    HStack {
+                        ForEach(Array(model.savedAppTokens), id: \.self) { token in
+                            Label(token)
+                                .labelStyle(.iconOnly)
+                                .scaleEffect(1.75)
+                        }
+                    }
                     
                     Button("Check Rings & Steps Now") {
                         Task {
                             try await model.requestHealthKitAuthorization()
                         }
                     }
-                    
-                    Button("Unblock") {
+                    .buttonStyle(.borderedProminent)
+                }
+            }
+            .navigationTitle("Earn It!")
+            .padding()
+            .buttonStyle(.borderedProminent)
+            .familyActivityPicker(
+                isPresented: $showPicker,
+                selection: $model.selection
+            )
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Add") {
+                        showPicker.toggle()
+                    }
+                }
+                
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Unblock", role: .destructive) {
                         model.unblockAll()
                     }
                 }
             }
-            .navigationTitle("Ring-Rewards")
-            .padding()
-            .buttonStyle(.borderedProminent)
             .onAppear {
                 Task {
                     try await model.requestHealthKitAuthorization()

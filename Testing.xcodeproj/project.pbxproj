@@ -13,11 +13,12 @@
 		94AD9E4A2DA93CE7000DAD3E /* DeviceActivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94AD9E492DA93CE7000DAD3E /* DeviceActivity.framework */; };
 		94AD9E522DA93CE7000DAD3E /* TestingDeviceActivityMonitor.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 94AD9E482DA93CE7000DAD3E /* TestingDeviceActivityMonitor.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		94AD9E592DA93D7A000DAD3E /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94AD9E572DA93D7A000DAD3E /* AppModel.swift */; };
-		94AD9E5A2DA93DA2000DAD3E /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94AD9E572DA93D7A000DAD3E /* AppModel.swift */; };
 		94ADCDD92DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADCDD82DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift */; };
 		94ADCE632DAC37E6000DAD3E /* StepGoalMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADCE622DAC37E6000DAD3E /* StepGoalMonitor.swift */; };
 		94ADCE742DACA2DB000DAD3E /* TestingDeviceActivityReportExtension.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 94ADCE682DACA2DA000DAD3E /* TestingDeviceActivityReportExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		94ADCE7B2DACA3F1000DAD3E /* ExampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADCE7A2DACA3F1000DAD3E /* ExampleView.swift */; };
+		94ADCF6A2DAD325E000DAD3E /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADCF692DAD325E000DAD3E /* UserDefaults+Extension.swift */; };
+		94ADCF772DAD32C2000DAD3E /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADCF692DAD325E000DAD3E /* UserDefaults+Extension.swift */; };
 		A6A262F024E0BCB30091EA92 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262EF24E0BCB30091EA92 /* Tests_iOS.swift */; };
 		A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D424E0BCB20091EA92 /* TestingApp.swift */; };
 		A6A262FF24E0BCB30091EA92 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D524E0BCB20091EA92 /* ContentView.swift */; };
@@ -92,6 +93,7 @@
 		94ADCE622DAC37E6000DAD3E /* StepGoalMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepGoalMonitor.swift; sourceTree = "<group>"; };
 		94ADCE682DACA2DA000DAD3E /* TestingDeviceActivityReportExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = TestingDeviceActivityReportExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		94ADCE7A2DACA3F1000DAD3E /* ExampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleView.swift; sourceTree = "<group>"; };
+		94ADCF692DAD325E000DAD3E /* UserDefaults+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extension.swift"; sourceTree = "<group>"; };
 		A6A0310D266EBC6D001CBE2A /* Testing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Testing.entitlements; sourceTree = "<group>"; };
 		A6A262D424E0BCB20091EA92 /* TestingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingApp.swift; sourceTree = "<group>"; };
 		A6A262D524E0BCB20091EA92 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 				A6A262D524E0BCB20091EA92 /* ContentView.swift */,
 				94ADCDD82DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift */,
 				94ADCE622DAC37E6000DAD3E /* StepGoalMonitor.swift */,
+				94ADCF692DAD325E000DAD3E /* UserDefaults+Extension.swift */,
 				94ADCE7A2DACA3F1000DAD3E /* ExampleView.swift */,
 				94AD9E572DA93D7A000DAD3E /* AppModel.swift */,
 				A6A262D624E0BCB30091EA92 /* Assets.xcassets */,
@@ -458,7 +461,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				94AD9E5A2DA93DA2000DAD3E /* AppModel.swift in Sources */,
+				94ADCF772DAD32C2000DAD3E /* UserDefaults+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -479,6 +482,7 @@
 				94ADCDD92DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift in Sources */,
 				A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */,
 				94ADCE7B2DACA3F1000DAD3E /* ExampleView.swift in Sources */,
+				94ADCF6A2DAD325E000DAD3E /* UserDefaults+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -857,6 +861,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rspoon3.Testing;
 				PRODUCT_NAME = Testing;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				REGISTER_APP_GROUPS = YES;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -884,6 +889,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rspoon3.Testing;
 				PRODUCT_NAME = Testing;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				REGISTER_APP_GROUPS = YES;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;

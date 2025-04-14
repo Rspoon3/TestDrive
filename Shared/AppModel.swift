@@ -7,7 +7,8 @@ import DeviceActivity
 //@MainActor
 class AppModel: ObservableObject {
     static let shared = AppModel()
-
+    @Published var totalStepsToday: Int = 0
+    @Published var mindfulMinutesToday: Int = 0
     @Published var activitySummary: HKActivitySummary?
     @Published var selection = FamilyActivitySelection() {
         didSet {
@@ -19,6 +20,7 @@ class AppModel: ObservableObject {
     private(set) var savedAppTokens: Set<ApplicationToken> = []
     private let store = ManagedSettingsStore()
     private let healthStore = HKHealthStore()
+    let stepGoal = 3_000
 
     init() {
         if let restored = loadActivitySelection() {
@@ -44,15 +46,23 @@ class AppModel: ObservableObject {
     func requestHealthKitAuthorization() async throws {
         let typesToRead: Set = [
             HKObjectType.activitySummaryType(),
-            HKObjectType.quantityType(forIdentifier: .stepCount)!
+            HKObjectType.quantityType(forIdentifier: .stepCount)!,
+            HKObjectType.categoryType(forIdentifier: .mindfulSession)!
         ]
         
         try await healthStore.requestAuthorization(toShare: Set(), read: Set(typesToRead))
         
-        let ringsClosed = try await areRingsClosed(healthStore: healthStore)
-        let stepsGoalMet = try await hasMetStepGoal(goal: 10_000)
+        try await healthStore.requestAuthorization(toShare: [], read: typesToRead)
         
-        if ringsClosed || stepsGoalMet {
+        // ✅ Run all checks concurrently
+        async let ringsClosed = areRingsClosed()
+        async let stepsGoalMet = hasMetStepGoal(goal: stepGoal)
+        async let mindfulMinutesMet = hasMetMindfulnessGoal(goal: 5)
+        
+        // ✅ Await them all together
+        let (rings, steps, mindful) = try await (ringsClosed, stepsGoalMet, mindfulMinutesMet)
+        
+        if rings || steps || mindful {
             print("🎉 Goal met — unblocking apps")
             store.shield.applications = nil
         } else {
@@ -69,7 +79,7 @@ class AppModel: ObservableObject {
         self.store.shield.applications = nil
     }
 
-    func areRingsClosed(healthStore: HKHealthStore) async throws -> Bool {
+    func areRingsClosed() async throws -> Bool {
         var components = Calendar.current.dateComponents([.year, .month, .day], from: .now)
         components.calendar = Calendar.current
 
@@ -108,8 +118,7 @@ class AppModel: ObservableObject {
         }
     }
     
-    func hasMetStepGoal(goal: Double) async throws -> Bool {
-        let healthStore = HKHealthStore()
+    func hasMetStepGoal(goal: Int) async throws -> Bool {
         let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount)!
 
         let startOfDay = Calendar.current.startOfDay(for: Date())
@@ -131,7 +140,50 @@ class AppModel: ObservableObject {
 
                 let steps = quantity.doubleValue(for: .count())
                 print("📊 Steps today: \(Int(steps)) / \(Int(goal))")
-                continuation.resume(returning: steps >= goal)
+                
+                DispatchQueue.main.async {
+                    self.totalStepsToday = Int(steps)
+                }
+                
+                continuation.resume(returning: steps >= Double(goal))
+            }
+
+            healthStore.execute(query)
+        }
+    }
+    
+    func hasMetMindfulnessGoal(goal: TimeInterval) async throws -> Bool {
+        let type = HKObjectType.categoryType(forIdentifier: .mindfulSession)!
+
+        let startOfDay = Calendar.current.startOfDay(for: Date())
+        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: Date(), options: .strictEndDate)
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HKSampleQuery(sampleType: type,
+                                      predicate: predicate,
+                                      limit: HKObjectQueryNoLimit,
+                                      sortDescriptors: nil) { _, samples, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+
+                guard let samples = samples as? [HKCategorySample] else {
+                    continuation.resume(returning: false)
+                    return
+                }
+
+                // Sum total mindful minutes
+                let totalMinutes = samples.reduce(0.0) { acc, sample in
+                    acc + sample.endDate.timeIntervalSince(sample.startDate) / 60
+                }
+                
+                DispatchQueue.main.async {
+                    self.mindfulMinutesToday = Int(totalMinutes)
+                }
+
+                print("🧘 Total mindful minutes today: \(totalMinutes.formatted(.number.precision(.fractionLength(0))))")
+                continuation.resume(returning: totalMinutes >= goal)
             }
 
             healthStore.execute(query)
@@ -159,14 +211,14 @@ class AppModel: ObservableObject {
     private func saveActivitySelection(_ selection: FamilyActivitySelection) {
         do {
             let data = try JSONEncoder().encode(selection)
-            UserDefaults.standard.set(data, forKey: "SavedActivitySelection")
+            UserDefaults.shared.set(data, forKey: "SavedActivitySelection")
         } catch {
             print("❌ Failed to encode selection: \(error)")
         }
     }
 
     private func loadActivitySelection() -> FamilyActivitySelection? {
-        guard let data = UserDefaults.standard.data(forKey: "SavedActivitySelection") else { return nil }
+        guard let data = UserDefaults.shared.data(forKey: "SavedActivitySelection") else { return nil }
 
         do {
             return try JSONDecoder().decode(FamilyActivitySelection.self, from: data)
