@@ -1,59 +1,32 @@
 //
-//  TotalActivityReport.swift
+//  TopAppsReport.swift
 //  ReportExtension
 //
-//  Created by Christian Pichardo on 3/26/23.
+//  Created by Christian Pichardo on 4/2/23.
 //
 
-import DeviceActivity
 import SwiftUI
+import DeviceActivity
 
-extension DeviceActivityReport.Context {
-    // If your app initializes a DeviceActivityReport with this context, then the system will use
-    // your extension's corresponding DeviceActivityReportScene to render the contents of the
-    // report.
-    static let totalActivity = Self("Total Activity")
-    static let home = Self("Home Report")
-    static let widget = Self("Widget")
-    static let moreInsights = Self("More Insights")
-}
-
-struct TotalActivityReport: DeviceActivityReportScene {
+struct TopAppsReport: DeviceActivityReportScene {
     
     // Define which context your scene will represent.
-    let context: DeviceActivityReport.Context = .totalActivity
+    let context: DeviceActivityReport.Context = .home
     
     // Define the custom configuration and the resulting view for this report.
-    let content: (ActivityReport) -> TotalActivityView
+    let content: (TopThreeReport) -> TopThreeView
     
-    func makeConfiguration(representing data: DeviceActivityResults<DeviceActivityData>) async -> ActivityReport {
-        // Reformat the data into a configuration that can be used to create
-        // the report's view.
+    func makeConfiguration(representing data: DeviceActivityResults<DeviceActivityData>) async -> TopThreeReport {
+        // Reformat the data into a configuration that can be used 
         var list: [AppDeviceActivity] = []
-        let totalActivityDuration = await data.flatMap { $0.activitySegments }.reduce(0, {
-            $0 + $1.totalActivityDuration
-        })
-        var totalPickups = 0
-        var longestActivity:DateInterval?
-        var firstPickup:Date?
-        var categories:[String] = []
-       
+        
         for await d in data {
             for await a in d.activitySegments{
-                totalPickups = a.totalPickupsWithoutApplicationActivity
-                longestActivity = a.longestActivity
-                firstPickup = a.firstPickup
-                
-                
                 for await c in a.categories {
-                    categories.append((c.category.localizedDisplayName)!)
                     for await ap in c.applications {
+                        
                         let appName = (ap.application.localizedDisplayName ?? "nil")
                         let bundle = (ap.application.bundleIdentifier ?? "nil")
-                        if appName == bundle{
-                            continue
-                        }
-                        
                         let duration = Int(ap.totalActivityDuration)
                         let durationInterval = ap.totalActivityDuration
                         let category = c.category.localizedDisplayName!
@@ -90,16 +63,25 @@ struct TotalActivityReport: DeviceActivityReportScene {
                 }
             }
         }
-        
-        return ActivityReport(
-            totalDuration: totalActivityDuration,
-            totalPickupsWithoutApplicationActivity: totalPickups,
-            longestActivity: longestActivity,
-            firstPickup: firstPickup,
-            categories: categories,
-            apps: list
-        )
+        list.sort(by: sortApps)
+        if list.count < 3{
+            if list.count == 2{
+                
+            }
+            if list.count == 1{
+                
+            }
+            if list.count == 0{
+                
+            }
+        }
+        return TopThreeReport(apps: [list[0], list[1], list[2]])
     }
 }
+
+
+
+
+
 
 

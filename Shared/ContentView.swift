@@ -5,10 +5,13 @@ import DeviceActivity
 struct ContentView: View {
     @StateObject var model = AppModel.shared
 
-    var body: some View {
+    var body: some View {    
+        DeviceActivityReport(.home)
+    }
+
+    var body1: some View {
         NavigationStack {
             VStack(spacing: 24) {
-                DeviceActivityReport(.init("Total Activity"))
 
                 if let summary = model.activitySummary {
                     ActivityRingViewRepresentable(summary: summary)
@@ -38,4 +41,14 @@ struct ContentView: View {
             }
         }
     }
+}
+
+extension DeviceActivityReport.Context {
+    // If your app initializes a DeviceActivityReport with this context, then the system will use
+    // your extension's corresponding DeviceActivityReportScene to render the contents of the
+    // report.
+    static let totalActivity = Self("Total Activity")
+    static let home = Self("Home Report")
+    static let widget = Self("Widget")
+    static let moreInsights = Self("More Insights")
 }
