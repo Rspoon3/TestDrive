@@ -8,7 +8,7 @@
 import Foundation
 import HealthKit
 
-struct ActivityRingValues {
+struct ActivityRingValues: Equatable {
     let summary: HKActivitySummary
     let move: Double
     let moveGoal: Double

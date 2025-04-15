@@ -70,6 +70,8 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Blocked Apps")
                 .font(.title.bold())
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
             LazyVGrid(columns: columns, spacing: 16) {
                 ForEach(Array(viewModel.savedAppTokens), id: \.self) { token in
                     VStack(spacing: 8) {
@@ -110,6 +112,7 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Blocking Conditions")
                 .font(.title.bold())
+                .frame(maxWidth: .infinity, alignment: .leading)
             
             FlowLayout(alignment: .leading) {
                 ForEach(BlockMode.allCases, id: \.self) { mode in
@@ -145,6 +148,7 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Skip Blocking")
                 .font(.title.bold())
+                .frame(maxWidth: .infinity, alignment: .leading)
             
             FlowLayout(alignment: .leading) {
                 ForEach(SkipOption.allCases, id: \.self) { option in
@@ -180,8 +184,9 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Today's Progress")
                 .font(.title.bold())
+                .frame(maxWidth: .infinity, alignment: .leading)
             
-            HStack(spacing: 16) {
+            HStack(alignment: .top, spacing: 16) {
                 if let steps = viewModel.metrics.stepCount {
                     CircularProgressView(
                         progress: Double(steps) / Double(viewModel.stepGoal),
@@ -189,10 +194,11 @@ struct HomeView: View {
                         valueText: "\(steps.formatted())/\(viewModel.stepGoal.formatted(.number.notation(.compactName)))",
                         systemImage: "figure.walk"
                     )
+                    .frame(maxWidth: .infinity)
                     .onTapGesture {
-                          selectedMetric = .steps
-                          showingGoalSheet = true
-                      }
+                        selectedMetric = .steps
+                        showingGoalSheet = true
+                    }
                 }
                 
                 if let mindfulnessMinutes = viewModel.metrics.mindfulnessMinutes {
@@ -202,6 +208,7 @@ struct HomeView: View {
                         valueText: "\(mindfulnessMinutes.formatted())/\(viewModel.mindfulnessGoal.formatted(.number.notation(.compactName)))",
                         systemImage: "brain.head.profile"
                     )
+                    .frame(maxWidth: .infinity)
                     .onTapGesture {
                         selectedMetric = .mindfulness
                         showingGoalSheet = true
@@ -211,8 +218,10 @@ struct HomeView: View {
                 if let summary = viewModel.metrics.ringValues?.summary {
                     ActivityRingViewRepresentable(summary: summary)
                         .frame(width: 50, height: 50)
+                        .frame(maxWidth: .infinity)
                 }
             }
+            .animation(.default, value: viewModel.metrics)
         }
     }
 }

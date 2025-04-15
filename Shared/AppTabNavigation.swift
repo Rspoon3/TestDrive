@@ -40,7 +40,7 @@ struct AppTabNavigation: View {
                 Label("Stats", systemImage: "chart.bar")
                     .accessibility(label: Text("Stats"))
             }
-            .tag(Tab.settings)
+            .tag(Tab.stats)
             
             NavigationStack {
                 SettingsView()

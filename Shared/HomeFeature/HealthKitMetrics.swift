@@ -8,7 +8,7 @@
 import Foundation
 import HealthKit
 
-struct HealthKitMetrics {
+struct HealthKitMetrics: Equatable {
     var stepCount: Int?
     var mindfulnessMinutes: Int?
     var ringValues: ActivityRingValues?
