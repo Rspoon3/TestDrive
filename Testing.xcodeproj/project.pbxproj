@@ -20,10 +20,7 @@
 		94ADCF6A2DAD325E000DAD3E /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADCF692DAD325E000DAD3E /* UserDefaults+Extension.swift */; };
 		94ADCF772DAD32C2000DAD3E /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADCF692DAD325E000DAD3E /* UserDefaults+Extension.swift */; };
 		94ADF5BE2DADC5CD000DAD3E /* AppTabNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADF5BD2DADC5CD000DAD3E /* AppTabNavigation.swift */; };
-		94ADF5CC2DADC73D000DAD3E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADF5CB2DADC73D000DAD3E /* HomeView.swift */; };
-		94ADF5DA2DADC7AF000DAD3E /* PlusCircleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADF5D92DADC7AF000DAD3E /* PlusCircleButton.swift */; };
 		94ADF5DD2DADC7D6000DAD3E /* SwiftTools in Frameworks */ = {isa = PBXBuildFile; productRef = 94ADF5DC2DADC7D6000DAD3E /* SwiftTools */; };
-		94ADF5DF2DADE750000DAD3E /* ProgressRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADF5DE2DADE750000DAD3E /* ProgressRow.swift */; };
 		94ADF5E12DADE765000DAD3E /* BlockMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADF5E02DADE765000DAD3E /* BlockMode.swift */; };
 		94ADF5E32DADE78F000DAD3E /* SkipOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADF5E22DADE78F000DAD3E /* SkipOption.swift */; };
 		A6A262F024E0BCB30091EA92 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262EF24E0BCB30091EA92 /* Tests_iOS.swift */; };
@@ -102,9 +99,6 @@
 		94ADCE7A2DACA3F1000DAD3E /* ExampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleView.swift; sourceTree = "<group>"; };
 		94ADCF692DAD325E000DAD3E /* UserDefaults+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extension.swift"; sourceTree = "<group>"; };
 		94ADF5BD2DADC5CD000DAD3E /* AppTabNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabNavigation.swift; sourceTree = "<group>"; };
-		94ADF5CB2DADC73D000DAD3E /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		94ADF5D92DADC7AF000DAD3E /* PlusCircleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlusCircleButton.swift; sourceTree = "<group>"; };
-		94ADF5DE2DADE750000DAD3E /* ProgressRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRow.swift; sourceTree = "<group>"; };
 		94ADF5E02DADE765000DAD3E /* BlockMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockMode.swift; sourceTree = "<group>"; };
 		94ADF5E22DADE78F000DAD3E /* SkipOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkipOption.swift; sourceTree = "<group>"; };
 		A6A0310D266EBC6D001CBE2A /* Testing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Testing.entitlements; sourceTree = "<group>"; };
@@ -146,6 +140,8 @@
 		94AD9E372DA93617000DAD3E /* TestingShieldConfiguration */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (94AD9E422DA93617000DAD3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TestingShieldConfiguration; sourceTree = "<group>"; };
 		94AD9E4B2DA93CE7000DAD3E /* TestingDeviceActivityMonitor */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (94AD9E532DA93CE7000DAD3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TestingDeviceActivityMonitor; sourceTree = "<group>"; };
 		94ADCE692DACA2DA000DAD3E /* TestingDeviceActivityReportExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (94ADCE752DACA2DB000DAD3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TestingDeviceActivityReportExtension; sourceTree = "<group>"; };
+		94CB1FC62DAE145800D2E653 /* HomeFeature */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = HomeFeature; sourceTree = "<group>"; };
+		94CB1FC72DAE146400D2E653 /* HealthKitFeature */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = HealthKitFeature; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -223,11 +219,10 @@
 				A6A262D524E0BCB20091EA92 /* ContentView.swift */,
 				94ADF5BD2DADC5CD000DAD3E /* AppTabNavigation.swift */,
 				94ADCDD82DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift */,
-				94ADF5CB2DADC73D000DAD3E /* HomeView.swift */,
-				94ADF5D92DADC7AF000DAD3E /* PlusCircleButton.swift */,
+				94CB1FC62DAE145800D2E653 /* HomeFeature */,
+				94CB1FC72DAE146400D2E653 /* HealthKitFeature */,
 				94ADF5E22DADE78F000DAD3E /* SkipOption.swift */,
 				94ADF5E02DADE765000DAD3E /* BlockMode.swift */,
-				94ADF5DE2DADE750000DAD3E /* ProgressRow.swift */,
 				94ADCE622DAC37E6000DAD3E /* StepGoalMonitor.swift */,
 				94ADCF692DAD325E000DAD3E /* UserDefaults+Extension.swift */,
 				94ADCE7A2DACA3F1000DAD3E /* ExampleView.swift */,
@@ -351,6 +346,10 @@
 				94AD9E3D2DA93617000DAD3E /* PBXTargetDependency */,
 				94AD9E512DA93CE7000DAD3E /* PBXTargetDependency */,
 				94ADCE732DACA2DB000DAD3E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				94CB1FC62DAE145800D2E653 /* HomeFeature */,
+				94CB1FC72DAE146400D2E653 /* HealthKitFeature */,
 			);
 			name = "Testing (iOS)";
 			productName = "Testing (iOS)";
@@ -497,7 +496,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				94ADF5CC2DADC73D000DAD3E /* HomeView.swift in Sources */,
 				A6A262FF24E0BCB30091EA92 /* ContentView.swift in Sources */,
 				94ADF5E32DADE78F000DAD3E /* SkipOption.swift in Sources */,
 				94ADF5E12DADE765000DAD3E /* BlockMode.swift in Sources */,
@@ -506,9 +504,7 @@
 				94AD9E592DA93D7A000DAD3E /* AppModel.swift in Sources */,
 				94ADCDD92DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift in Sources */,
 				A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */,
-				94ADF5DA2DADC7AF000DAD3E /* PlusCircleButton.swift in Sources */,
 				94ADCE7B2DACA3F1000DAD3E /* ExampleView.swift in Sources */,
-				94ADF5DF2DADE750000DAD3E /* ProgressRow.swift in Sources */,
 				94ADCF6A2DAD325E000DAD3E /* UserDefaults+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,0 +1,273 @@
+//
+//  HomeView.swift
+//  Testing
+//
+//  Created by Ricky Witherspoon on 4/14/25.
+//
+
+import SwiftUI
+import SwiftTools
+
+struct HomeView: View {
+    @State private var viewModel = HomeViewModel()
+    @Namespace private var skipAnimation
+    private let requester = HealthKitRequester()
+    @State private var showingGoalSheet: Bool = false
+    @State private var selectedMetric: MetricType?
+    
+    @State private var blockStatus: [BlockMode: Bool] = [
+        .steps: false,
+        .rings: true,
+        .mindfulness: false
+    ]
+    
+    
+    // Placeholder apps
+    let mockApps: [String] = ["📱", "🎮", "📸", "📺", "🛍", "🎵", "💬", "📷"]
+    let columns = [GridItem(.adaptive(minimum: 60))]
+    
+    var body: some View {
+        @Bindable var viewModel = viewModel
+        
+        ScrollView {
+            VStack(spacing: 32) {
+                blockingApps
+                blockingOptions
+                skipOptions
+                progressSection
+            }
+            .padding(.horizontal)
+        }
+        .sensoryFeedback(.selection, trigger: viewModel.selectedBlockModes)
+        .sensoryFeedback(.selection, trigger: viewModel.skipOption)
+        .navigationTitle("Earn It")
+        .familyActivityPicker(
+            isPresented: $viewModel.showPicker,
+            selection: $viewModel.familyActivitySelection
+        )
+        .sheet(isPresented: $showingGoalSheet) {
+            if let metric = selectedMetric {
+                GoalEditorSheet(metric: metric) { newGoal in
+                    switch metric {
+                    case .steps:
+                        viewModel.stepGoal = newGoal
+                    case .mindfulness:
+                        viewModel.mindfulnessGoal = newGoal
+                    }
+                }
+            }
+        }
+        .onAppear {
+            Task {
+                try? await requester.requestAuthorization()
+                try? await viewModel.fetchNeededHealthKitMetrics()
+                viewModel.scheduleDailyRingReset()
+            }
+        }
+    }
+    
+    private var blockingApps: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Blocked Apps")
+                .font(.title.bold())
+            LazyVGrid(columns: columns, spacing: 16) {
+                ForEach(Array(viewModel.savedAppTokens), id: \.self) { token in
+                    VStack(spacing: 8) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color.blue.opacity(0.1))
+                                .frame(width: 60, height: 60)
+                            
+                            Label(token)
+                                .labelStyle(.iconOnly)
+                                .scaleEffect(1.75)
+                                .font(.largeTitle)
+                        }
+                        Text("token")
+                            .font(.caption)
+                    }
+                }
+                
+                VStack(spacing: 8) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color.blue.opacity(0.1))
+                            .frame(width: 60, height: 60)
+                        Image(symbol: .plus)
+                            .font(.largeTitle)
+                    }
+                    Text("Add")
+                        .font(.caption)
+                }
+                .onTapGesture {
+                    viewModel.showPicker = true
+                }
+            }
+        }
+    }
+    
+    private var blockingOptions: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Blocking Conditions")
+                .font(.title.bold())
+            
+            FlowLayout(alignment: .leading) {
+                ForEach(BlockMode.allCases, id: \.self) { mode in
+                    VStack {
+                        Button {
+                            viewModel.toggleBlockMode(mode)
+                        } label: {
+                            Label(mode.label, systemImage: mode.icon)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(viewModel.selectedBlockModes.contains(mode) ? Color.blue.opacity(0.1) : Color.gray.opacity(0.1))
+                                .clipShape(Capsule())
+                        }
+                        .buttonStyle(.plain)
+                        
+                        // Status text
+                        if viewModel.selectedBlockModes.contains(mode) {
+                            Text(blockStatus[mode] == true ? "✓ Completed" : "Not Yet")
+                                .font(.caption)
+                                .foregroundColor(blockStatus[mode] == true ? .green : .secondary)
+                        } else {
+                            Text("Not Enabled")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private var skipOptions: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Skip Blocking")
+                .font(.title.bold())
+            
+            FlowLayout(alignment: .leading) {
+                ForEach(SkipOption.allCases, id: \.self) { option in
+                    Button {
+                        withAnimation(.bouncy) {
+                            viewModel.skipOption = option
+                        }
+                    } label: {
+                        ZStack {
+                            if viewModel.skipOption == option {
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(Color.blue.opacity(0.1))
+                                    .matchedGeometryEffect(id: "skipHighlight", in: skipAnimation)
+                            }
+                            
+                            Label(option.label, systemImage: option.icon)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 10)
+                                .foregroundColor(.primary)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .fill(Color.clear)
+                                )
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+    }
+    
+    private var progressSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Today's Progress")
+                .font(.title.bold())
+            
+            HStack(spacing: 16) {
+                if let steps = viewModel.metrics.stepCount {
+                    CircularProgressView(
+                        progress: Double(steps) / Double(viewModel.stepGoal),
+                        title: "Steps",
+                        valueText: "\(steps.formatted())/\(viewModel.stepGoal.formatted(.number.notation(.compactName)))",
+                        systemImage: "figure.walk"
+                    )
+                    .onTapGesture {
+                          selectedMetric = .steps
+                          showingGoalSheet = true
+                      }
+                }
+                
+                if let mindfulnessMinutes = viewModel.metrics.mindfulnessMinutes {
+                    CircularProgressView(
+                        progress: Double(mindfulnessMinutes) / Double(viewModel.mindfulnessGoal),
+                        title: "Mindful",
+                        valueText: "\(mindfulnessMinutes.formatted())/\(viewModel.mindfulnessGoal.formatted(.number.notation(.compactName)))",
+                        systemImage: "brain.head.profile"
+                    )
+                    .onTapGesture {
+                        selectedMetric = .mindfulness
+                        showingGoalSheet = true
+                    }
+                }
+                
+                if let summary = viewModel.metrics.ringValues?.summary {
+                    ActivityRingViewRepresentable(summary: summary)
+                        .frame(width: 50, height: 50)
+                }
+            }
+        }
+    }
+}
+
+
+#Preview {
+    NavigationStack {
+        HomeView()
+            .navigationTitle("Home")
+    }
+}
+
+
+struct GoalEditorSheet: View {
+    var metric: MetricType
+    var onSave: (Int) -> Void
+    @Environment(\.dismiss) var dismiss
+    @State private var newGoal: Double = 0
+
+    var body: some View {
+        NavigationView {
+            Form {
+                Section("Set your goal") {
+                    TextField("Goal", value: $newGoal, format: .number)
+                        .keyboardType(.numberPad)
+                }
+            }
+            .navigationTitle(metric.title)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        onSave(Int(newGoal))
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+}
+
+enum MetricType {
+    case steps
+    case mindfulness
+
+    var title: String {
+        switch self {
+        case .steps: return "Steps Goal"
+        case .mindfulness: return "Mindfulness Goal"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .steps: return "figure.walk"
+        case .mindfulness: return "brain.head.profile"
+        }
+    }
+}

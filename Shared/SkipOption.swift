@@ -7,8 +7,8 @@
 
 import Foundation
 
-enum SkipOption: CaseIterable {
-    case five, thirty, sixty, restOfDay, sunset
+enum SkipOption: Int, CaseIterable {
+    case five = 0, thirty, sixty, restOfDay, sunset
 
     var label: String {
         switch self {

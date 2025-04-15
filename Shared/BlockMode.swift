@@ -7,8 +7,8 @@
 
 import Foundation
 
-enum BlockMode: CaseIterable {
-    case steps, rings, mindfulness
+enum BlockMode: Int, CaseIterable {
+    case steps = 0, rings, mindfulness
 
     var label: String {
         switch self {

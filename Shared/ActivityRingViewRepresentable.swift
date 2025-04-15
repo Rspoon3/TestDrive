@@ -14,7 +14,9 @@ struct ActivityRingViewRepresentable: UIViewRepresentable {
     let summary: HKActivitySummary
 
     func makeUIView(context: Context) -> HKActivityRingView {
-        return HKActivityRingView()
+        let view = HKActivityRingView()
+        view.setActivitySummary(summary, animated: false)
+        return view
     }
 
     func updateUIView(_ uiView: HKActivityRingView, context: Context) {
