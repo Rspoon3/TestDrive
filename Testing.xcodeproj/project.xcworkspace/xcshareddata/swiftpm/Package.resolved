@@ -1,0 +1,24 @@
+{
+  "originHash" : "c9dbcc1ff42f19ffb64f29c4c029f012d9648eabd4b49282a7ef3660868787b6",
+  "pins" : [
+    {
+      "identity" : "sfsymbols",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Rspoon3/SFSymbols.git",
+      "state" : {
+        "revision" : "0860caebd6efd296b66cf128d58972b9c52800db",
+        "version" : "2.6.1"
+      }
+    },
+    {
+      "identity" : "swifttools",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Rspoon3/SwiftTools",
+      "state" : {
+        "revision" : "482b9c6065baa87a361a9411b674e4f6d77136ac",
+        "version" : "2.1.0"
+      }
+    }
+  ],
+  "version" : 3
+}
