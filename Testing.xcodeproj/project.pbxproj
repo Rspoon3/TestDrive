@@ -12,7 +12,6 @@
 		94AD9E3E2DA93617000DAD3E /* TestingShieldConfiguration.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 94AD9E322DA93617000DAD3E /* TestingShieldConfiguration.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		94AD9E4A2DA93CE7000DAD3E /* DeviceActivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94AD9E492DA93CE7000DAD3E /* DeviceActivity.framework */; };
 		94AD9E522DA93CE7000DAD3E /* TestingDeviceActivityMonitor.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 94AD9E482DA93CE7000DAD3E /* TestingDeviceActivityMonitor.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		94AD9E592DA93D7A000DAD3E /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94AD9E572DA93D7A000DAD3E /* AppModel.swift */; };
 		94ADCDD92DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADCDD82DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift */; };
 		94ADCE632DAC37E6000DAD3E /* StepGoalMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADCE622DAC37E6000DAD3E /* StepGoalMonitor.swift */; };
 		94ADCE742DACA2DB000DAD3E /* TestingDeviceActivityReportExtension.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 94ADCE682DACA2DA000DAD3E /* TestingDeviceActivityReportExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -23,9 +22,9 @@
 		94ADF5DD2DADC7D6000DAD3E /* SwiftTools in Frameworks */ = {isa = PBXBuildFile; productRef = 94ADF5DC2DADC7D6000DAD3E /* SwiftTools */; };
 		94ADF5E12DADE765000DAD3E /* BlockMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADF5E02DADE765000DAD3E /* BlockMode.swift */; };
 		94ADF5E32DADE78F000DAD3E /* SkipOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADF5E22DADE78F000DAD3E /* SkipOption.swift */; };
+		94E729502DAF41720026D0FF /* DeviceActivityReportContext+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E7294F2DAF41720026D0FF /* DeviceActivityReportContext+Extension.swift */; };
 		A6A262F024E0BCB30091EA92 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262EF24E0BCB30091EA92 /* Tests_iOS.swift */; };
 		A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D424E0BCB20091EA92 /* TestingApp.swift */; };
-		A6A262FF24E0BCB30091EA92 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D524E0BCB20091EA92 /* ContentView.swift */; };
 		A6A2630124E0BCB30091EA92 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A6A262D624E0BCB30091EA92 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -92,7 +91,6 @@
 		94AD9E352DA93617000DAD3E /* ManagedSettingsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ManagedSettingsUI.framework; path = Library/Frameworks/ManagedSettingsUI.framework; sourceTree = DEVELOPER_DIR; };
 		94AD9E482DA93CE7000DAD3E /* TestingDeviceActivityMonitor.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TestingDeviceActivityMonitor.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		94AD9E492DA93CE7000DAD3E /* DeviceActivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DeviceActivity.framework; path = System/Library/Frameworks/DeviceActivity.framework; sourceTree = SDKROOT; };
-		94AD9E572DA93D7A000DAD3E /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		94ADCDD82DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRingViewRepresentable.swift; sourceTree = "<group>"; };
 		94ADCE622DAC37E6000DAD3E /* StepGoalMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepGoalMonitor.swift; sourceTree = "<group>"; };
 		94ADCE682DACA2DA000DAD3E /* TestingDeviceActivityReportExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = TestingDeviceActivityReportExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -101,9 +99,9 @@
 		94ADF5BD2DADC5CD000DAD3E /* AppTabNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabNavigation.swift; sourceTree = "<group>"; };
 		94ADF5E02DADE765000DAD3E /* BlockMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockMode.swift; sourceTree = "<group>"; };
 		94ADF5E22DADE78F000DAD3E /* SkipOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkipOption.swift; sourceTree = "<group>"; };
+		94E7294F2DAF41720026D0FF /* DeviceActivityReportContext+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeviceActivityReportContext+Extension.swift"; sourceTree = "<group>"; };
 		A6A0310D266EBC6D001CBE2A /* Testing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Testing.entitlements; sourceTree = "<group>"; };
 		A6A262D424E0BCB20091EA92 /* TestingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingApp.swift; sourceTree = "<group>"; };
-		A6A262D524E0BCB20091EA92 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A6A262D624E0BCB30091EA92 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A6A262DB24E0BCB30091EA92 /* Testing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Testing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6A262DE24E0BCB30091EA92 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -216,9 +214,9 @@
 			isa = PBXGroup;
 			children = (
 				A6A262D424E0BCB20091EA92 /* TestingApp.swift */,
-				A6A262D524E0BCB20091EA92 /* ContentView.swift */,
 				94ADF5BD2DADC5CD000DAD3E /* AppTabNavigation.swift */,
 				94ADCDD82DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift */,
+				94E7294F2DAF41720026D0FF /* DeviceActivityReportContext+Extension.swift */,
 				94CB1FC62DAE145800D2E653 /* HomeFeature */,
 				94CB1FC72DAE146400D2E653 /* HealthKitFeature */,
 				94ADF5E22DADE78F000DAD3E /* SkipOption.swift */,
@@ -226,7 +224,6 @@
 				94ADCE622DAC37E6000DAD3E /* StepGoalMonitor.swift */,
 				94ADCF692DAD325E000DAD3E /* UserDefaults+Extension.swift */,
 				94ADCE7A2DACA3F1000DAD3E /* ExampleView.swift */,
-				94AD9E572DA93D7A000DAD3E /* AppModel.swift */,
 				A6A262D624E0BCB30091EA92 /* Assets.xcassets */,
 			);
 			path = Shared;
@@ -496,14 +493,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A6A262FF24E0BCB30091EA92 /* ContentView.swift in Sources */,
 				94ADF5E32DADE78F000DAD3E /* SkipOption.swift in Sources */,
 				94ADF5E12DADE765000DAD3E /* BlockMode.swift in Sources */,
 				94ADF5BE2DADC5CD000DAD3E /* AppTabNavigation.swift in Sources */,
 				94ADCE632DAC37E6000DAD3E /* StepGoalMonitor.swift in Sources */,
-				94AD9E592DA93D7A000DAD3E /* AppModel.swift in Sources */,
 				94ADCDD92DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift in Sources */,
 				A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */,
+				94E729502DAF41720026D0FF /* DeviceActivityReportContext+Extension.swift in Sources */,
 				94ADCE7B2DACA3F1000DAD3E /* ExampleView.swift in Sources */,
 				94ADCF6A2DAD325E000DAD3E /* UserDefaults+Extension.swift in Sources */,
 			);
