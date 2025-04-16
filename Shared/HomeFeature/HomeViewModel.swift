@@ -13,18 +13,40 @@ import DeviceActivity
 import OSLog
 import SwiftTools
 
+/// The main observable view model for managing health goals, blocking logic, and user preferences.
 @MainActor
 @Observable
 final class HomeViewModel {
+    
+    // MARK: - Dependencies
+    
+    /// Logger instance scoped to this view model.
     private let logger = Logger(category: HomeViewModel.self)
+    
+    /// HealthKit manager for retrieving activity data.
     private let healthKitManager = HealthKitManager()
+    
+    /// Shared UserDefaults instance for persistent storage.
     private let userDefaults = UserDefaults.shared
+    
+    /// Settings store for managing app blocking/shielding.
     private let managedSettingsStore = ManagedSettingsStore()
-    private(set) var metrics = HealthKitMetrics()
+    
+    /// Device Activity Center used to monitor daily activity.
     private let center = DeviceActivityCenter()
+    
+    // MARK: - State
+    
+    /// Current health metrics, such as step count and mindfulness minutes.
+    private(set) var metrics = HealthKitMetrics()
+    
+    /// Application tokens that are saved for shielding/unshielding.
     private(set) var savedAppTokens: Set<ApplicationToken> = []
+    
+    /// Controls presentation of the app picker.
     var showPicker = false
     
+    /// The currently selected apps for monitoring and shielding.
     var familyActivitySelection = FamilyActivitySelection() {
         didSet {
             saveActivitySelection(familyActivitySelection)
@@ -36,45 +58,47 @@ final class HomeViewModel {
         }
     }
     
+    /// User-defined daily step goal.
     var stepGoal: Int {
         didSet {
             userDefaults.set(stepGoal, forKey: "stepGoal")
-            
             Task {
                 try? await evaluateProgressAndShieldApps()
             }
         }
     }
     
+    /// User-defined daily mindfulness goal (in minutes).
     var mindfulnessGoal: Int {
         didSet {
             userDefaults.set(mindfulnessGoal, forKey: "mindfulnessGoal")
-            
             Task {
                 try? await evaluateProgressAndShieldApps()
             }
         }
     }
     
+    /// Selected goal types that determine blocking logic.
     var selectedBlockModes: Set<BlockMode> {
         didSet {
             let rawValues = selectedBlockModes.map { $0.rawValue }
             userDefaults.set(rawValues, forKey: "selectedBlockModes")
-            
             Task {
                 try? await evaluateProgressAndShieldApps()
             }
         }
     }
-
+    
+    /// User’s preferred skip option when opting out of a blocked session.
     var skipOption: SkipOption {
         didSet {
             userDefaults.set(skipOption.rawValue, forKey: "skipOption")
         }
     }
-
-    // MARK: - Init
-
+    
+    // MARK: - Initialization
+    
+    /// Initializes the view model and loads stored preferences or defaults.
     init() {
         // Load selectedBlockModes
         if let rawValues = userDefaults.array(forKey: "selectedBlockModes") as? [Int] {
@@ -83,7 +107,7 @@ final class HomeViewModel {
         } else {
             selectedBlockModes = [.steps, .mindfulness]
         }
-
+        
         // Load skipOption
         if let raw = userDefaults.object(forKey: "skipOption") as? Int,
            let option = SkipOption(rawValue: raw) {
@@ -92,13 +116,15 @@ final class HomeViewModel {
             skipOption = .five
         }
         
+        // Load goals
         self.stepGoal = userDefaults.integer(forKey: "stepGoal")
         self.mindfulnessGoal = userDefaults.integer(forKey: "mindfulnessGoal")
         
-        // Provide defaults if not set
+        // Apply defaults if unset
         if stepGoal == 0 { stepGoal = 10_000 }
         if mindfulnessGoal == 0 { mindfulnessGoal = 5 }
         
+        // Load activity selection
         if let restored = loadActivitySelection() {
             self.familyActivitySelection = restored
             self.savedAppTokens = restored.applicationTokens
@@ -107,6 +133,8 @@ final class HomeViewModel {
     
     // MARK: - Public Helpers
     
+    /// Toggles a block mode on or off. If only one remains, it cannot be removed.
+    /// - Parameter mode: The mode to toggle.
     func toggleBlockMode(_ mode: BlockMode) {
         withAnimation(.bouncy) {
             if selectedBlockModes.contains(mode) {
@@ -118,6 +146,7 @@ final class HomeViewModel {
         }
     }
     
+    /// Evaluates user progress and updates app shielding based on configured goals.
     func evaluateProgressAndShieldApps() async throws {
         try await fetchNeededHealthKitMetrics()
         scheduleDailyRingReset()
@@ -126,10 +155,11 @@ final class HomeViewModel {
     
     // MARK: - Private
     
+    /// Fetches step count, mindfulness minutes, and ring values as needed.
     private func fetchNeededHealthKitMetrics() async throws {
         metrics = try await withThrowingTaskGroup(of: HealthKitMetricResult.self) { group in
             var collected = HealthKitMetrics()
-
+            
             if selectedBlockModes.contains(.steps) {
                 group.addTask {
                     let count = try await self.healthKitManager.stepCount()
@@ -138,7 +168,7 @@ final class HomeViewModel {
             } else {
                 metrics.stepCount = nil
             }
-
+            
             if selectedBlockModes.contains(.mindfulness) {
                 group.addTask {
                     let minutes = try await self.healthKitManager.mindfulnessMinutes()
@@ -147,7 +177,7 @@ final class HomeViewModel {
             } else {
                 metrics.mindfulnessMinutes = nil
             }
-
+            
             if selectedBlockModes.contains(.rings) {
                 group.addTask {
                     let rings = try await self.healthKitManager.rings()
@@ -156,7 +186,7 @@ final class HomeViewModel {
             } else {
                 metrics.ringValues = nil
             }
-
+            
             for try await result in group {
                 switch result {
                 case .stepCount(let count):
@@ -167,18 +197,19 @@ final class HomeViewModel {
                     collected.ringValues = values
                 }
             }
-
+            
             return collected
         }
     }
     
+    /// Sets up daily monitoring for ring reset.
     private func scheduleDailyRingReset() {
         let schedule = DeviceActivitySchedule(
             intervalStart: DateComponents(hour: 0, minute: 0, second: 0),
             intervalEnd: DateComponents(hour: 23, minute: 59, second: 59),
             repeats: true
         )
-
+        
         do {
             try center.startMonitoring(DeviceActivityName("DailyRingReset"), during: schedule)
             logger.debug("✅ Scheduled daily app blocking reset")
@@ -187,6 +218,7 @@ final class HomeViewModel {
         }
     }
     
+    /// Determines whether apps should be shielded or unshielded based on current progress.
     private func changeBlockStatusIfNeeded() {
         let conditionsMet = selectedBlockModes.allSatisfy { mode in
             switch mode {
@@ -208,8 +240,10 @@ final class HomeViewModel {
         }
     }
     
-    // MARK: - Apple-style persistence
-
+    // MARK: - Persistence
+    
+    /// Saves the current app selection to `UserDefaults`.
+    /// - Parameter selection: The current selection to be stored.
     private func saveActivitySelection(_ selection: FamilyActivitySelection) {
         do {
             let data = try JSONEncoder().encode(selection)
@@ -218,10 +252,12 @@ final class HomeViewModel {
             logger.debug("❌ Failed to encode selection: \(error)")
         }
     }
-
+    
+    /// Loads a previously saved app selection from `UserDefaults`.
+    /// - Returns: A decoded `FamilyActivitySelection` if available.
     private func loadActivitySelection() -> FamilyActivitySelection? {
         guard let data = UserDefaults.shared.data(forKey: "SavedActivitySelection") else { return nil }
-
+        
         do {
             return try JSONDecoder().decode(FamilyActivitySelection.self, from: data)
         } catch {
