@@ -60,8 +60,7 @@ struct HomeView: View {
         .onAppear {
             Task {
                 try? await requester.requestAuthorization()
-                try? await viewModel.fetchNeededHealthKitMetrics()
-                viewModel.scheduleDailyRingReset()
+                try? await viewModel.evaluateProgressAndShieldApps()
             }
         }
     }

@@ -19,28 +19,40 @@ final class HomeViewModel {
     private let logger = Logger(category: HomeViewModel.self)
     private let healthKitManager = HealthKitManager()
     private let userDefaults = UserDefaults.shared
+    private let managedSettingsStore = ManagedSettingsStore()
     private(set) var metrics = HealthKitMetrics()
     private let center = DeviceActivityCenter()
+    private(set) var savedAppTokens: Set<ApplicationToken> = []
     var showPicker = false
     
     var familyActivitySelection = FamilyActivitySelection() {
         didSet {
             saveActivitySelection(familyActivitySelection)
             self.savedAppTokens = familyActivitySelection.applicationTokens
+            
+            Task {
+                try? await evaluateProgressAndShieldApps()
+            }
         }
     }
-
-    private(set) var savedAppTokens: Set<ApplicationToken> = []
     
     var stepGoal: Int {
         didSet {
             userDefaults.set(stepGoal, forKey: "stepGoal")
+            
+            Task {
+                try? await evaluateProgressAndShieldApps()
+            }
         }
     }
     
     var mindfulnessGoal: Int {
         didSet {
             userDefaults.set(mindfulnessGoal, forKey: "mindfulnessGoal")
+            
+            Task {
+                try? await evaluateProgressAndShieldApps()
+            }
         }
     }
     
@@ -50,8 +62,7 @@ final class HomeViewModel {
             userDefaults.set(rawValues, forKey: "selectedBlockModes")
             
             Task {
-                try? await fetchNeededHealthKitMetrics()
-                scheduleDailyRingReset()
+                try? await evaluateProgressAndShieldApps()
             }
         }
     }
@@ -81,8 +92,8 @@ final class HomeViewModel {
             skipOption = .five
         }
         
-        self.stepGoal = UserDefaults.standard.integer(forKey: "stepGoal")
-        self.mindfulnessGoal = UserDefaults.standard.integer(forKey: "mindfulnessGoal")
+        self.stepGoal = userDefaults.integer(forKey: "stepGoal")
+        self.mindfulnessGoal = userDefaults.integer(forKey: "mindfulnessGoal")
         
         // Provide defaults if not set
         if stepGoal == 0 { stepGoal = 10_000 }
@@ -107,7 +118,15 @@ final class HomeViewModel {
         }
     }
     
-    func fetchNeededHealthKitMetrics() async throws {
+    func evaluateProgressAndShieldApps() async throws {
+        try await fetchNeededHealthKitMetrics()
+        scheduleDailyRingReset()
+        changeBlockStatusIfNeeded()
+    }
+    
+    // MARK: - Private
+    
+    private func fetchNeededHealthKitMetrics() async throws {
         metrics = try await withThrowingTaskGroup(of: HealthKitMetricResult.self) { group in
             var collected = HealthKitMetrics()
 
@@ -153,7 +172,7 @@ final class HomeViewModel {
         }
     }
     
-    func scheduleDailyRingReset() {
+    private func scheduleDailyRingReset() {
         let schedule = DeviceActivitySchedule(
             intervalStart: DateComponents(hour: 0, minute: 0, second: 0),
             intervalEnd: DateComponents(hour: 23, minute: 59, second: 59),
@@ -165,6 +184,27 @@ final class HomeViewModel {
             logger.debug("✅ Scheduled daily app blocking reset")
         } catch {
             logger.debug("❌ Failed to start monitoring: \(error)")
+        }
+    }
+    
+    private func changeBlockStatusIfNeeded() {
+        let conditionsMet = selectedBlockModes.allSatisfy { mode in
+            switch mode {
+            case .mindfulness:
+                return (metrics.mindfulnessMinutes ?? 0) >= mindfulnessGoal
+            case .rings:
+                return metrics.ringValues?.allClosed ?? false
+            case .steps:
+                return (metrics.stepCount ?? 0) >= stepGoal
+            }
+        }
+        
+        if conditionsMet {
+            logger.debug("🎉 Goal met — unblocking apps")
+            managedSettingsStore.shield.applications = nil
+        } else {
+            logger.debug("🔒 No goal met — applying shield")
+            managedSettingsStore.shield.applications = savedAppTokens
         }
     }
     
