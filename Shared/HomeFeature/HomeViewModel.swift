@@ -42,16 +42,16 @@ final class HomeViewModel {
     
     /// Application tokens that are saved for shielding/unshielding.
     private(set) var savedAppTokens: Set<ApplicationToken> = []
-    
+
     /// Controls presentation of the app picker.
     var showPicker = false
     
     /// The currently selected apps for monitoring and shielding.
-    var familyActivitySelection = FamilyActivitySelection() {
+    var familyActivitySelection = FamilyActivitySelection(includeEntireCategory: true) {
         didSet {
             saveActivitySelection(familyActivitySelection)
             self.savedAppTokens = familyActivitySelection.applicationTokens
-            
+
             Task {
                 try? await evaluateProgressAndShieldApps()
             }
@@ -123,15 +123,16 @@ final class HomeViewModel {
         // Apply defaults if unset
         if stepGoal == 0 { stepGoal = 10_000 }
         if mindfulnessGoal == 0 { mindfulnessGoal = 5 }
-        
-        // Load activity selection
-        if let restored = loadActivitySelection() {
-            self.familyActivitySelection = restored
-            self.savedAppTokens = restored.applicationTokens
-        }
     }
     
     // MARK: - Public Helpers
+    
+    // Load activity selection
+    func restoreFamilySelection() {
+        guard let restored = loadActivitySelection() else { return }
+        self.familyActivitySelection = restored
+        self.savedAppTokens = restored.applicationTokens
+    }
     
     /// Toggles a block mode on or off. If only one remains, it cannot be removed.
     /// - Parameter mode: The mode to toggle.

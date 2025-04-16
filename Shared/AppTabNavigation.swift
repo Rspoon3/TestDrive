@@ -24,7 +24,6 @@ struct AppTabNavigation: View {
         TabView(selection: $tabManager.selectedTab) {
             NavigationStack {
                 HomeView()
-                    .navigationTitle("Home")
             }
             .tabItem {
                 Label("Home", systemImage: "house")
@@ -34,6 +33,7 @@ struct AppTabNavigation: View {
             
             NavigationStack {
                 StatsView()
+                    .navigationBarTitleDisplayMode(.inline)
                     .navigationTitle("Stats")
             }
             .tabItem {
@@ -44,6 +44,7 @@ struct AppTabNavigation: View {
             
             NavigationStack {
                 SettingsView()
+                    .navigationBarTitleDisplayMode(.inline)
                     .navigationTitle("Settings")
             }
             .tabItem {

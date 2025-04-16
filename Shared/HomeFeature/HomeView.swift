@@ -12,7 +12,6 @@ struct HomeView: View {
     @State private var viewModel = HomeViewModel()
     @Namespace private var skipAnimation
     private let requester = HealthKitRequester()
-    @State private var showingGoalSheet: Bool = false
     @State private var selectedMetric: MetricType?
     
     @State private var blockStatus: [BlockMode: Bool] = [
@@ -41,26 +40,28 @@ struct HomeView: View {
         .sensoryFeedback(.selection, trigger: viewModel.selectedBlockModes)
         .sensoryFeedback(.selection, trigger: viewModel.skipOption)
         .navigationTitle("Earn It")
-        .familyActivityPicker(
-            isPresented: $viewModel.showPicker,
-            selection: $viewModel.familyActivitySelection
-        )
-        .sheet(isPresented: $showingGoalSheet) {
-            if let metric = selectedMetric {
-                GoalEditorSheet(metric: metric) { newGoal in
-                    switch metric {
-                    case .steps:
-                        viewModel.stepGoal = newGoal
-                    case .mindfulness:
-                        viewModel.mindfulnessGoal = newGoal
-                    }
-                }
-            }
+        .navigationBarTitleDisplayMode(.inline)
+        .onFirstAppear {
+            viewModel.restoreFamilySelection()
         }
         .onAppear {
             Task {
                 try? await requester.requestAuthorization()
                 try? await viewModel.evaluateProgressAndShieldApps()
+            }
+        }
+        .familyActivityPicker(
+            isPresented: $viewModel.showPicker,
+            selection: $viewModel.familyActivitySelection
+        )
+        .sheet(item: $selectedMetric) { metric in
+            GoalEditorSheet(metric: metric) { newGoal in
+                switch metric {
+                case .steps:
+                    viewModel.stepGoal = newGoal
+                case .mindfulness:
+                    viewModel.mindfulnessGoal = newGoal
+                }
             }
         }
     }
@@ -82,10 +83,11 @@ struct HomeView: View {
                             Label(token)
                                 .labelStyle(.iconOnly)
                                 .scaleEffect(1.75)
-                                .font(.largeTitle)
                         }
-                        Text("token")
-                            .font(.caption)
+                        
+                        Label(token)
+                            .labelStyle(.titleOnly)
+                            .scaleEffect(0.5)
                     }
                 }
                 
@@ -98,7 +100,7 @@ struct HomeView: View {
                             .font(.largeTitle)
                     }
                     Text("Add")
-                        .font(.caption)
+                        .scaleEffect(0.5)
                 }
                 .onTapGesture {
                     viewModel.showPicker = true
@@ -196,7 +198,6 @@ struct HomeView: View {
                     .frame(maxWidth: .infinity)
                     .onTapGesture {
                         selectedMetric = .steps
-                        showingGoalSheet = true
                     }
                 }
                 
@@ -210,7 +211,6 @@ struct HomeView: View {
                     .frame(maxWidth: .infinity)
                     .onTapGesture {
                         selectedMetric = .mindfulness
-                        showingGoalSheet = true
                     }
                 }
                 
@@ -261,7 +261,8 @@ struct GoalEditorSheet: View {
     }
 }
 
-enum MetricType {
+enum MetricType: Identifiable {
+    var id: Self { self }
     case steps
     case mindfulness
 
