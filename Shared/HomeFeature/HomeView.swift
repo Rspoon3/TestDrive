@@ -30,13 +30,21 @@ struct HomeView: View {
         
         ScrollView {
             VStack(spacing: 32) {
-                blockingApps
-                blockingOptions
-                skipOptions
-                progressSection
+                glassyContainer { blockingApps }
+                glassyContainer { blockingOptions }
+                glassyContainer { skipOptions }
+                glassyContainer { progressSection }
             }
             .padding(.horizontal)
         }
+        .background(
+            LinearGradient(
+                colors: [.blue.opacity(0.4), .purple.opacity(0.4)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
+        )
         .sensoryFeedback(.selection, trigger: viewModel.selectedBlockModes)
         .sensoryFeedback(.selection, trigger: viewModel.skipOption)
         .navigationTitle("Earn It")
@@ -64,6 +72,19 @@ struct HomeView: View {
                 }
             }
         }
+    }
+    
+    @ViewBuilder
+    func glassyContainer<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        content()
+            .padding()
+            .background(.ultraThinMaterial)
+            .cornerRadius(24)
+            .overlay(
+                RoundedRectangle(cornerRadius: 24)
+                    .stroke(Color.white.opacity(0.15), lineWidth: 1)
+            )
+            .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 5)
     }
     
     private var blockingApps: some View {
@@ -239,7 +260,7 @@ struct GoalEditorSheet: View {
     var onSave: (Int) -> Void
     @Environment(\.dismiss) var dismiss
     @State private var newGoal: Double = 0
-
+    
     var body: some View {
         NavigationView {
             Form {
@@ -265,14 +286,14 @@ enum MetricType: Identifiable {
     var id: Self { self }
     case steps
     case mindfulness
-
+    
     var title: String {
         switch self {
         case .steps: return "Steps Goal"
         case .mindfulness: return "Mindfulness Goal"
         }
     }
-
+    
     var systemImage: String {
         switch self {
         case .steps: return "figure.walk"
