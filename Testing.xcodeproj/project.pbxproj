@@ -22,6 +22,8 @@
 		94ADF5DD2DADC7D6000DAD3E /* SwiftTools in Frameworks */ = {isa = PBXBuildFile; productRef = 94ADF5DC2DADC7D6000DAD3E /* SwiftTools */; };
 		94ADF5E12DADE765000DAD3E /* BlockMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADF5E02DADE765000DAD3E /* BlockMode.swift */; };
 		94ADF5E32DADE78F000DAD3E /* SkipOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADF5E22DADE78F000DAD3E /* SkipOption.swift */; };
+		94B1A3BB2DB3DD17000967F1 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94B1A3BA2DB3DD17000967F1 /* LocationManager.swift */; };
+		94B1A3BE2DB3E816000967F1 /* Solar in Frameworks */ = {isa = PBXBuildFile; productRef = 94B1A3BD2DB3E816000967F1 /* Solar */; };
 		94E729502DAF41720026D0FF /* DeviceActivityReportContext+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E7294F2DAF41720026D0FF /* DeviceActivityReportContext+Extension.swift */; };
 		A6A262F024E0BCB30091EA92 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262EF24E0BCB30091EA92 /* Tests_iOS.swift */; };
 		A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D424E0BCB20091EA92 /* TestingApp.swift */; };
@@ -99,6 +101,7 @@
 		94ADF5BD2DADC5CD000DAD3E /* AppTabNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabNavigation.swift; sourceTree = "<group>"; };
 		94ADF5E02DADE765000DAD3E /* BlockMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockMode.swift; sourceTree = "<group>"; };
 		94ADF5E22DADE78F000DAD3E /* SkipOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkipOption.swift; sourceTree = "<group>"; };
+		94B1A3BA2DB3DD17000967F1 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		94E7294F2DAF41720026D0FF /* DeviceActivityReportContext+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeviceActivityReportContext+Extension.swift"; sourceTree = "<group>"; };
 		A6A0310D266EBC6D001CBE2A /* Testing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Testing.entitlements; sourceTree = "<group>"; };
 		A6A262D424E0BCB20091EA92 /* TestingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingApp.swift; sourceTree = "<group>"; };
@@ -171,6 +174,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94B1A3BE2DB3E816000967F1 /* Solar in Frameworks */,
 				94ADF5DD2DADC7D6000DAD3E /* SwiftTools in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -222,6 +226,7 @@
 				94ADF5E22DADE78F000DAD3E /* SkipOption.swift */,
 				94ADF5E02DADE765000DAD3E /* BlockMode.swift */,
 				94ADCE622DAC37E6000DAD3E /* StepGoalMonitor.swift */,
+				94B1A3BA2DB3DD17000967F1 /* LocationManager.swift */,
 				94ADCF692DAD325E000DAD3E /* UserDefaults+Extension.swift */,
 				94ADCE7A2DACA3F1000DAD3E /* ExampleView.swift */,
 				A6A262D624E0BCB30091EA92 /* Assets.xcassets */,
@@ -413,6 +418,7 @@
 			mainGroup = A6A262CE24E0BCB20091EA92;
 			packageReferences = (
 				94ADF5DB2DADC7D6000DAD3E /* XCRemoteSwiftPackageReference "SwiftTools" */,
+				94B1A3BC2DB3E816000967F1 /* XCRemoteSwiftPackageReference "Solar" */,
 			);
 			productRefGroup = A6A262DC24E0BCB30091EA92 /* Products */;
 			projectDirPath = "";
@@ -498,6 +504,7 @@
 				94ADF5BE2DADC5CD000DAD3E /* AppTabNavigation.swift in Sources */,
 				94ADCE632DAC37E6000DAD3E /* StepGoalMonitor.swift in Sources */,
 				94ADCDD92DAB3E74000DAD3E /* ActivityRingViewRepresentable.swift in Sources */,
+				94B1A3BB2DB3DD17000967F1 /* LocationManager.swift in Sources */,
 				A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */,
 				94E729502DAF41720026D0FF /* DeviceActivityReportContext+Extension.swift in Sources */,
 				94ADCE7B2DACA3F1000DAD3E /* ExampleView.swift in Sources */,
@@ -1027,6 +1034,14 @@
 				version = 2.1.0;
 			};
 		};
+		94B1A3BC2DB3E816000967F1 /* XCRemoteSwiftPackageReference "Solar" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ceeK/Solar";
+			requirement = {
+				kind = exactVersion;
+				version = 3.0.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1034,6 +1049,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 94ADF5DB2DADC7D6000DAD3E /* XCRemoteSwiftPackageReference "SwiftTools" */;
 			productName = SwiftTools;
+		};
+		94B1A3BD2DB3E816000967F1 /* Solar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 94B1A3BC2DB3E816000967F1 /* XCRemoteSwiftPackageReference "Solar" */;
+			productName = Solar;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

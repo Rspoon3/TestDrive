@@ -12,6 +12,7 @@ import ManagedSettings
 import DeviceActivity
 import OSLog
 import SwiftTools
+import Solar
 
 /// The main observable view model for managing health goals, blocking logic, and user preferences.
 @MainActor
@@ -90,7 +91,7 @@ final class HomeViewModel {
     }
     
     /// User’s preferred skip option when opting out of a blocked session.
-    var skipOption: SkipOption {
+    private(set) var skipOption: SkipOption {
         didSet {
             userDefaults.set(skipOption.rawValue, forKey: "skipOption")
         }
@@ -146,6 +147,56 @@ final class HomeViewModel {
             }
         }
     }
+    
+    func skipOptionSelected(_ option: SkipOption) async {
+        switch option {
+        case .sunset:
+            let locationManager = LocationManager()
+            let calendar = Calendar.current
+            
+            await locationManager.requestWhenInUseAuthorization()
+            
+            do {
+                let coordinate = try await locationManager.currentLocation()
+                let solar = Solar(coordinate: coordinate)
+                
+                guard
+                    let sunsetUTC = solar?.sunset,
+                    let sunsetLocalComponents = calendar.dateComponents(in: .current, from: sunsetUTC) as DateComponents?,
+                    let localTime = calendar.date(from: sunsetLocalComponents),
+                    let components = calendar.dateComponents([.hour, .minute], from: localTime) as DateComponents?,
+                    let hour = components.hour,
+                    let minute = components.minute
+                else {
+                    return
+                }
+                
+                logger.info("Local Sunset Time: \(localTime.formatted())")
+                print(hour, minute)
+
+                let schedule = DeviceActivitySchedule(
+                    intervalStart: DateComponents(hour: 0, minute: 0, second: 0),
+                    intervalEnd: DateComponents(hour: hour, minute: minute, second: 0),
+                    repeats: true
+                )
+                
+                try center.startMonitoring(DeviceActivityName("DailyRingReset"), during: schedule)
+                logger.debug("✅ Scheduled daily ring reset at \(hour):\(minute) local time")
+                
+                withAnimation(.bouncy) {
+                    skipOption = option
+                }
+            } catch {
+                logger.debug("❌ Failed to start monitoring: \(error)")
+                return
+            }
+        default:
+            withAnimation(.bouncy) {
+                skipOption = option
+            }
+        }
+    }
+    
     
     /// Evaluates user progress and updates app shielding based on configured goals.
     func evaluateProgressAndShieldApps() async throws {

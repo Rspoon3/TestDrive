@@ -1,5 +1,5 @@
 {
-  "originHash" : "c9dbcc1ff42f19ffb64f29c4c029f012d9648eabd4b49282a7ef3660868787b6",
+  "originHash" : "d8ee441947d42175a0dcf8c53130c8aded6c431d98e79fbc753501d9e19b62a0",
   "pins" : [
     {
       "identity" : "sfsymbols",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "0860caebd6efd296b66cf128d58972b9c52800db",
         "version" : "2.6.1"
+      }
+    },
+    {
+      "identity" : "solar",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ceeK/Solar",
+      "state" : {
+        "revision" : "c2b96f2d5fb7f835b91cefac5e83101f54643901",
+        "version" : "3.0.1"
       }
     },
     {

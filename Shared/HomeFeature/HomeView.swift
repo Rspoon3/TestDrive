@@ -175,8 +175,8 @@ struct HomeView: View {
             FlowLayout(alignment: .leading) {
                 ForEach(SkipOption.allCases, id: \.self) { option in
                     Button {
-                        withAnimation(.bouncy) {
-                            viewModel.skipOption = option
+                        Task {
+                            await viewModel.skipOptionSelected(option)
                         }
                     } label: {
                         ZStack {

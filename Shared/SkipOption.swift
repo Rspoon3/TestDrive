@@ -8,10 +8,11 @@
 import Foundation
 
 enum SkipOption: Int, CaseIterable {
-    case five = 0, thirty, sixty, restOfDay, sunset
+    case none = 0, five, thirty, sixty, restOfDay, sunset
 
     var label: String {
         switch self {
+        case .none: return "None"
         case .five: return "5 min"
         case .thirty: return "30 min"
         case .sixty: return "60 min"
@@ -22,6 +23,7 @@ enum SkipOption: Int, CaseIterable {
 
     var icon: String {
         switch self {
+        case .none: return "nosign"
         case .five: return "timer"
         case .thirty: return "hourglass"
         case .sixty: return "clock"
