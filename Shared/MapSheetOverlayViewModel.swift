@@ -28,15 +28,44 @@ final class MapSheetOverlayViewModel: ObservableObject {
         }
     }
     
+    
+    @Published var startAddress: String = "Start Location"
+    @Published var destinationAddress: String = "Destination"
+    @Published var startCoordinate: CLLocationCoordinate2D? {
+        didSet {
+            guard let startCoordinate else {
+                startAddress = "Start Location"
+                return
+            }
+            
+            reverseGeocodeLocation(startCoordinate) { startValue in
+                guard let startValue else { return }
+                DispatchQueue.main.async {
+                    self.startAddress = startValue
+                    self.updateCalculations()
+                }
+            }
+        }
+    }
     @Published var destinationCoordinate: CLLocationCoordinate2D? {
         didSet {
-            guard destinationCoordinate != nil else { return }
-            updateCalculations()
+            guard let destinationCoordinate else {
+                destinationAddress = "Destination"
+                return
+            }
+            
+            reverseGeocodeLocation(destinationCoordinate) { destinationValue in
+                guard let destinationValue else { return }
+                DispatchQueue.main.async {
+                    self.destinationAddress = destinationValue
+                    self.updateCalculations()
+                }
+            }
         }
     }
     @Published var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194), // Default: San Francisco
-        span: MKCoordinateSpan(latitudeDelta: 10, longitudeDelta: 10)
+        span: MKCoordinateSpan(latitudeDelta: 1000, longitudeDelta: 1000)
     )
     
     @Published var altitude: Double = 0.0
@@ -44,12 +73,7 @@ final class MapSheetOverlayViewModel: ObservableObject {
     @Published var bearing: Double = 0.0
     @Published var compassDirection: String = ""
     @Published var selectedAddress: String = ""
-    @Published var startCoordinate: CLLocationCoordinate2D?
-    
-    @Published var startAddress: String = ""
-    @Published var destinationAddress: String = ""
 
-    
     private var cancellables = Set<AnyCancellable>()
     private let geocoder = CLGeocoder()
     private let altimeterManager = AltimeterManager()
@@ -148,7 +172,7 @@ final class MapSheetOverlayViewModel: ObservableObject {
         results = response.mapItems
     }
     
-    private func updateCalculations() {
+    func updateCalculations() {
         guard let startCoordinate, let destinationCoordinate else { return }
         let result = AntennaDirectionCalculator.calculateDirection(from: startCoordinate, to: destinationCoordinate)
         self.distance = result.distance

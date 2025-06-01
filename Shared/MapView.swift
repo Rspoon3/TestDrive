@@ -40,14 +40,14 @@ struct MapView: UIViewRepresentable {
         if let start = startCoordinate {
             let startPin = MKPointAnnotation()
             startPin.coordinate = start
-            startPin.title = "Location A"
+            startPin.title = "Start Location"
             uiView.addAnnotation(startPin)
         }
 
         if let destination = destinationCoordinate {
             let destinationPin = MKPointAnnotation()
             destinationPin.coordinate = destination
-            destinationPin.title = "Location B"
+            destinationPin.title = "Destination"
             uiView.addAnnotation(destinationPin)
         }
 
