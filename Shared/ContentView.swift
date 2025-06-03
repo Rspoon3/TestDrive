@@ -7,14 +7,19 @@
 
 import SwiftUI
 
+extension Color {
+    static let darkPurple = Color(red: 55/255, green: 17/255, blue: 100/255)
+}
+
 struct ContentView: View {
+    @State private var boxViewModel = BoxViewModel()
     @State private var animate = false
     @State private var state: ExpandedState = .collapsed
     @State private var showCount = false
     @State private var trapOffset: CGFloat = 0
     private let height: CGFloat = 56
     private let cornerRadius: CGFloat = 22
-    private let darkPurple = Color(red: 55/255, green: 17/255, blue: 100/255)
+    @State private var showBox = false
     
     enum ExpandedState {
         case collapsed
@@ -32,39 +37,15 @@ struct ContentView: View {
             }
         }
     }
-
+    
+    @State private var goToCenter = false
+    
     var body: some View {
-        VStack(spacing: 100) {
-            Button("Toggle") {
-                guard state == .collapsed else { return }
-                
-                withAnimation(.linear(duration: 1.2)) {
-                    state = .withText
-                    Task {
-                        try await Task.sleep(for: .seconds(1.2))
-                        withAnimation(.linear(duration: 1)) {
-                            trapOffset = -164
-                        }
-                        
-                        try await Task.sleep(for: .seconds(6))
-                        
-                        withAnimation(.linear(duration: 0.8)) {
-                            state = .boxOnly
-                        }
-                        
-                        try await Task.sleep(for: .seconds(1.8))
-                        
-                        withAnimation(.linear(duration: 0.8)) {
-                            showCount = true
-                        }
-                    }
-                }
-            }
-            
-            // Align to trailing to make it expand leftward
-            HStack {
-                Spacer()
-                
+        ZStack {
+            if showBox {
+                Box(viewModel: boxViewModel)
+                    .padding(.horizontal)
+            } else {
                 ZStack(alignment: .bottomTrailing) {
                     spinAndWinFAB
                         .onTapGesture {
@@ -76,11 +57,46 @@ struct ContentView: View {
                     
                     circleDot
                 }
+                .frame(
+                    maxWidth: .infinity,
+                    maxHeight: .infinity,
+                    alignment: goToCenter ? .center : .bottomTrailing
+                )
+                .padding(.horizontal)
             }
+           
             
-            Spacer()
+            toggleButton
         }
-        .padding(.horizontal)
+    }
+    
+    private var toggleButton: some View {
+        Button("Toggle") {
+            guard state == .collapsed else { return }
+            
+            withAnimation(.linear(duration: 1.2)) {
+                state = .withText
+                Task {
+                    try await Task.sleep(for: .seconds(1.2))
+                    withAnimation(.linear(duration: 1)) {
+                        trapOffset = -164
+                    }
+                    
+                    try await Task.sleep(for: .seconds(6))
+                    
+                    withAnimation(.linear(duration: 0.8)) {
+                        state = .boxOnly
+                    }
+                    
+                    try await Task.sleep(for: .seconds(1.8))
+                    
+                    showBox = true
+                    withAnimation(.linear(duration: 0.8)) {
+                        showCount = true
+                    }
+                }
+            }
+        }
     }
     
     private var circleDot: some View {
@@ -141,7 +157,7 @@ struct ContentView: View {
             height: height,
             alignment: .leading
         )
-        .background(darkPurple)
+        .background(Color.darkPurple)
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .overlay {
             AngularGradient(
@@ -172,16 +188,16 @@ struct ContentView: View {
 
 struct RightLeaningTrapezoid: Shape {
     var lean: CGFloat = 20 // positive value = right lean
-
+    
     func path(in rect: CGRect) -> Path {
         var path = Path()
-
+        
         path.move(to: CGPoint(x: rect.minX + lean, y: rect.minY))         // top-left
         path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))             // top-right
         path.addLine(to: CGPoint(x: rect.maxX - lean, y: rect.maxY))      // bottom-right
         path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))             // bottom-left
         path.closeSubpath()
-
+        
         return path
     }
 }
@@ -189,12 +205,12 @@ struct RightLeaningTrapezoid: Shape {
 struct RightSlantTriangle: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
-
+        
         path.move(to: CGPoint(x: rect.minX, y: rect.minY))      // top-left
         path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))   // top-right
         path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))   // bottom-left
         path.closeSubpath()
-
+        
         return path
     }
 }
