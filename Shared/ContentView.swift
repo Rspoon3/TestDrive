@@ -41,39 +41,46 @@ struct ContentView: View {
     @State private var goToCenter = false
     
     var body: some View {
-        ZStack {
-            List {
-                ForEach(0..<100, id: \.self) { i in
-                    Button("This is row \(i) and I like it very much so the thing that I need to do is go to bed") {
-                        print(i)
-                    }
+        List {
+            ForEach(0..<100, id: \.self) { i in
+                Button("This is row \(i) and I like it very much so the thing that I need to do is go to bed") {
+                    print(i)
                 }
             }
-            if showBox {
-                Box(viewModel: boxViewModel)
-                    .padding(.horizontal)
-            } else {
-                ZStack(alignment: .bottomTrailing) {
-                    spinAndWinFAB
-                        .onTapGesture {
-                            print("Tap")
-                        }
-                        .overlay(alignment: .leading) {
-                            trap
-                        }
-                    
-                    circleDot
-                }
-                .frame(
-                    maxWidth: .infinity,
-                    maxHeight: .infinity,
-                    alignment: goToCenter ? .center : .bottomTrailing
-                )
+        }
+        .overlay {
+            boxes
+        }
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                toggleButton
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var boxes: some View {
+        if showBox {
+            Box(viewModel: boxViewModel)
                 .padding(.horizontal)
+        } else {
+            ZStack(alignment: .bottomTrailing) {
+                spinAndWinFAB
+                    .onTapGesture {
+                        print("Tap")
+                    }
+                    .overlay(alignment: .leading) {
+                        trap
+                    }
+                
+                circleDot
             }
-           
-            
-            toggleButton
+            .frame(
+                maxWidth: .infinity,
+                maxHeight: .infinity,
+                alignment: goToCenter ? .center : .bottomTrailing
+            )
+            .padding(.horizontal)
         }
     }
     
@@ -190,7 +197,9 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    NavigationStack {
+        ContentView()
+    }
 }
 
 struct RightLeaningTrapezoid: Shape {

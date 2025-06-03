@@ -11,7 +11,7 @@ import Combine
 @MainActor
 final class BoxViewModel: ObservableObject {
     @Published var fullScreen = false
-    @Published var scale: CGFloat = 1
+    @Published var circleSizeState: CircleSizeState = .small
     @Published var offset: CGFloat = 0
     @Published var boxWidth: CGFloat = 28
     @Published var boxOpacity: CGFloat = 1
@@ -19,15 +19,36 @@ final class BoxViewModel: ObservableObject {
     let height: CGFloat = 56
     let extraTime: CGFloat = 1
     
+    @MainActor
+    enum CircleSizeState: CGFloat {
+        case small, medium, fullScreen
+        
+        var size: CGFloat {
+            switch self {
+            case .small: 56
+            case .medium: 200
+            case .fullScreen: UIScreen.main.bounds.height * 1.25
+            }
+        }
+        
+        var cornerRadius: CGFloat {
+            switch self {
+            case .small: 22
+            case .medium, .fullScreen: size / 2
+            }
+        }
+    }
+    
     func start() async throws {
         withAnimation(.linear(duration: extraTime + 0.3)) {
             fullScreen.toggle()
+            circleSizeState = .medium
         }
         
         try await Task.sleep(for: .seconds(extraTime + 0.6))
         
         withAnimation(.linear(duration: extraTime + 0.3)) {
-            scale = 5
+            circleSizeState = .fullScreen
         }
         
         try await Task.sleep(for: .seconds(extraTime + 0.6))
@@ -44,18 +65,17 @@ struct Box: View {
     @ObservedObject var viewModel: BoxViewModel
     
     var body: some View {
-        RoundedRectangle(cornerRadius: viewModel.fullScreen ? 100 : viewModel.cornerRadius)
+        RoundedRectangle(cornerRadius: viewModel.circleSizeState.cornerRadius)
             .foregroundStyle(Color.darkPurple)
             .frame(
-                width: viewModel.fullScreen ? 200 : viewModel.height,
-                height: viewModel.fullScreen ? 200 : viewModel.height
+                width: viewModel.circleSizeState.size,
+                height: viewModel.circleSizeState.size
             )
             .overlay {
-                RoundedRectangle(cornerRadius: viewModel.fullScreen ? 100 : viewModel.cornerRadius)
+                RoundedRectangle(cornerRadius: viewModel.circleSizeState.cornerRadius)
                     .strokeBorder(style: StrokeStyle(lineWidth: 3))
                     .foregroundStyle(.purple)
             }
-            .scaleEffect(viewModel.scale)
             .overlay {
                 Image("spinAndWinBox")
                     .resizable()
@@ -71,7 +91,7 @@ struct Box: View {
                 alignment: viewModel.fullScreen ? .center : .bottomTrailing
             )
             .task {
-//                try? await Task.sleep(for: .seconds(1))
+                try? await Task.sleep(for: .seconds(1))
                 try? await viewModel.start()
             }
     }
