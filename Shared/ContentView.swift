@@ -201,32 +201,3 @@ struct ContentView: View {
         ContentView()
     }
 }
-
-struct RightLeaningTrapezoid: Shape {
-    var lean: CGFloat = 20 // positive value = right lean
-    
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        
-        path.move(to: CGPoint(x: rect.minX + lean, y: rect.minY))         // top-left
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))             // top-right
-        path.addLine(to: CGPoint(x: rect.maxX - lean, y: rect.maxY))      // bottom-right
-        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))             // bottom-left
-        path.closeSubpath()
-        
-        return path
-    }
-}
-
-struct RightSlantTriangle: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        
-        path.move(to: CGPoint(x: rect.minX, y: rect.minY))      // top-left
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))   // top-right
-        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))   // bottom-left
-        path.closeSubpath()
-        
-        return path
-    }
-}
