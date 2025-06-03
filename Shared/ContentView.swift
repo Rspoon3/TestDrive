@@ -9,50 +9,77 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var animate = false
-
+    @State private var showText = true
+    
     var body: some View {
-        HStack {
+        VStack(spacing: 100) {
+            Button("Toggle") {
+                withAnimation(.linear(duration: 0.2)) {
+                    showText.toggle()
+                }
+            }
+            
+            RoundedRectangle(cornerRadius: 22)
+                .strokeBorder(style: StrokeStyle(lineWidth: 3))
+                .foregroundStyle(.blue)
+                .frame(width: 124, height: 56)
+            
+            
+            // Align to trailing to make it expand leftward
+            HStack {
+                Spacer()
+                spinAndWinFAB
+            }
+            
+            Spacer()
+        }
+    }
+    
+    private var spinAndWinFAB: some View {
+        HStack(spacing: 12) {
             Image("spinAndWinBox")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 28)
-                .padding(.leading, 11)
-
-            Spacer()
-
+                .padding(.leading, 14)
+            
             Text("6 Spins")
-                .padding(.trailing, 13)
+                .fixedSize()
                 .font(.footnote)
                 .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .frame(width: 118, height: 56)
-        .background(Color.purple)
-        .cornerRadius(22)
-        .overlay(
-            RoundedRectangle(cornerRadius: 22)
-                .stroke(.blue, lineWidth: 3)
+        .frame(
+            width: showText ? 124 : 56,
+            height: 56,
+            alignment: .leading
         )
-        .overlay(
-            // Animated shimmer overlay
+        .background(Color.purple)
+        .clipShape(RoundedRectangle(cornerRadius: 22))
+        .overlay {
             AngularGradient(
-                gradient: Gradient(colors: [.clear, .white, .clear]),
+                gradient: Gradient(colors: [.blue, .blue, .white]),
                 center: .center,
                 angle: .degrees(animate ? 360 : 0)
             )
             .animation(
-                Animation.linear(duration: 2).repeatForever(autoreverses: false),
+                Animation.linear(duration: 1.2)
+                    .delay(5)
+                    .repeatForever(autoreverses: false),
                 value: animate
             )
             .mask(
                 RoundedRectangle(cornerRadius: 22)
-                    .stroke(lineWidth: 3)
+                    .strokeBorder(style: StrokeStyle(lineWidth: 3))
+                    .foregroundStyle(.blue)
             )
-        )
+        }
         .onAppear {
-            animate = true
+            animate.toggle()
         }
     }
 }
+
 #Preview {
     ContentView()
 }
