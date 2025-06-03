@@ -64,11 +64,15 @@ struct ContentView: View {
             // Align to trailing to make it expand leftward
             HStack {
                 Spacer()
+                
                 ZStack(alignment: .bottomTrailing) {
                     spinAndWinFAB
-                    .overlay(alignment: .leading) {
-                        trap
-                    }
+                        .onTapGesture {
+                            print("Tap")
+                        }
+                        .overlay(alignment: .leading) {
+                            trap
+                        }
                     
                     circleDot
                 }
