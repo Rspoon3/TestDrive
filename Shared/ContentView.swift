@@ -9,17 +9,55 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var animate = false
-    @State private var showText = false
+    @State private var state: ExpandedState = .collapsed
     @State private var showCount = false
     @State private var trapOffset: CGFloat = 0
+    private let height: CGFloat = 56
+    private let cornerRadius: CGFloat = 22
+    private let darkPurple = Color(red: 55/255, green: 17/255, blue: 100/255)
+    
+    enum ExpandedState {
+        case collapsed
+        case withText
+        case boxOnly
+        
+        var width: CGFloat {
+            switch self {
+            case .collapsed:
+                return 3
+            case .withText:
+                return 124
+            case .boxOnly:
+                return 56
+            }
+        }
+    }
 
     var body: some View {
         VStack(spacing: 100) {
             Button("Toggle") {
+                guard state == .collapsed else { return }
+                
                 withAnimation(.linear(duration: 1.2)) {
-                    showText.toggle()
-//                    showCount.toggle()
-                    trapOffset = trapOffset == 0 ? -164 : 0
+                    state = .withText
+                    Task {
+                        try await Task.sleep(for: .seconds(1.2))
+                        withAnimation(.linear(duration: 1)) {
+                            trapOffset = -164
+                        }
+                        
+                        try await Task.sleep(for: .seconds(6))
+                        
+                        withAnimation(.linear(duration: 0.8)) {
+                            state = .boxOnly
+                        }
+                        
+                        try await Task.sleep(for: .seconds(1.8))
+                        
+                        withAnimation(.linear(duration: 0.8)) {
+                            showCount = true
+                        }
+                    }
                 }
             }
             
@@ -73,10 +111,10 @@ struct ContentView: View {
         }
         .offset(x: trapOffset)
         .foregroundStyle(.purple)
-        .frame(height: 56)
+        .frame(height: height)
         .mask(alignment: .leading) {
-            RoundedRectangle(cornerRadius: 22)
-                .frame(width: showText ? 124 : 56)
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .frame(width: state.width)
         }
     }
     
@@ -95,15 +133,15 @@ struct ContentView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .frame(
-            width: showText ? 124 : 56,
-            height: 56,
+            width: state.width,
+            height: height,
             alignment: .leading
         )
-        .background(Color.purple)
-        .clipShape(RoundedRectangle(cornerRadius: 22))
+        .background(darkPurple)
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .overlay {
             AngularGradient(
-                gradient: Gradient(colors: [.blue, .blue, .white]),
+                gradient: Gradient(colors: [.purple, .purple, .white]),
                 center: .center,
                 angle: .degrees(animate ? 360 : 0)
             )
@@ -114,9 +152,8 @@ struct ContentView: View {
                 value: animate
             )
             .mask(
-                RoundedRectangle(cornerRadius: 22)
+                RoundedRectangle(cornerRadius: cornerRadius)
                     .strokeBorder(style: StrokeStyle(lineWidth: 3))
-                    .foregroundStyle(.blue)
             )
         }
         .onAppear {
