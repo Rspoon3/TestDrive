@@ -27,7 +27,7 @@ final class BoxViewModel: ObservableObject {
             switch self {
             case .small: 56
             case .medium: 200
-            case .fullScreen: UIScreen.main.bounds.height * 1.25
+            case .fullScreen: UIScreen.main.bounds.height * 1.5
             }
         }
         
