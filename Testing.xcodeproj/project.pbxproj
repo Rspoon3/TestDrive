@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		9436294F2DEF612D00BD1EEB /* RightSlantTriangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9436294E2DEF612D00BD1EEB /* RightSlantTriangle.swift */; };
 		943629502DEF612D00BD1EEB /* RightSlantTriangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9436294E2DEF612D00BD1EEB /* RightSlantTriangle.swift */; };
+		943629522DEF710E00BD1EEB /* ShimmerRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943629512DEF710E00BD1EEB /* ShimmerRect.swift */; };
+		943629532DEF710E00BD1EEB /* ShimmerRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943629512DEF710E00BD1EEB /* ShimmerRect.swift */; };
 		9436DF062DEE949E00BD1EEB /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9436DF052DEE949E00BD1EEB /* Box.swift */; };
 		9436DF072DEE949E00BD1EEB /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9436DF052DEE949E00BD1EEB /* Box.swift */; };
 		A6A262F024E0BCB30091EA92 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262EF24E0BCB30091EA92 /* Tests_iOS.swift */; };
@@ -40,6 +42,7 @@
 
 /* Begin PBXFileReference section */
 		9436294E2DEF612D00BD1EEB /* RightSlantTriangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightSlantTriangle.swift; sourceTree = "<group>"; };
+		943629512DEF710E00BD1EEB /* ShimmerRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShimmerRect.swift; sourceTree = "<group>"; };
 		9436DF052DEE949E00BD1EEB /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 		A6A0310D266EBC6D001CBE2A /* Testing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Testing.entitlements; sourceTree = "<group>"; };
 		A6A262D424E0BCB20091EA92 /* TestingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingApp.swift; sourceTree = "<group>"; };
@@ -116,6 +119,7 @@
 			children = (
 				A6A262D424E0BCB20091EA92 /* TestingApp.swift */,
 				A6A262D524E0BCB20091EA92 /* ContentView.swift */,
+				943629512DEF710E00BD1EEB /* ShimmerRect.swift */,
 				9436DF052DEE949E00BD1EEB /* Box.swift */,
 				9436294E2DEF612D00BD1EEB /* RightSlantTriangle.swift */,
 				A6A262D624E0BCB30091EA92 /* Assets.xcassets */,
@@ -333,6 +337,7 @@
 			files = (
 				9436DF072DEE949E00BD1EEB /* Box.swift in Sources */,
 				9436294F2DEF612D00BD1EEB /* RightSlantTriangle.swift in Sources */,
+				943629532DEF710E00BD1EEB /* ShimmerRect.swift in Sources */,
 				A6A262FF24E0BCB30091EA92 /* ContentView.swift in Sources */,
 				A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */,
 			);
@@ -344,6 +349,7 @@
 			files = (
 				9436DF062DEE949E00BD1EEB /* Box.swift in Sources */,
 				943629502DEF612D00BD1EEB /* RightSlantTriangle.swift in Sources */,
+				943629522DEF710E00BD1EEB /* ShimmerRect.swift in Sources */,
 				A6A2630024E0BCB30091EA92 /* ContentView.swift in Sources */,
 				A6A262FE24E0BCB30091EA92 /* TestingApp.swift in Sources */,
 			);

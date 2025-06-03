@@ -21,5 +21,9 @@ struct RightSlantTriangle: Shape {
 }
 
 #Preview {
-    RightSlantTriangle()
+    HStack(spacing: 0) {
+        Rectangle().foregroundStyle(.red)
+        RightSlantTriangle()
+    }
+    .frame(height: 56)
 }
