@@ -8,6 +8,7 @@
 import SwiftUI
 import Combine
 
+@MainActor
 final class BoxViewModel: ObservableObject {
     @Published var fullScreen = false
     @Published var scale: CGFloat = 1

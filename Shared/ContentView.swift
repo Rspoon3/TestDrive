@@ -42,6 +42,13 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
+            List {
+                ForEach(0..<100, id: \.self) { i in
+                    Button("This is row \(i) and I like it very much so the thing that I need to do is go to bed") {
+                        print(i)
+                    }
+                }
+            }
             if showBox {
                 Box(viewModel: boxViewModel)
                     .padding(.horizontal)
