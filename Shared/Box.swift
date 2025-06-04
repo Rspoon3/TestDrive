@@ -12,12 +12,11 @@ import Combine
 final class BoxViewModel: ObservableObject {
     @Published var fullScreen = false
     @Published var circleSizeState: CircleSizeState = .small
-    @Published var offset: CGFloat = 0
-    @Published var boxWidth: CGFloat = 28
     @Published var boxOpacity: CGFloat = 1
+    @Published var boxScale: CGFloat = 1
+    @Published var boxSize: CGFloat = 28
     let cornerRadius: CGFloat = 22
     let height: CGFloat = 56
-    let extraTime: CGFloat = 1
     
     @MainActor
     enum CircleSizeState: CGFloat {
@@ -40,22 +39,28 @@ final class BoxViewModel: ObservableObject {
     }
     
     func start() async throws {
-        withAnimation(.linear(duration: extraTime + 0.3)) {
+        withAnimation(.linear(duration: 0.3)) {
             fullScreen.toggle()
             circleSizeState = .medium
+            boxScale = 1
+            boxSize = 80
         }
         
-        try await Task.sleep(for: .seconds(extraTime + 0.6))
+        try await Task.sleep(for: .seconds( 0.6))
         
-        withAnimation(.linear(duration: extraTime + 0.3)) {
+        withAnimation(.linear(duration: 0.3)) {
             circleSizeState = .fullScreen
         }
         
-        try await Task.sleep(for: .seconds(extraTime + 0.6))
+        try await Task.sleep(for: .seconds(0.8))
         
-        withAnimation(.linear(duration: extraTime + 0.2)) {
-            boxWidth = 50
-            offset = -100
+        withAnimation(.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
+            boxScale = 1.075
+        }
+    }
+    
+    func animateDismissal() {
+        withAnimation(.easeInOut(duration: 0.2)) {
             boxOpacity = 0
         }
     }
@@ -80,10 +85,12 @@ struct Box: View {
                 Image("spinAndWinBox")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: viewModel.boxWidth)
-                    .scaleEffect(viewModel.fullScreen ? 4 : 1)
-                    .offset(y: viewModel.offset)
+                    .frame(width: viewModel.boxSize)
+                    .scaleEffect(viewModel.boxScale)
                     .opacity(viewModel.boxOpacity)
+                    .onTapGesture {
+                        viewModel.animateDismissal()
+                    }
             }
             .frame(
                 maxWidth: .infinity,
@@ -91,7 +98,6 @@ struct Box: View {
                 alignment: viewModel.fullScreen ? .center : .bottomTrailing
             )
             .task {
-                try? await Task.sleep(for: .seconds(1))
                 try? await viewModel.start()
             }
     }

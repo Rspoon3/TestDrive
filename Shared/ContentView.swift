@@ -12,16 +12,17 @@ extension Color {
 }
 
 struct ContentView: View {
+    @State private var boarderOpacity: CGFloat = 0
     @State private var boxViewModel = BoxViewModel()
-    @State private var animate = false
+    @State private var boarderAngle: CGFloat = 90
     @State private var state: ExpandedState = .collapsed
     @State private var showCount = false
     @State private var trapOffset: CGFloat = 0
     private let height: CGFloat = 56
     private let cornerRadius: CGFloat = 22
-    @State private var showBox = false
+    @State private var startNavigationAnimation = false
     
-    enum ExpandedState {
+    enum ExpandedState: String {
         case collapsed
         case withText
         case boxOnly
@@ -42,6 +43,8 @@ struct ContentView: View {
     
     var body: some View {
         List {
+            Text(state.rawValue)
+            Text("Disabled: \(state != .boxOnly)")
             ForEach(0..<100, id: \.self) { i in
                 Button("This is row \(i) and I like it very much so the thing that I need to do is go to bed") {
                     print(i)
@@ -60,25 +63,28 @@ struct ContentView: View {
     
     @ViewBuilder
     private var boxes: some View {
-        if showBox {
+        if startNavigationAnimation {
             Box(viewModel: boxViewModel)
                 .padding(.horizontal)
         } else {
-            ZStack(alignment: .bottomTrailing) {
-                spinAndWinFAB
-                    .onTapGesture {
-                        print("Tap")
-                    }
-                    .overlay(alignment: .leading) {
-                        trap
-                    }
-                
-                circleDot
+            Button {
+                startNavigationAnimation = true
+            } label : {
+                ZStack(alignment: .bottomTrailing) {
+                    spinAndWinFAB
+                        .overlay(alignment: .leading) {
+                            trap
+                        }
+                    
+                    circleDot
+                }
             }
+            .buttonStyle(PressScaleButtonStyle())
+            .disabled(state != .boxOnly)
             .frame(
                 maxWidth: .infinity,
                 maxHeight: .infinity,
-                alignment: goToCenter ? .center : .bottomTrailing
+                alignment: .bottomTrailing
             )
             .padding(.horizontal)
         }
@@ -86,29 +92,60 @@ struct ContentView: View {
     
     private var toggleButton: some View {
         Button("Toggle") {
-            guard state == .collapsed else { return }
-            
+            startBoxAnimations()
+        }
+    }
+    
+    func startLoopedAnimation(after delay: TimeInterval) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
             withAnimation(.linear(duration: 1.2)) {
+                boarderAngle += 360
+            }
+            
+            withAnimation(
+                .linear(duration: 0.25)
+            ) {
+                boarderOpacity = 1
+            }
+            
+            withAnimation(
+                .linear(duration: 0.25)
+                .delay(1)
+            ) {
+                boarderOpacity = 0
+            }
+            
+            // Schedule next animation after 5 seconds
+            startLoopedAnimation(after: 5)
+        }
+    }
+    
+    private func startBoxAnimations() {
+        guard state == .collapsed else { return }
+        
+        // Border shimmer. 2 second initially delay, 5 seconds in a loop after that
+        startLoopedAnimation(after: 2)
+
+        // Cover, expansion state, dot. All of these are done linearly
+        Task {
+            try? await Task.sleep(for: .milliseconds(100))
+            withAnimation(.timingCurve(0.32, 0.05, 0.82, 0.69, duration: 0.2)) {
                 state = .withText
-                Task {
-                    try await Task.sleep(for: .seconds(1.2))
-                    withAnimation(.linear(duration: 1)) {
-                        trapOffset = -164
-                    }
-                    
-                    try await Task.sleep(for: .seconds(6))
-                    
-                    withAnimation(.linear(duration: 0.8)) {
-                        state = .boxOnly
-                    }
-                    
-                    try await Task.sleep(for: .seconds(1.8))
-                    
-                    showBox = true
-                    withAnimation(.linear(duration: 0.8)) {
-                        showCount = true
-                    }
-                }
+            }
+            
+            try? await Task.sleep(for: .milliseconds(200))
+            withAnimation(.timingCurve(0.32, 0.05, 0.82, 0.69, duration: 0.2)) {
+                trapOffset = -164
+            }
+            
+            try? await Task.sleep(for: .milliseconds(5200))
+            withAnimation(.timingCurve(0.49, 0.01, 0.76, 0.81, duration: 0.3)) {
+                state = .boxOnly
+            }
+            
+            try? await Task.sleep(for: .milliseconds(1100))
+            withAnimation(.timingCurve(0.49, 0.01, 0.44, 1, duration: 0.3)) {
+                showCount = true
             }
         }
     }
@@ -125,14 +162,6 @@ struct ContentView: View {
             .opacity(showCount ? 1 : 0)
             .scaleEffect(showCount ? 1 : 0.6)
             .zIndex(showCount ? 1 : 0)
-            .animation(
-                .spring(
-                    duration: 0.4,
-                    bounce: 0.73,
-                    blendDuration: 0.71
-                ),
-                value: showCount
-            )
             .offset(x: 4, y: 4)
     }
     
@@ -174,24 +203,36 @@ struct ContentView: View {
         .background(Color.darkPurple)
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .overlay {
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .strokeBorder(style: StrokeStyle(lineWidth: 3))
+                .foregroundStyle(.purple)
+        }
+        .overlay {
             AngularGradient(
-                gradient: Gradient(colors: [.purple, .purple, .white]),
+                gradient: Gradient(
+                    stops: [
+                        .init(
+                            color: .purple,
+                            location: 0
+                        ),
+                        .init(
+                            color: .purple,
+                            location: 0.76
+                        ),
+                        .init(
+                            color: .white,
+                            location: 1
+                        )
+                    ]
+                ),
                 center: .center,
-                angle: .degrees(animate ? 360 : 0)
+                angle: .degrees(boarderAngle)
             )
-            .animation(
-                Animation.linear(duration: 1.2)
-                    .delay(5)
-                    .repeatForever(autoreverses: false),
-                value: animate
-            )
+            .opacity(boarderOpacity)
             .mask(
                 RoundedRectangle(cornerRadius: cornerRadius)
-                    .strokeBorder(style: StrokeStyle(lineWidth: 3))
+                    .strokeBorder(style: StrokeStyle(lineWidth: 3)) // inside
             )
-        }
-        .onAppear {
-            animate.toggle()
         }
     }
 }
@@ -199,5 +240,14 @@ struct ContentView: View {
 #Preview {
     NavigationStack {
         ContentView()
+    }
+}
+import SwiftUI
+
+struct PressScaleButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.86 : 1.0)
+            .animation(.easeOut(duration: 0.1), value: configuration.isPressed)
     }
 }
