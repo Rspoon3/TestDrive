@@ -12,7 +12,7 @@ import SwiftUI
 struct TestingApp: App{
     var body:some Scene{
         WindowGroup{
-            ContentView()
+            StickyViewControllerRepresentable()
         }
     }
 }
