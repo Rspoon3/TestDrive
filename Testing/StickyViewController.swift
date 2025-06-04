@@ -8,21 +8,21 @@
 
 import SwiftUI
 
-class StickyViewController: UIViewController {
+final class StickyViewController: UIViewController {
     
-    lazy var dynamicAnimator: UIDynamicAnimator = {
+    private lazy var dynamicAnimator: UIDynamicAnimator = {
         let dynamicAnimator = UIDynamicAnimator(referenceView: self.view)
         dynamicAnimator.setValue(true, forKey: "debugEnabled")
         return dynamicAnimator
     }()
     
-    lazy var collision: UICollisionBehavior = {
+    private lazy var collision: UICollisionBehavior = {
         let collision = UICollisionBehavior(items: [self.orangeView])
         collision.translatesReferenceBoundsIntoBoundary = true
         return collision
     }()
     
-    lazy var itemBehavior: UIDynamicItemBehavior = {
+    private lazy var itemBehavior: UIDynamicItemBehavior = {
         let itemBehavior = UIDynamicItemBehavior(items: [self.orangeView])
         itemBehavior.density = 0.1
         itemBehavior.resistance = 2.0
@@ -31,7 +31,7 @@ class StickyViewController: UIViewController {
         return itemBehavior
     }()
     
-    lazy var orangeView: UIView = {
+    private lazy var orangeView: UIView = {
         let widthHeight: CGFloat = 80.0
         let orangeView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: widthHeight, height: widthHeight))
         orangeView.backgroundColor = UIColor.orange
@@ -44,19 +44,19 @@ class StickyViewController: UIViewController {
         return orangeView
     }()
     
-    lazy var panGesture: UIPanGestureRecognizer = {
+    private lazy var panGesture: UIPanGestureRecognizer = {
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(sender:)))
         return panGesture
     }()
     
-    lazy var attachment: UIAttachmentBehavior = {
+    private lazy var attachment: UIAttachmentBehavior = {
         let attachment = UIAttachmentBehavior(item: self.orangeView, attachedToAnchor: .zero)
         attachment.damping = 0.5
         attachment.frequency = 2.0
         return attachment
     }()
     
-    lazy var fieldBehaviors: [UIFieldBehavior] = {
+    private lazy var fieldBehaviors: [UIFieldBehavior] = {
         var fieldBehaviors = [UIFieldBehavior]()
         for _ in 0 ..< 4 {
             let field = UIFieldBehavior.springField()
@@ -65,8 +65,6 @@ class StickyViewController: UIViewController {
         }
         return fieldBehaviors
     }()
-    
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -104,7 +102,7 @@ class StickyViewController: UIViewController {
         }
     }
     
-    @objc func handlePan(sender: UIPanGestureRecognizer) {
+    @objc private func handlePan(sender: UIPanGestureRecognizer) {
         let location = sender.location(in: view)
         let velocity = sender.velocity(in: view)
         
@@ -129,6 +127,7 @@ class StickyViewController: UIViewController {
         }
     }
 }
+
 struct StickyViewControllerRepresentable: UIViewControllerRepresentable {
     
     func makeUIViewController(context: Context) -> StickyViewController {
