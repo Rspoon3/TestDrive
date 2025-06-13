@@ -31,22 +31,23 @@ struct CornerSnapView: View {
                             isDragging = false
                             let velocity = value.velocity
                             
-                            // Calculate final position (base position + drag offset)
-                            let finalX = circlePosition.x + dragOffset.width
-                            let finalY = circlePosition.y + dragOffset.height
+                            // Calculate current position
+                            let currentX = circlePosition.x + dragOffset.width
+                            let currentY = circlePosition.y + dragOffset.height
                             
-                            // Predict final position based on velocity
-                            let predictedX = finalX + velocity.width * 0.1
-                            let predictedY = finalY + velocity.height * 0.1
+                            // Lightweight prediction: just extend the velocity a bit
+                            let velocityScale: CGFloat = 0.3
+                            let predictedX = currentX + velocity.width * velocityScale
+                            let predictedY = currentY + velocity.height * velocityScale
                             
-                            // Find nearest corner
+                            // Find nearest corner to predicted position
                             let nearestCorner = findNearestCorner(
                                 predictedPosition: CGPoint(x: predictedX, y: predictedY),
                                 in: geometry.size
                             )
                             
-                            // Animate to corner
-                            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                            // Light, bouncy animation
+                            withAnimation(.spring(response: 0.5, dampingFraction: 0.75)) {
                                 circlePosition = nearestCorner
                                 dragOffset = .zero
                             }

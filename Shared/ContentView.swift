@@ -41,6 +41,8 @@ struct ContentView: View {
                 .pickerStyle(.segmented)
                 .padding([.horizontal, .bottom])
                 
+                Spacer()
+                
                 Image(systemName: "star.circle.fill")
                     .resizable()
                     .frame(width: 44, height: 44)

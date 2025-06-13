@@ -11,7 +11,19 @@ import SwiftUI
 struct TestingApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TabView {
+                ContentView()
+                    .tabItem {
+                        Image(systemName: "house")
+                        Text("Sticky")
+                    }
+                
+                CornerSnapView()
+                    .tabItem {
+                        Image(systemName: "star")
+                        Text("Snap")
+                    }
+            }
         }
     }
 }
