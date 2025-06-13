@@ -9,19 +9,68 @@ import SwiftUI
 import Foundation
 
 struct CornerSnapView: View {
+    @AppStorage("velocityScale") private var velocityScale: Double = 0.3
+    @AppStorage("animationResponse") private var animationResponse: Double = 0.5
+    @AppStorage("dampingFraction") private var dampingFraction: Double = 0.75
+    
     @State private var circlePosition: CGPoint = CGPoint(x: 100, y: 100)
     @State private var isDragging = false
     @State private var dragOffset: CGSize = .zero
     
     var body: some View {
-        GeometryReader { geometry in
-            Image(systemName: "star.circle.fill")
-                .resizable()
-                .frame(width: 44, height: 44)
-                .foregroundStyle(.white, .blue)
-                .position(circlePosition)
-                .offset(dragOffset)
-                .gesture(
+        VStack {
+            // Controls
+            VStack(spacing: 16) {
+                HStack {
+                    VStack {
+                        Text("Velocity Scale: \(velocityScale.formatted(.number.precision(.fractionLength(2))))")
+                        Slider(value: $velocityScale, in: 0...1)
+                    }
+                    Button("Reset") {
+                        velocityScale = 0.3
+                    }
+                    .buttonStyle(.bordered)
+                }
+                .padding(.horizontal)
+                
+                HStack {
+                    VStack {
+                        Text("Animation Speed: \(animationResponse.formatted(.number.precision(.fractionLength(2))))")
+                        Slider(value: $animationResponse, in: 0.1...2.0)
+                    }
+                    Button("Reset") {
+                        animationResponse = 0.5
+                    }
+                    .buttonStyle(.bordered)
+                }
+                .padding(.horizontal)
+                
+                HStack {
+                    VStack {
+                        Text("Damping: \(dampingFraction.formatted(.number.precision(.fractionLength(2))))")
+                        Slider(value: $dampingFraction, in: 0.1...1.0)
+                    }
+                    Button("Reset") {
+                        dampingFraction = 0.75
+                    }
+                    .buttonStyle(.bordered)
+                }
+                .padding(.horizontal)
+            }
+            .padding()
+            .background(Color.gray.opacity(0.1))
+            .cornerRadius(12)
+            .padding()
+            
+            // Circle area
+            GeometryReader { geometry in
+                Image(systemName: "star.circle.fill")
+                    .resizable()
+                    .frame(width: 44, height: 44)
+                    .foregroundStyle(.white, .blue)
+                    .position(circlePosition)
+                    .offset(dragOffset)
+                    .gesture(
                     DragGesture()
                         .onChanged { value in
                             isDragging = true
@@ -36,7 +85,6 @@ struct CornerSnapView: View {
                             let currentY = circlePosition.y + dragOffset.height
                             
                             // Lightweight prediction: just extend the velocity a bit
-                            let velocityScale: CGFloat = 0.3
                             let predictedX = currentX + velocity.width * velocityScale
                             let predictedY = currentY + velocity.height * velocityScale
                             
@@ -47,12 +95,13 @@ struct CornerSnapView: View {
                             )
                             
                             // Light, bouncy animation
-                            withAnimation(.spring(response: 0.5, dampingFraction: 0.75)) {
+                            withAnimation(.spring(response: animationResponse, dampingFraction: dampingFraction)) {
                                 circlePosition = nearestCorner
                                 dragOffset = .zero
                             }
                         }
                 )
+            }
         }
         .onAppear {
             // Start in top-right corner
