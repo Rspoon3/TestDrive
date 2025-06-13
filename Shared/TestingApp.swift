@@ -27,6 +27,13 @@ struct TestingApp: App {
                         Text("Snap")
                     }
                     .tag(1)
+                
+                GooView()
+                    .tabItem {
+                        Image(systemName: "airplane")
+                        Text("Goo")
+                    }
+                    .tag(2)
             }
         }
     }
