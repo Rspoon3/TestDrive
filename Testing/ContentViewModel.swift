@@ -48,12 +48,12 @@ final class ContentViewModel: ObservableObject {
         store.value -= 1
     }
     
-    func atomicIncrementIntStore() {
-        store.atomicUpdate { $0 += 1 }
+    func mutateIncrementIntStore() {
+        store.mutate { $0 += 1 }
     }
 
-    func atomicDecrementIntStore() {
-        store.atomicUpdate { $0 -= 1 }
+    func mutateDecrementIntStore() {
+        store.mutate { $0 -= 1 }
     }
 
     func incrementMulti() {

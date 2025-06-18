@@ -52,7 +52,7 @@ final class InMemoryStore<T> {
     
     /// Performs an atomic read-modify-write operation
     /// Use this for compound operations like +=, -=, etc. to ensure atomicity
-    func atomicUpdate(_ transform: (inout T) -> Void) {
+    func mutate(_ transform: (inout T) -> Void) {
         lock.withLock {
             transform(&_value)
             subject.send(_value)

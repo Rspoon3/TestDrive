@@ -25,7 +25,7 @@ final class IntStore {
         store.publisher
     }
     
-    func atomicUpdate(_ transform: (inout Int) -> Void) {
-        store.atomicUpdate(transform)
+    func mutate(_ transform: (inout Int) -> Void) {
+        store.mutate(transform)
     }
 }

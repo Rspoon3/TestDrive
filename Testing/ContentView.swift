@@ -30,7 +30,7 @@ struct ContentView: View {
                     .onAppear {
                         DispatchQueue.global(qos: .userInitiated).async {
                             DispatchQueue.concurrentPerform(iterations: 10_000) { _ in
-                                viewModel.atomicIncrementIntStore()
+                                viewModel.mutateIncrementIntStore()
                             }
                         }
                     }
