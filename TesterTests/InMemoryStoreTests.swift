@@ -5,9 +5,8 @@
 //  Created by Ricky Witherspoon on 6/18/25.
 //
 
-
 import XCTest
-@testable import Testing
+@testable import Tester
 
 final class InMemoryStoreTests: XCTestCase {
 
