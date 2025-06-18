@@ -26,7 +26,6 @@ final class MultiDataStore {
 
     // MARK: - Individual Accessors
     
-    // Convenience accessors
      var int: Int {
          get { store[\.int] }
          set { store[\.int] = newValue }

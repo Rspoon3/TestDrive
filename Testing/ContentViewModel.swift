@@ -4,6 +4,7 @@ import Combine
 final class ContentViewModel: ObservableObject {
     @Published var value: Int = 0
     @Published var multiValue: Int = 0
+    @Published var multiBool: Bool = true
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -25,12 +26,12 @@ final class ContentViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
-        // Observe MultiDataStore.int
         multiStore.publisher
-            .map(\.int)
+            .map { ($0.int, $0.bool) }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] newValue in
-                self?.multiValue = newValue
+            .sink { [weak self] int, bool in
+                self?.multiValue = int
+                self?.multiBool = bool
             }
             .store(in: &cancellables)
     }

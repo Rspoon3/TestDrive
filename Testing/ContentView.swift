@@ -46,6 +46,11 @@ struct ContentView: View {
                     }
                     .buttonStyle(.bordered)
                 }
+                
+                
+                Toggle("MultiDataStore.bool", isOn: $viewModel.multiBool)
+                    .toggleStyle(.switch)
+                    .padding(.top, 10)
             }
         }
         .padding()
