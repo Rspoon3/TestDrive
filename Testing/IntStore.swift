@@ -24,4 +24,8 @@ final class IntStore {
     var publisher: AnyPublisher<Int, Never> {
         store.publisher
     }
+    
+    func atomicUpdate(_ transform: (inout Int) -> Void) {
+        store.atomicUpdate(transform)
+    }
 }

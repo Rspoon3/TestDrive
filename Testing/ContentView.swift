@@ -26,6 +26,14 @@ struct ContentView: View {
                         viewModel.incrementIntStore()
                     }
                     .buttonStyle(.borderedProminent)
+                    
+                    .onAppear {
+                        DispatchQueue.global(qos: .userInitiated).async {
+                            DispatchQueue.concurrentPerform(iterations: 10_000) { _ in
+                                viewModel.atomicIncrementIntStore()
+                            }
+                        }
+                    }
                 }
             }
 
