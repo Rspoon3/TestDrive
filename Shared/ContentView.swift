@@ -8,21 +8,21 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var store = ThreadSafeIntegerStore()
+    @StateObject private var viewModel = ContentViewModel()
     
     var body: some View {
         VStack(spacing: 20) {
-            Text("\(store.value)")
+            Text("\(viewModel.store.value)")
                 .font(.largeTitle)
             
             HStack(spacing: 20) {
                 Button("-") {
-                    store.decrement()
+                    viewModel.decrement()
                 }
                 .buttonStyle(.borderedProminent)
                 
                 Button("+") {
-                    store.increment()
+                    viewModel.increment()
                 }
                 .buttonStyle(.borderedProminent)
             }
