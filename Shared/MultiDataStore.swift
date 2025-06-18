@@ -25,31 +25,20 @@ final class MultiDataStore {
     }
 
     // MARK: - Individual Accessors
+    
+    // Convenience accessors
+     var int: Int {
+         get { store[\.int] }
+         set { store[\.int] = newValue }
+     }
 
-    var int: Int {
-        get { store.value.int }
-        set {
-            var copy = store.value
-            copy.int = newValue
-            store.value = copy
-        }
-    }
+     var string: String {
+         get { store[\.string] }
+         set { store[\.string] = newValue }
+     }
 
-    var string: String {
-        get { store.value.string }
-        set {
-            var copy = store.value
-            copy.string = newValue
-            store.value = copy
-        }
-    }
-
-    var bool: Bool {
-        get { store.value.bool }
-        set {
-            var copy = store.value
-            copy.bool = newValue
-            store.value = copy
-        }
-    }
+     var bool: Bool {
+         get { store[\.bool] }
+         set { store[\.bool] = newValue }
+     }
 }

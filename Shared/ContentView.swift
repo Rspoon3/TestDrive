@@ -11,26 +11,46 @@ struct ContentView: View {
     @StateObject private var viewModel = ContentViewModel()
     
     var body: some View {
-        VStack(spacing: 20) {
-            Text("\(viewModel.value)")
-                .font(.largeTitle)
-            
-            HStack(spacing: 20) {
-                Button("-") {
-                    viewModel.store.value -= 1
+        VStack(spacing: 40) {
+            VStack(spacing: 20) {
+                Text("IntStore Value: \(viewModel.value)")
+                    .font(.title)
+
+                HStack(spacing: 20) {
+                    Button("-") {
+                        viewModel.decrementIntStore()
+                    }
+                    .buttonStyle(.borderedProminent)
+
+                    Button("+") {
+                        viewModel.incrementIntStore()
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
-                .buttonStyle(.borderedProminent)
-                
-                Button("+") {
-                    viewModel.store.value += 1
+            }
+
+            Divider()
+
+            VStack(spacing: 20) {
+                Text("MultiDataStore.int: \(viewModel.multiValue)")
+                    .font(.title2)
+
+                HStack(spacing: 20) {
+                    Button("-") {
+                        viewModel.decrementMulti()
+                    }
+                    .buttonStyle(.bordered)
+
+                    Button("+") {
+                        viewModel.incrementMulti()
+                    }
+                    .buttonStyle(.bordered)
                 }
-                .buttonStyle(.borderedProminent)
             }
         }
         .padding()
     }
 }
-
 #Preview {
     ContentView()
 }
