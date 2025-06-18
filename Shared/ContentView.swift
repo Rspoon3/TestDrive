@@ -12,17 +12,17 @@ struct ContentView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            Text("\(viewModel.store.value)")
+            Text("\(viewModel.value)")
                 .font(.largeTitle)
             
             HStack(spacing: 20) {
                 Button("-") {
-                    viewModel.decrement()
+                    viewModel.store.value -= 1
                 }
                 .buttonStyle(.borderedProminent)
                 
                 Button("+") {
-                    viewModel.increment()
+                    viewModel.store.value += 1
                 }
                 .buttonStyle(.borderedProminent)
             }

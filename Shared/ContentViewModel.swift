@@ -3,33 +3,40 @@ import Combine
 
 final class ContentViewModel: ObservableObject {
     @Published var value: Int = 0
+    private var cancellables = Set<AnyCancellable>()
+    let store: IntStore
     
-    let store: any IntegerStore
-    private var timer: Timer?
-    
-    init(store: any IntegerStore = ThreadSafeIntegerStore.shared) {
+    init(store: IntStore = .shared) {
         self.store = store
-        self.value = store.value
-        startPolling()
-    }
-    
-    deinit {
-        timer?.invalidate()
-    }
-    
-    private func startPolling() {
-        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-            DispatchQueue.main.async {
-                self.value = self.store.value
+        store.publisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newValue in
+                self?.value = newValue
             }
-        }
+            .store(in: &cancellables)
     }
     
-    func increment() {
-        store.increment()
+    func updateValue(to newValue: Int) {
+        IntStore.shared.value = newValue
+    }
+}
+
+import Foundation
+import Combine
+
+final class IntStore {
+    static let shared = IntStore()
+    
+    private let store = InMemoryStore<Int>(initialValue: 0)
+    
+    private init() {}
+    
+    var value: Int {
+        get { store.value }
+        set { store.value = newValue }
     }
     
-    func decrement() {
-        store.decrement()
+    var publisher: AnyPublisher<Int, Never> {
+        store.publisher
     }
 }

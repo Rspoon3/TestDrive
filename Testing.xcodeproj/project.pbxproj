@@ -7,14 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		94E3E6A22E032C1E00F1AEE6 /* ThreadSafeIntegerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E3E6A12E032C1E00F1AEE6 /* ThreadSafeIntegerStore.swift */; };
-		94E3E6A32E032C1E00F1AEE6 /* ThreadSafeIntegerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E3E6A12E032C1E00F1AEE6 /* ThreadSafeIntegerStore.swift */; };
 		94E3E6A52E032D9A00F1AEE6 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E3E6A42E032D9A00F1AEE6 /* ContentViewModel.swift */; };
 		94E3E6A62E032D9A00F1AEE6 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E3E6A42E032D9A00F1AEE6 /* ContentViewModel.swift */; };
-		94E3E6A92E03312E00F1AEE6 /* DiscoverStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E3E6A72E03312E00F1AEE6 /* DiscoverStore.swift */; };
-		94E3E6AA2E03312E00F1AEE6 /* SpinAndWinStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E3E6A82E03312E00F1AEE6 /* SpinAndWinStore.swift */; };
-		94E3E6AB2E03312E00F1AEE6 /* DiscoverStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E3E6A72E03312E00F1AEE6 /* DiscoverStore.swift */; };
-		94E3E6AC2E03312E00F1AEE6 /* SpinAndWinStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E3E6A82E03312E00F1AEE6 /* SpinAndWinStore.swift */; };
+		94E3E6B72E033D2E00F1AEE6 /* InMemoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E3E6B62E033D2E00F1AEE6 /* InMemoryStore.swift */; };
+		94E3E6B82E033D2E00F1AEE6 /* InMemoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E3E6B62E033D2E00F1AEE6 /* InMemoryStore.swift */; };
+		94E3E6BA2E033DA400F1AEE6 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E3E6B92E033DA400F1AEE6 /* Person.swift */; };
+		94E3E6BB2E033DA400F1AEE6 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E3E6B92E033DA400F1AEE6 /* Person.swift */; };
+		94E3E6BD2E033DE800F1AEE6 /* PersonStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E3E6BC2E033DE800F1AEE6 /* PersonStore.swift */; };
+		94E3E6BE2E033DE800F1AEE6 /* PersonStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E3E6BC2E033DE800F1AEE6 /* PersonStore.swift */; };
 		A6A262F024E0BCB30091EA92 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262EF24E0BCB30091EA92 /* Tests_iOS.swift */; };
 		A6A262FB24E0BCB30091EA92 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262FA24E0BCB30091EA92 /* Tests_macOS.swift */; };
 		A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D424E0BCB20091EA92 /* TestingApp.swift */; };
@@ -43,10 +43,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		94E3E6A12E032C1E00F1AEE6 /* ThreadSafeIntegerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadSafeIntegerStore.swift; sourceTree = "<group>"; };
 		94E3E6A42E032D9A00F1AEE6 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
-		94E3E6A72E03312E00F1AEE6 /* DiscoverStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverStore.swift; sourceTree = "<group>"; };
-		94E3E6A82E03312E00F1AEE6 /* SpinAndWinStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinAndWinStore.swift; sourceTree = "<group>"; };
+		94E3E6B62E033D2E00F1AEE6 /* InMemoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InMemoryStore.swift; sourceTree = "<group>"; };
+		94E3E6B92E033DA400F1AEE6 /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
+		94E3E6BC2E033DE800F1AEE6 /* PersonStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonStore.swift; sourceTree = "<group>"; };
 		A6A0310D266EBC6D001CBE2A /* Testing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Testing.entitlements; sourceTree = "<group>"; };
 		A6A262D424E0BCB20091EA92 /* TestingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingApp.swift; sourceTree = "<group>"; };
 		A6A262D524E0BCB20091EA92 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -121,11 +121,11 @@
 			isa = PBXGroup;
 			children = (
 				A6A262D424E0BCB20091EA92 /* TestingApp.swift */,
-				94E3E6A12E032C1E00F1AEE6 /* ThreadSafeIntegerStore.swift */,
-				94E3E6A72E03312E00F1AEE6 /* DiscoverStore.swift */,
-				94E3E6A82E03312E00F1AEE6 /* SpinAndWinStore.swift */,
 				94E3E6A42E032D9A00F1AEE6 /* ContentViewModel.swift */,
+				94E3E6B92E033DA400F1AEE6 /* Person.swift */,
 				A6A262D524E0BCB20091EA92 /* ContentView.swift */,
+				94E3E6BC2E033DE800F1AEE6 /* PersonStore.swift */,
+				94E3E6B62E033D2E00F1AEE6 /* InMemoryStore.swift */,
 				A6A262D624E0BCB30091EA92 /* Assets.xcassets */,
 			);
 			path = Shared;
@@ -339,12 +339,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94E3E6BD2E033DE800F1AEE6 /* PersonStore.swift in Sources */,
+				94E3E6BB2E033DA400F1AEE6 /* Person.swift in Sources */,
 				94E3E6A52E032D9A00F1AEE6 /* ContentViewModel.swift in Sources */,
 				A6A262FF24E0BCB30091EA92 /* ContentView.swift in Sources */,
-				94E3E6A22E032C1E00F1AEE6 /* ThreadSafeIntegerStore.swift in Sources */,
 				A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */,
-				94E3E6AB2E03312E00F1AEE6 /* DiscoverStore.swift in Sources */,
-				94E3E6AC2E03312E00F1AEE6 /* SpinAndWinStore.swift in Sources */,
+				94E3E6B82E033D2E00F1AEE6 /* InMemoryStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -352,12 +352,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94E3E6BE2E033DE800F1AEE6 /* PersonStore.swift in Sources */,
+				94E3E6BA2E033DA400F1AEE6 /* Person.swift in Sources */,
 				94E3E6A62E032D9A00F1AEE6 /* ContentViewModel.swift in Sources */,
 				A6A2630024E0BCB30091EA92 /* ContentView.swift in Sources */,
-				94E3E6A32E032C1E00F1AEE6 /* ThreadSafeIntegerStore.swift in Sources */,
 				A6A262FE24E0BCB30091EA92 /* TestingApp.swift in Sources */,
-				94E3E6A92E03312E00F1AEE6 /* DiscoverStore.swift in Sources */,
-				94E3E6AA2E03312E00F1AEE6 /* SpinAndWinStore.swift in Sources */,
+				94E3E6B72E033D2E00F1AEE6 /* InMemoryStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
