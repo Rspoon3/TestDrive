@@ -9,33 +9,33 @@
 import Foundation
 import Combine
 
-final class PersonStore {
+final class PersonStore: InMemoryStore<[Person]> {
     static let shared = PersonStore()
 
-    private let store = InMemoryStore<[Person]>(initialValue: [])
-
-    private init() {}
-
-    var people: [Person] {
-        get { store.value }
-        set { store.value = newValue }
+    private init() {
+        super.init(initialValue: [])
     }
 
-    var publisher: AnyPublisher<[Person], Never> {
-        store.publisher
+    var people: [Person] {
+        get { value }
+        set { value = newValue }
     }
 
     func add(_ person: Person) {
-        store.value.append(person)
+        mutate { $0.append(person) }
     }
 
     func remove(id: UUID) {
-        store.value.removeAll { $0.id == id }
+        mutate { people in
+            people.removeAll { $0.id == id }
+        }
     }
 
     func update(_ person: Person) {
-        store.value = store.value.map {
-            $0.id == person.id ? person : $0
+        mutate { people in
+            people = people.map {
+                $0.id == person.id ? person : $0
+            }
         }
     }
 }

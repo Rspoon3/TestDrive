@@ -5,39 +5,30 @@
 //  Created by Ricky Witherspoon on 6/18/25.
 //
 
-
 import Foundation
 import Combine
 
-final class MultiDataStore {
+final class MultiDataStore: InMemoryStore<MultiData> {
     static let shared = MultiDataStore()
-    
-    private let store = InMemoryStore<MultiData>(
-        initialValue: MultiData(int: 0, string: "", bool: false)
-    )
-    
-    private init() {}
 
-    // MARK: - Combined Access
-
-    var publisher: AnyPublisher<MultiData, Never> {
-        store.publisher
+    private init() {
+        super.init(initialValue: MultiData(int: 0, string: "", bool: false))
     }
 
-    // MARK: - Individual Accessors
-    
-     var int: Int {
-         get { store[\.int] }
-         set { store[\.int] = newValue }
-     }
+    // MARK: - Individual Accessors via KeyPaths
 
-     var string: String {
-         get { store[\.string] }
-         set { store[\.string] = newValue }
-     }
+    var int: Int {
+        get { self[\.int] }
+        set { self[\.int] = newValue }
+    }
 
-     var bool: Bool {
-         get { store[\.bool] }
-         set { store[\.bool] = newValue }
-     }
+    var string: String {
+        get { self[\.string] }
+        set { self[\.string] = newValue }
+    }
+
+    var bool: Bool {
+        get { self[\.bool] }
+        set { self[\.bool] = newValue }
+    }
 }

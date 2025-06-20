@@ -9,23 +9,16 @@
 import Foundation
 import Combine
 
-final class IntStore {
+final class IntStore: InMemoryStore<Int>, ObservableObject {
     static let shared = IntStore()
-    
-    private let store = InMemoryStore<Int>(initialValue: 0)
-    
-    private init() {}
-    
-    var value: Int {
-        get { store.value }
-        set { store.value = newValue }
-    }
-    
-    var publisher: AnyPublisher<Int, Never> {
-        store.publisher
-    }
-    
-    func mutate(_ transform: (inout Int) -> Void) {
-        store.mutate(transform)
+    private var cancellable: AnyCancellable?
+
+    private init() {
+        super.init(initialValue: 0)
+        
+          cancellable = publisher
+              .sink { [weak self] _ in
+                  self?.objectWillChange.send()
+              }
     }
 }

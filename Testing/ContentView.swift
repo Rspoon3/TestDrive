@@ -7,6 +7,17 @@
 
 import SwiftUI
 
+struct ContentView_: View {
+    @StateObject private var viewStore = IntStore.shared
+    
+    var body: some View {
+        Button(viewStore.value.formatted()) {
+            viewStore.value += 1
+        }
+        .font(.largeTitle)
+    }
+}
+
 struct ContentView: View {
     @StateObject private var viewModel = ContentViewModel()
     

@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import os.lock
 
-final class InMemoryStore<T> {
+class InMemoryStore<T> {
     private let lock = OSAllocatedUnfairLock()
     private var _value: T
     private let subject: CurrentValueSubject<T, Never>
