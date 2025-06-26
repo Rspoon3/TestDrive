@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 
-final class IntStore: InMemoryStore<Int>, ObservableObject {
+public final class IntStore: InMemoryStore<Int>, ObservableObject {
     static let shared = IntStore()
     private var cancellable: AnyCancellable?
 

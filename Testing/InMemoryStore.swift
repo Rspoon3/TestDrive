@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import os.lock
 
-class InMemoryStore<T> {
+public class InMemoryStore<T>: InMemoryStoreProtocol {
     private let lock = OSAllocatedUnfairLock()
     private var _value: T
     private let subject: CurrentValueSubject<T, Never>
@@ -19,7 +19,7 @@ class InMemoryStore<T> {
         self.subject = CurrentValueSubject(initialValue)
     }
     
-    var value: T {
+    public var value: T {
         get {
             lock.withLock {
                 _value
@@ -33,7 +33,7 @@ class InMemoryStore<T> {
         }
     }
     
-    var publisher: AnyPublisher<T, Never> {
+    public var publisher: AnyPublisher<T, Never> {
         subject.eraseToAnyPublisher()
     }
     
@@ -52,7 +52,7 @@ class InMemoryStore<T> {
     
     /// Performs an atomic read-modify-write operation
     /// Use this for compound operations like +=, -=, etc. to ensure atomicity
-    func mutate(_ transform: (inout T) -> Void) {
+    public func mutate(_ transform: (inout T) -> Void) {
         lock.withLock {
             transform(&_value)
             subject.send(_value)
