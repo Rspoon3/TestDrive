@@ -7,17 +7,6 @@
 
 import SwiftUI
 
-struct ContentView_: View {
-    @StateObject private var viewStore = IntStore.shared
-    
-    var body: some View {
-        Button(viewStore.value.formatted()) {
-            viewStore.value += 1
-        }
-        .font(.largeTitle)
-    }
-}
-
 struct ContentView: View {
     @StateObject private var viewModel = ContentViewModel()
     
@@ -28,6 +17,15 @@ struct ContentView: View {
                     .font(.title)
 
                 HStack(spacing: 20) {
+                    Button("Test \(viewModel.count)") {
+                        Task {
+                            await viewModel.test.increment()
+                        }
+                    }
+                    .task {
+                        await viewModel.watchTest()
+                    }
+                    
                     Button("-") {
                         viewModel.decrementIntStore()
                     }
@@ -37,44 +35,24 @@ struct ContentView: View {
                         viewModel.incrementIntStore()
                     }
                     .buttonStyle(.borderedProminent)
-                    
                     .onAppear {
                         DispatchQueue.global(qos: .userInitiated).async {
                             DispatchQueue.concurrentPerform(iterations: 10_000) { _ in
-                                viewModel.mutateIncrementIntStore()
+                                viewModel.incrementIntStore()
+                                
+//                                Task {
+//                                    await viewModel.test.increment()
+//                                }
                             }
                         }
                     }
                 }
             }
-
-            Divider()
-
-            VStack(spacing: 20) {
-                Text("MultiDataStore.int: \(viewModel.multiValue)")
-                    .font(.title2)
-
-                HStack(spacing: 20) {
-                    Button("-") {
-                        viewModel.decrementMulti()
-                    }
-                    .buttonStyle(.bordered)
-
-                    Button("+") {
-                        viewModel.incrementMulti()
-                    }
-                    .buttonStyle(.bordered)
-                }
-                
-                
-                Toggle("MultiDataStore.bool", isOn: $viewModel.multiBool)
-                    .toggleStyle(.switch)
-                    .padding(.top, 10)
-            }
         }
         .padding()
     }
 }
+
 #Preview {
     ContentView()
 }

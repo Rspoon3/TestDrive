@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import os.lock
 
-public class InMemoryStore<T>: InMemoryStoreProtocol {
+public class InMemoryStore<T: Sendable> {
     private let lock = OSAllocatedUnfairLock()
     private var _value: T
     private let subject: CurrentValueSubject<T, Never>
@@ -19,7 +19,7 @@ public class InMemoryStore<T>: InMemoryStoreProtocol {
         self.subject = CurrentValueSubject(initialValue)
     }
     
-    public var value: T {
+    public private(set) var value: T {
         get {
             lock.withLock {
                 _value
@@ -37,22 +37,21 @@ public class InMemoryStore<T>: InMemoryStoreProtocol {
         subject.eraseToAnyPublisher()
     }
     
-    subscript<Value>(keyPath: WritableKeyPath<T, Value>) -> Value {
-        get {
-            value[keyPath: keyPath]
-        }
-        set {
-            value = {
-                var copy = $0
-                copy[keyPath: keyPath] = newValue
-                return copy
-            }(value)
-        }
+    public subscript<Value>(keyPath: KeyPath<T, Value>) -> Value {
+        value[keyPath: keyPath]
     }
+    
+    public func update(_ newValue: T) {
+        mutate { $0 = newValue }
+    }
+    
+//    public func updateValue<Value>(_ newValue: Value, for keyPath: WritableKeyPath<T, Value>) {
+//        mutate { $0[keyPath: keyPath] = newValue }
+//    }
     
     /// Performs an atomic read-modify-write operation
     /// Use this for compound operations like +=, -=, etc. to ensure atomicity
-    public func mutate(_ transform: (inout T) -> Void) {
+    private func mutate(_ transform: @Sendable (inout T) -> Void) {
         lock.withLock {
             transform(&_value)
             subject.send(_value)

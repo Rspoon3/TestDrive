@@ -3,21 +3,18 @@ import Combine
 
 final class ContentViewModel: ObservableObject {
     @Published var value: Int = 0
-    @Published var multiValue: Int = 0
-    @Published var multiBool: Bool = true
-
+    @Published var count: Int = 0
+    let test = Test()
+    
     private var cancellables = Set<AnyCancellable>()
-
-    let store: IntStore
-    let multiStore: MultiDataStore
-
+    
+    let store: IntegerStore
+    
     init(
-        store: IntStore = .shared,
-        multiStore: MultiDataStore = .shared
+        store: IntegerStore = IntegerStore(),
     ) {
         self.store = store
-        self.multiStore = multiStore
-
+        
         // Observe IntStore
         store.publisher
             .receive(on: DispatchQueue.main)
@@ -25,42 +22,22 @@ final class ContentViewModel: ObservableObject {
                 self?.value = newValue
             }
             .store(in: &cancellables)
-
-        multiStore.publisher
-            .map { ($0.int, $0.bool) }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] int, bool in
-                self?.multiValue = int
-                self?.multiBool = bool
-            }
-            .store(in: &cancellables)
-    }
-
-    func updateValue(to newValue: Int) {
-        store.value = newValue
-    }
-
-    func incrementIntStore() {
-        store.value += 1
-    }
-
-    func decrementIntStore() {
-        store.value -= 1
     }
     
-    func mutateIncrementIntStore() {
-        store.mutate { $0 += 1 }
+    func incrementIntStore() {
+        store.increment()
     }
-
-    func mutateDecrementIntStore() {
-        store.mutate { $0 -= 1 }
+    
+    func decrementIntStore() {
+        store.decrement()
     }
-
-    func incrementMulti() {
-        multiStore.int += 1
-    }
-
-    func decrementMulti() {
-        multiStore.int -= 1
+    
+    func watchTest() async {
+        await test.$value
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newValue in
+                self?.count = newValue
+            }
+            .store(in: &cancellables)
     }
 }

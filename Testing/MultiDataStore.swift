@@ -17,18 +17,18 @@ final class MultiDataStore: InMemoryStore<MultiData> {
 
     // MARK: - Individual Accessors via KeyPaths
 
-    var int: Int {
-        get { self[\.int] }
-        set { self[\.int] = newValue }
-    }
-
-    var string: String {
-        get { self[\.string] }
-        set { self[\.string] = newValue }
-    }
-
-    var bool: Bool {
-        get { self[\.bool] }
-        set { self[\.bool] = newValue }
-    }
+//    var int: Int {
+//        get { self[\.int] }
+//        set { self[\.int] = newValue }
+//    }
+//
+//    var string: String {
+//        get { self[\.string] }
+//        set { self[\.string] = newValue }
+//    }
+//
+//    var bool: Bool {
+//        get { self[\.bool] }
+//        set { self[\.bool] = newValue }
+//    }
 }
