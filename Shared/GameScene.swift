@@ -218,7 +218,27 @@ extension GameScene: SKPhysicsContactDelegate {
         let collision = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
         
         if collision == PhysicsCategory.player | PhysicsCategory.obstacle {
-            gameOverSequence()
+            // Determine which body is the player and which is the obstacle
+            let playerNode: SKNode
+            let obstacleNode: SKNode
+            
+            if contact.bodyA.categoryBitMask == PhysicsCategory.player {
+                playerNode = contact.bodyA.node!
+                obstacleNode = contact.bodyB.node!
+            } else {
+                playerNode = contact.bodyB.node!
+                obstacleNode = contact.bodyA.node!
+            }
+            
+            // Check if player hit the front of the obstacle (not the top)
+            // If player's x position is less than obstacle's x position, it's a front collision
+            if playerNode.position.x < obstacleNode.position.x {
+                gameOverSequence()
+            } else {
+                // Player landed on top - reduce score by 10%
+                score = Int(Double(score) * 0.9)
+                scoreLabel.text = "Score: \(score)"
+            }
         }
     }
 }
