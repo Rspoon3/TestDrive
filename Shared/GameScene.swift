@@ -166,7 +166,9 @@ class GameScene: SKScene {
         scoreLabel.text = "Score: \(score)"
         
         obstacleTimer += deltaTime
-        if obstacleTimer > obstacleSpawnInterval {
+        // Add randomness: variation to spawn interval
+        let randomizedInterval = obstacleSpawnInterval * CGFloat.random(in: 0.5...5)
+        if obstacleTimer > randomizedInterval {
             createObstacle()
             obstacleTimer = 0
         }
