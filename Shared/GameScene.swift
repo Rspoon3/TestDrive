@@ -5,7 +5,7 @@ class GameScene: SKScene {
     private let obstacleSpeed: TimeInterval = 1.5  // Lower = faster, Higher = slower
     private let obstacleSpawnInterval: TimeInterval = 2.0  // Lower = more frequent, Higher = less frequent
     
-    private var player: SKShapeNode!
+    private var player: SKSpriteNode!
     private var ground: SKShapeNode!
     private var scoreLabel: SKLabelNode!
     private var score = 0
@@ -40,12 +40,13 @@ class GameScene: SKScene {
     }
     
     func setupPlayer() {
-        player = SKShapeNode(rectOf: CGSize(width: 30, height: 30))
-        player.fillColor = .white
-        player.strokeColor = .white
+        // Create dog sprite from image
+        player = SKSpriteNode(imageNamed: "dog")
+        player.size = CGSize(width: 40, height: 30)
         player.position = CGPoint(x: 100, y: 100)
         
-        player.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 30, height: 30))
+        // Set up physics body for the dog
+        player.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 35, height: 25))
         player.physicsBody?.categoryBitMask = PhysicsCategory.player
         player.physicsBody?.collisionBitMask = PhysicsCategory.ground | PhysicsCategory.obstacle
         player.physicsBody?.contactTestBitMask = PhysicsCategory.obstacle
