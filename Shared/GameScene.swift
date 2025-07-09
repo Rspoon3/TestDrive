@@ -127,6 +127,7 @@ class GameScene: SKScene {
         obstacle.fillColor = .red
         obstacle.strokeColor = .red
         obstacle.position = CGPoint(x: size.width + 20, y: 70)
+        obstacle.name = "obstacle"
         
         obstacle.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 20, height: 40))
         obstacle.physicsBody?.isDynamic = false
@@ -182,6 +183,15 @@ class GameScene: SKScene {
     
     func gameOverSequence() {
         gameOver = true
+        
+        // Freeze the player
+        player.physicsBody?.velocity = CGVector.zero
+        player.physicsBody?.isDynamic = false
+        
+        // Freeze all obstacles
+        enumerateChildNodes(withName: "//obstacle") { node, _ in
+            node.removeAllActions()
+        }
         
         let gameOverLabel = SKLabelNode(fontNamed: "Arial")
         gameOverLabel.fontSize = 48
