@@ -64,12 +64,15 @@ class GameScene: SKScene {
     }
     
     func setupBackground() {
-        for i in 0..<20 {
+        for i in 0..<25 {
             let star = SKShapeNode(circleOfRadius: CGFloat.random(in: 1...3))
             star.fillColor = .white
             star.strokeColor = .white
+            
+            // Distribute stars across and beyond the screen width
+            let xPosition = CGFloat.random(in: -50...size.width * 1.5)
             star.position = CGPoint(
-                x: CGFloat.random(in: 0...size.width * 1.5),
+                x: xPosition,
                 y: CGFloat.random(in: 100...size.height)
             )
             star.alpha = CGFloat.random(in: 0.3...1.0)
@@ -77,24 +80,29 @@ class GameScene: SKScene {
             addChild(star)
             
             // Slow movement for stars
-            let moveLeft = SKAction.moveBy(x: -size.width * 1.5, y: 0, duration: TimeInterval.random(in: 30...50))
-            let resetPosition = SKAction.moveBy(x: size.width * 1.5, y: 0, duration: 0)
+            let duration = TimeInterval.random(in: 30...50)
+            let moveLeft = SKAction.moveBy(x: -(size.width + 100), y: 0, duration: duration)
+            let resetPosition = SKAction.moveTo(x: size.width + 50, duration: 0)
             let sequence = SKAction.sequence([moveLeft, resetPosition])
             star.run(SKAction.repeatForever(sequence))
         }
         
-        for i in 0..<5 {
+        for i in 0..<7 {
             let cloud = createCloud()
+            
+            // Distribute clouds across and beyond the screen width
+            let xPosition = CGFloat.random(in: -100...size.width * 1.5)
             cloud.position = CGPoint(
-                x: CGFloat.random(in: 0...size.width * 1.5),
+                x: xPosition,
                 y: CGFloat.random(in: size.height * 0.6...size.height * 0.9)
             )
             cloud.name = "cloud"
             addChild(cloud)
             
             // Clouds move slightly faster than stars
-            let moveLeft = SKAction.moveBy(x: -size.width * 1.5, y: 0, duration: TimeInterval.random(in: 20...35))
-            let resetPosition = SKAction.moveBy(x: size.width * 1.5, y: 0, duration: 0)
+            let duration = TimeInterval.random(in: 20...35)
+            let moveLeft = SKAction.moveBy(x: -(size.width + 200), y: 0, duration: duration)
+            let resetPosition = SKAction.moveTo(x: size.width + 100, duration: 0)
             let sequence = SKAction.sequence([moveLeft, resetPosition])
             cloud.run(SKAction.repeatForever(sequence))
         }
