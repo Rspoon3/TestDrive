@@ -45,6 +45,12 @@ class GameScene: SKScene {
         player.size = CGSize(width: 40, height: 30)
         player.position = CGPoint(x: 100, y: 100)
         
+        // Create running animation
+        let dogTexture1 = SKTexture(imageNamed: "dog")
+        let dogTexture2 = SKTexture(imageNamed: "dog2")
+        let runAnimation = SKAction.animate(with: [dogTexture1, dogTexture2], timePerFrame: 0.2)
+        player.run(SKAction.repeatForever(runAnimation))
+        
         // Set up physics body for the dog
         player.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 35, height: 25))
         player.physicsBody?.categoryBitMask = PhysicsCategory.player
