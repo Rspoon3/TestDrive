@@ -49,7 +49,7 @@ class GameScene: SKScene {
         let dogTexture1 = SKTexture(imageNamed: "dog")
         let dogTexture2 = SKTexture(imageNamed: "dog2")
         let runAnimation = SKAction.animate(with: [dogTexture1, dogTexture2], timePerFrame: 0.2)
-        player.run(SKAction.repeatForever(runAnimation))
+        player.run(SKAction.repeatForever(runAnimation), withKey: "runAnimation")
         
         // Set up physics body for the dog
         player.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 35, height: 25))
@@ -157,6 +157,8 @@ class GameScene: SKScene {
         if !isJumping {
             player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 30))
             isJumping = true
+            // Pause the running animation while jumping
+            player.removeAction(forKey: "runAnimation")
         }
     }
     
@@ -183,7 +185,14 @@ class GameScene: SKScene {
         
         if let playerPhysicsBody = player.physicsBody {
             if abs(playerPhysicsBody.velocity.dy) < 10 && player.position.y <= 66 {
-                isJumping = false
+                if isJumping {
+                    isJumping = false
+                    // Resume running animation when landing
+                    let dogTexture1 = SKTexture(imageNamed: "dog")
+                    let dogTexture2 = SKTexture(imageNamed: "dog2")
+                    let runAnimation = SKAction.animate(with: [dogTexture1, dogTexture2], timePerFrame: 0.2)
+                    player.run(SKAction.repeatForever(runAnimation), withKey: "runAnimation")
+                }
             }
         }
     }
