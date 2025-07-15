@@ -13,6 +13,7 @@ class GameScene: SKScene {
     private var isJumping = false
     private var gameOver = false
     private var obstacleTimer: TimeInterval = 0
+    private let timePerFrame: CGFloat = 0.025
     
     override func didMove(to view: SKView) {
         backgroundColor = SKColor(red: 0.15, green: 0.15, blue: 0.3, alpha: 1.0)
@@ -40,18 +41,21 @@ class GameScene: SKScene {
     }
     
     func setupPlayer() {
-        // Create dog sprite from image
-        player = SKSpriteNode(imageNamed: "dog")
+        // Create calvin sprite from first frame
+        player = SKSpriteNode(imageNamed: "frame_001")
         player.size = CGSize(width: 40, height: 30)
         player.position = CGPoint(x: 100, y: 100)
         
-        // Create running animation
-        let dogTexture1 = SKTexture(imageNamed: "dog")
-        let dogTexture2 = SKTexture(imageNamed: "dog2")
-        let runAnimation = SKAction.animate(with: [dogTexture1, dogTexture2], timePerFrame: 0.2)
+        // Create running animation with all 18 frames
+        var calvinTextures: [SKTexture] = []
+        for i in 1...18 {
+            let frameName = String(format: "frame_%03d", i)
+            calvinTextures.append(SKTexture(imageNamed: frameName))
+        }
+        let runAnimation = SKAction.animate(with: calvinTextures, timePerFrame: timePerFrame)
         player.run(SKAction.repeatForever(runAnimation), withKey: "runAnimation")
         
-        // Set up physics body for the dog
+        // Set up physics body for calvin
         player.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 35, height: 25))
         player.physicsBody?.categoryBitMask = PhysicsCategory.player
         player.physicsBody?.collisionBitMask = PhysicsCategory.ground | PhysicsCategory.obstacle
@@ -71,7 +75,7 @@ class GameScene: SKScene {
     }
     
     func setupBackground() {
-        for i in 0..<25 {
+        for _ in 0..<25 {
             let star = SKShapeNode(circleOfRadius: CGFloat.random(in: 1...3))
             star.fillColor = .white
             star.strokeColor = .white
@@ -94,7 +98,7 @@ class GameScene: SKScene {
             star.run(SKAction.repeatForever(sequence))
         }
         
-        for i in 0..<7 {
+        for _ in 0..<7 {
             let cloud = createCloud()
             
             // Distribute clouds across and beyond the screen width
@@ -187,10 +191,13 @@ class GameScene: SKScene {
             if abs(playerPhysicsBody.velocity.dy) < 10 && player.position.y <= 66 {
                 if isJumping {
                     isJumping = false
-                    // Resume running animation when landing
-                    let dogTexture1 = SKTexture(imageNamed: "dog")
-                    let dogTexture2 = SKTexture(imageNamed: "dog2")
-                    let runAnimation = SKAction.animate(with: [dogTexture1, dogTexture2], timePerFrame: 0.2)
+                    // Resume calvin running animation when landing
+                    var calvinTextures: [SKTexture] = []
+                    for i in 1...18 {
+                        let frameName = String(format: "frame_%03d", i)
+                        calvinTextures.append(SKTexture(imageNamed: frameName))
+                    }
+                    let runAnimation = SKAction.animate(with: calvinTextures, timePerFrame: timePerFrame)
                     player.run(SKAction.repeatForever(runAnimation), withKey: "runAnimation")
                 }
             }
@@ -200,9 +207,10 @@ class GameScene: SKScene {
     func gameOverSequence() {
         gameOver = true
         
-        // Freeze the player
+        // Freeze the player and stop animation on current frame
         player.physicsBody?.velocity = CGVector.zero
         player.physicsBody?.isDynamic = false
+        player.removeAction(forKey: "runAnimation")
         
         // Freeze all obstacles
         enumerateChildNodes(withName: "//obstacle") { node, _ in
