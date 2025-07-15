@@ -14,6 +14,8 @@ class GameScene: SKScene {
     private var gameOver = false
     private var obstacleTimer: TimeInterval = 0
     private let timePerFrame: CGFloat = 0.025
+    private var jumpStartTime: TimeInterval = 0
+    private var jumpAnimationDuration: TimeInterval = 0.5  // Duration to go through frames 8-18
     
     override func didMove(to view: SKView) {
         backgroundColor = SKColor(red: 0.15, green: 0.15, blue: 0.3, alpha: 1.0)
@@ -161,8 +163,11 @@ class GameScene: SKScene {
         if !isJumping {
             player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 30))
             isJumping = true
+            jumpStartTime = lastUpdateTime
             // Pause the running animation while jumping
             player.removeAction(forKey: "runAnimation")
+            // Start with frame_008
+            player.texture = SKTexture(imageNamed: "frame_008")
         }
     }
     
@@ -200,6 +205,14 @@ class GameScene: SKScene {
                     let runAnimation = SKAction.animate(with: calvinTextures, timePerFrame: timePerFrame)
                     player.run(SKAction.repeatForever(runAnimation), withKey: "runAnimation")
                 }
+            } else if isJumping {
+                // Animate through frames 8-18 while in the air
+                let jumpElapsed = currentTime - jumpStartTime
+                let progress = min(jumpElapsed / jumpAnimationDuration, 1.0)
+                let frameRange = 18 - 8  // frames 8 through 18
+                let currentFrame = 8 + Int(Double(frameRange) * progress)
+                let frameName = String(format: "frame_%03d", currentFrame)
+                player.texture = SKTexture(imageNamed: frameName)
             }
         }
     }
