@@ -136,13 +136,52 @@ class GameScene: SKScene {
     }
     
     func createObstacle() {
-        let obstacle = SKShapeNode(rectOf: CGSize(width: 20, height: 40))
-        obstacle.fillColor = .red
-        obstacle.strokeColor = .red
+        // Create fire hydrant container
+        let obstacle = SKNode()
         obstacle.position = CGPoint(x: size.width + 20, y: 70)
         obstacle.name = "obstacle"
         
-        obstacle.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 20, height: 40))
+        // Create hydrant body (main cylinder)
+        let hydrantBody = SKShapeNode(rectOf: CGSize(width: 24, height: 30))
+        hydrantBody.fillColor = .red
+        hydrantBody.strokeColor = .darkGray
+        hydrantBody.lineWidth = 1
+        hydrantBody.position = CGPoint(x: 0, y: 0)
+        obstacle.addChild(hydrantBody)
+        
+        // Create hydrant cap (top)
+        let hydrantCap = SKShapeNode(ellipseOf: CGSize(width: 28, height: 8))
+        hydrantCap.fillColor = .red
+        hydrantCap.strokeColor = .darkGray
+        hydrantCap.lineWidth = 1
+        hydrantCap.position = CGPoint(x: 0, y: 15)
+        obstacle.addChild(hydrantCap)
+        
+        // Create side nozzles
+        let leftNozzle = SKShapeNode(circleOfRadius: 4)
+        leftNozzle.fillColor = .gray
+        leftNozzle.strokeColor = .darkGray
+        leftNozzle.lineWidth = 1
+        leftNozzle.position = CGPoint(x: -12, y: 5)
+        obstacle.addChild(leftNozzle)
+        
+        let rightNozzle = SKShapeNode(circleOfRadius: 4)
+        rightNozzle.fillColor = .gray
+        rightNozzle.strokeColor = .darkGray
+        rightNozzle.lineWidth = 1
+        rightNozzle.position = CGPoint(x: 12, y: 5)
+        obstacle.addChild(rightNozzle)
+        
+        // Create base
+        let base = SKShapeNode(rectOf: CGSize(width: 30, height: 6))
+        base.fillColor = .darkGray
+        base.strokeColor = .black
+        base.lineWidth = 1
+        base.position = CGPoint(x: 0, y: -18)
+        obstacle.addChild(base)
+        
+        // Set up physics body for the entire hydrant
+        obstacle.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 30, height: 40))
         obstacle.physicsBody?.isDynamic = false
         obstacle.physicsBody?.categoryBitMask = PhysicsCategory.obstacle
         obstacle.physicsBody?.contactTestBitMask = PhysicsCategory.player
