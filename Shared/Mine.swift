@@ -14,26 +14,29 @@ struct Mine: View {
     private let cornerRadius: CGFloat = 8
     
     var body: some View {
-        ZStack {
-            
-            Button("Get Started") {
-            }
-            .padding(16)
-            .background(Color.white)
-            .cornerRadius(8)
-            .foregroundStyle(.purple)
+        Button("Get Started") {
+        }
+        .padding(16)
+        .background(Color.white)
+        .foregroundStyle(.purple)
+        .cornerRadius(cornerRadius)
+        .overlay {
+            GradientTest(
+                rotationDuration: 20,
+                pauseDuration: 2,
+                maxSliceWidth: 90,
+                convergenceAngle: 0,
+                gradientColors: [.white, .purple],
+                opacityAnimationPercentage: 0.1
+            )
+            .rotationEffect(.degrees(-90))
+            .mask(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .strokeBorder(style: StrokeStyle(lineWidth: 3)) // inside stroke
+            )
         }
         .padding(24)
         .background(Color.purple)
-        .cornerRadius(cornerRadius)
-        .overlay {
-            GradientTest()
-                .rotationEffect(.degrees(-90))
-                .mask(
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .strokeBorder(style: StrokeStyle(lineWidth: 3)) // inside stroke
-                )
-        }
     }
 }
 

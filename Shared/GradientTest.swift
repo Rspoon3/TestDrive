@@ -48,22 +48,25 @@ struct GradientTest: View {
     let maxSliceWidth: Double
     let convergenceAngle: Double
     let gradientColors: [Color]
+    let opacityAnimationPercentage: Double? // nil = no opacity animation, 0.0-1.0 = percentage of rotation for fade in/out
     
     init(
         rotationDuration: Double = 6.0,
         pauseDuration: Double = 2.0,
         maxSliceWidth: Double = 90.0,
         convergenceAngle: Double = 0.0,
-        gradientColors: [Color] = [.white, .purple]
+        gradientColors: [Color] = [.white, .purple],
+        opacityAnimationPercentage: Double? = nil
     ) {
         self.rotationDuration = rotationDuration
         self.pauseDuration = pauseDuration
         self.maxSliceWidth = maxSliceWidth
         self.convergenceAngle = convergenceAngle
         self.gradientColors = gradientColors
+        self.opacityAnimationPercentage = opacityAnimationPercentage
     }
     
-    func calculateAnimationValues(for progress: Double) -> (rotation: Double, sliceWidth: Double) {
+    func calculateAnimationValues(for progress: Double) -> (rotation: Double, sliceWidth: Double, opacity: Double) {
         let totalDuration = rotationDuration + pauseDuration
         let animationPhaseRatio = rotationDuration / totalDuration
         
@@ -72,9 +75,30 @@ struct GradientTest: View {
             let rotation = animationProgress * 360
             // Adjust sine wave so width is 0 at start and end
             let sliceWidth = sin(animationProgress * .pi) * maxSliceWidth
-            return (rotation, sliceWidth)
+            
+            // Calculate opacity based on animation percentage
+            let opacity: Double
+            if let percentage = opacityAnimationPercentage {
+                let fadePercentage = min(max(percentage, 0), 1) // Clamp between 0 and 1
+                
+                if animationProgress < fadePercentage {
+                    // Fade in phase
+                    opacity = animationProgress / fadePercentage
+                } else if animationProgress > (1 - fadePercentage) {
+                    // Fade out phase
+                    opacity = (1 - animationProgress) / fadePercentage
+                } else {
+                    // Full opacity phase
+                    opacity = 1.0
+                }
+            } else {
+                // No opacity animation
+                opacity = 1.0
+            }
+            
+            return (rotation, sliceWidth, opacity)
         } else { // Pause phase
-            return (convergenceAngle, 0)
+            return (convergenceAngle, 0, 0)
         }
     }
     
@@ -100,6 +124,7 @@ struct GradientTest: View {
                             endAngle: .degrees(values.rotation + values.sliceWidth/2)
                         )
                     )
+                    .opacity(values.opacity)
                 } else {
                     Color.clear
                 }
@@ -113,6 +138,7 @@ struct GradientTest: View {
         rotationDuration: 4,
         pauseDuration: 0,
         maxSliceWidth: 90,
-        convergenceAngle: 0
+        convergenceAngle: 0,
+        opacityAnimationPercentage: 0.25
     )
 }
