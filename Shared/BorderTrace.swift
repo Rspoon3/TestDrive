@@ -11,6 +11,14 @@ struct BorderTraceShape: Shape {
     var progress: Double
     var sliceWidth: Double
     var cornerRadius: Double
+    var borderPosition: BorderPosition
+    var lineWidth: Double
+    
+    enum BorderPosition {
+        case inside
+        case outside
+        case center
+    }
     
     var animatableData: AnimatablePair<Double, Double> {
         get {
@@ -36,7 +44,7 @@ struct BorderTraceShape: Shape {
         var path = Path()
         
         // Create the border trace path
-        addBorderSegment(to: &path, in: rect, from: startPosition, to: endPosition, totalLength: totalLength)
+        addBorderSegment(to: &path, in: rect, from: startPosition, to: endPosition, totalLength: totalLength, cornerRadius: cornerRadius)
         
         return path
     }
@@ -49,7 +57,7 @@ struct BorderTraceShape: Shape {
         return straightEdges + corners
     }
     
-    private func addBorderSegment(to path: inout Path, in rect: CGRect, from start: Double, to end: Double, totalLength: Double) {
+    private func addBorderSegment(to path: inout Path, in rect: CGRect, from start: Double, to end: Double, totalLength: Double, cornerRadius: Double) {
         let width = rect.width
         let height = rect.height
         let cr = cornerRadius
@@ -196,6 +204,7 @@ struct BorderTrace: View {
     let opacityAnimationPercentage: Double?
     let cornerRadius: Double
     let lineWidth: Double
+    let borderPosition: BorderTraceShape.BorderPosition
     
     init(
         rotationDuration: Double = 6.0,
@@ -205,7 +214,8 @@ struct BorderTrace: View {
         gradientColors: [Color] = [.white, .purple],
         opacityAnimationPercentage: Double? = nil,
         cornerRadius: Double = 8.0,
-        lineWidth: Double = 3.0
+        lineWidth: Double = 3.0,
+        borderPosition: BorderTraceShape.BorderPosition = .outside
     ) {
         self.rotationDuration = rotationDuration
         self.pauseDuration = pauseDuration
@@ -215,6 +225,7 @@ struct BorderTrace: View {
         self.opacityAnimationPercentage = opacityAnimationPercentage
         self.cornerRadius = cornerRadius
         self.lineWidth = lineWidth
+        self.borderPosition = borderPosition
     }
     
     func calculateAnimationValues(for progress: Double) -> (progress: Double, sliceWidth: Double, opacity: Double) {
@@ -266,7 +277,9 @@ struct BorderTrace: View {
                     BorderTraceShape(
                         progress: values.progress,
                         sliceWidth: values.sliceWidth,
-                        cornerRadius: cornerRadius
+                        cornerRadius: cornerRadius,
+                        borderPosition: borderPosition,
+                        lineWidth: lineWidth
                     )
                     .stroke(
                         LinearGradient(
@@ -294,9 +307,22 @@ extension View {
         gradientColors: [Color] = [.white, .purple],
         opacityAnimationPercentage: Double? = nil,
         cornerRadius: Double = 8.0,
-        lineWidth: Double = 3.0
+        lineWidth: Double = 3.0,
+        borderPosition: BorderTraceShape.BorderPosition = .outside
     ) -> some View {
-        self.overlay {
+        let offset = lineWidth / 2
+        let paddingValue: Double = {
+            switch borderPosition {
+            case .outside:
+                return -offset
+            case .inside:
+                return offset
+            case .center:
+                return 0
+            }
+        }()
+        
+        return self.overlay {
             BorderTrace(
                 rotationDuration: rotationDuration,
                 pauseDuration: pauseDuration,
@@ -305,29 +331,50 @@ extension View {
                 gradientColors: gradientColors,
                 opacityAnimationPercentage: opacityAnimationPercentage,
                 cornerRadius: cornerRadius,
-                lineWidth: lineWidth
+                lineWidth: lineWidth,
+                borderPosition: borderPosition
             )
+            .padding(paddingValue)
         }
     }
 }
 
 #Preview {
-    Button("Get Started") {
+    VStack(spacing: 20) {
+        Button("Outside Border") { }
+            .padding(16)
+            .background(Color.white)
+            .foregroundStyle(.purple)
+            .cornerRadius(8)
+            .animatedBorder(
+                rotationDuration: 4,
+                pauseDuration: 0,
+                maxSliceWidth: 90,
+                convergenceProgress: 0,
+                gradientColors: [.white, .purple],
+                opacityAnimationPercentage: 0.25,
+                cornerRadius: 8,
+                lineWidth: 3,
+                borderPosition: .outside
+            )
+        
+        Button("Inside Border") { }
+            .padding(16)
+            .background(Color.white)
+            .foregroundStyle(.purple)
+            .cornerRadius(8)
+            .animatedBorder(
+                rotationDuration: 4,
+                pauseDuration: 0,
+                maxSliceWidth: 90,
+                convergenceProgress: 0,
+                gradientColors: [.red, .orange],
+                opacityAnimationPercentage: 0.25,
+                cornerRadius: 8,
+                lineWidth: 3,
+                borderPosition: .inside
+            )
     }
-    .padding(16)
-    .background(Color.white)
-    .foregroundStyle(.purple)
-    .cornerRadius(8)
-    .animatedBorder(
-        rotationDuration: 4,
-        pauseDuration: 0,
-        maxSliceWidth: 90,
-        convergenceProgress: 0,
-        gradientColors: [.white, .purple],
-        opacityAnimationPercentage: 0.25,
-        cornerRadius: 8,
-        lineWidth: 3
-    )
     .padding(24)
     .background(Color.purple)
 }
