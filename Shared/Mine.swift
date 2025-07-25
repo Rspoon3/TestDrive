@@ -20,16 +20,20 @@ struct Mine: View {
         .background(Color.white)
         .foregroundStyle(.purple)
         .cornerRadius(cornerRadius)
-        .animatedBorder(
-            rotationDuration: 20,
-            pauseDuration: 2,
-            maxSliceWidth: 90,
-            convergenceProgress: 0,
-            gradientColors: [.white, .purple],
-            opacityAnimationPercentage: 0.1,
-            cornerRadius: cornerRadius,
-            lineWidth: 3
-        )
+        .overlay {
+            GradientTest(
+                rotationDuration: 1.5,
+                pauseDuration: 3,
+                maxSliceWidth: 90,
+                convergenceAngle: 0,
+                opacityAnimationPercentage: 0.25
+            )
+            .rotationEffect(.degrees(-90))
+            .mask(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .strokeBorder(style: StrokeStyle(lineWidth: 3)) // inside stroke
+            )
+        }
         .padding(24)
         .background(Color.purple)
     }
