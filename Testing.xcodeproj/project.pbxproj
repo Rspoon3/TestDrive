@@ -15,6 +15,8 @@
 		94DDDB992E33FD5500CC6AC1 /* GradientTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94DDDB972E33FD5500CC6AC1 /* GradientTest.swift */; };
 		94DDDB9E2E3407BD00CC6AC1 /* BorderTrace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94DDDB9D2E3407BD00CC6AC1 /* BorderTrace.swift */; };
 		94DDDB9F2E3407BD00CC6AC1 /* BorderTrace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94DDDB9D2E3407BD00CC6AC1 /* BorderTrace.swift */; };
+		94DDDBA12E340B3000CC6AC1 /* AnimatedStrokeStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94DDDBA02E340B3000CC6AC1 /* AnimatedStrokeStyle.swift */; };
+		94DDDBA22E340B3000CC6AC1 /* AnimatedStrokeStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94DDDBA02E340B3000CC6AC1 /* AnimatedStrokeStyle.swift */; };
 		A6A262F024E0BCB30091EA92 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262EF24E0BCB30091EA92 /* Tests_iOS.swift */; };
 		A6A262FB24E0BCB30091EA92 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262FA24E0BCB30091EA92 /* Tests_macOS.swift */; };
 		A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D424E0BCB20091EA92 /* TestingApp.swift */; };
@@ -47,6 +49,7 @@
 		94DDDB942E33FA7600CC6AC1 /* InProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InProgress.swift; sourceTree = "<group>"; };
 		94DDDB972E33FD5500CC6AC1 /* GradientTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientTest.swift; sourceTree = "<group>"; };
 		94DDDB9D2E3407BD00CC6AC1 /* BorderTrace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BorderTrace.swift; sourceTree = "<group>"; };
+		94DDDBA02E340B3000CC6AC1 /* AnimatedStrokeStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedStrokeStyle.swift; sourceTree = "<group>"; };
 		A6A0310D266EBC6D001CBE2A /* Testing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Testing.entitlements; sourceTree = "<group>"; };
 		A6A262D424E0BCB20091EA92 /* TestingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingApp.swift; sourceTree = "<group>"; };
 		A6A262D524E0BCB20091EA92 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -124,6 +127,7 @@
 				A6A262D524E0BCB20091EA92 /* ContentView.swift */,
 				94DDDB912E33FA1F00CC6AC1 /* Mine.swift */,
 				94DDDB972E33FD5500CC6AC1 /* GradientTest.swift */,
+				94DDDBA02E340B3000CC6AC1 /* AnimatedStrokeStyle.swift */,
 				94DDDB9D2E3407BD00CC6AC1 /* BorderTrace.swift */,
 				94DDDB942E33FA7600CC6AC1 /* InProgress.swift */,
 				A6A262D624E0BCB30091EA92 /* Assets.xcassets */,
@@ -342,6 +346,7 @@
 				A6A262FF24E0BCB30091EA92 /* ContentView.swift in Sources */,
 				94DDDB922E33FA1F00CC6AC1 /* Mine.swift in Sources */,
 				A6A262FD24E0BCB30091EA92 /* TestingApp.swift in Sources */,
+				94DDDBA12E340B3000CC6AC1 /* AnimatedStrokeStyle.swift in Sources */,
 				94DDDB982E33FD5500CC6AC1 /* GradientTest.swift in Sources */,
 				94DDDB962E33FA7600CC6AC1 /* InProgress.swift in Sources */,
 				94DDDB9E2E3407BD00CC6AC1 /* BorderTrace.swift in Sources */,
@@ -355,6 +360,7 @@
 				A6A2630024E0BCB30091EA92 /* ContentView.swift in Sources */,
 				94DDDB932E33FA1F00CC6AC1 /* Mine.swift in Sources */,
 				A6A262FE24E0BCB30091EA92 /* TestingApp.swift in Sources */,
+				94DDDBA22E340B3000CC6AC1 /* AnimatedStrokeStyle.swift in Sources */,
 				94DDDB992E33FD5500CC6AC1 /* GradientTest.swift in Sources */,
 				94DDDB952E33FA7600CC6AC1 /* InProgress.swift in Sources */,
 				94DDDB9F2E3407BD00CC6AC1 /* BorderTrace.swift in Sources */,

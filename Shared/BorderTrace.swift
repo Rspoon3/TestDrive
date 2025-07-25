@@ -33,7 +33,26 @@ struct BorderTraceShape: Shape {
     func path(in rect: CGRect) -> Path {
         guard sliceWidth > 0 else { return Path() }
         
-        let perimeter = calculatePerimeter(for: rect, cornerRadius: cornerRadius)
+        // Adjust rect based on border position and stroke width
+        let adjustedRect: CGRect
+        let adjustedCornerRadius: Double
+        
+        switch borderPosition {
+        case .inside:
+            // For inside stroke, inset by full line width (not half)
+            adjustedRect = rect.insetBy(dx: lineWidth, dy: lineWidth)
+            adjustedCornerRadius = max(0, cornerRadius - lineWidth)
+        case .outside:
+            // For outside stroke, keep original rect since overlay extends beyond bounds
+            adjustedRect = rect
+            adjustedCornerRadius = cornerRadius
+        case .center:
+            // For center stroke, inset by half line width
+            adjustedRect = rect.insetBy(dx: lineWidth / 2, dy: lineWidth / 2)
+            adjustedCornerRadius = max(0, cornerRadius - lineWidth / 2)
+        }
+        
+        let perimeter = calculatePerimeter(for: adjustedRect, cornerRadius: adjustedCornerRadius)
         let totalLength = perimeter
         
         // Calculate start and end positions based on progress and slice width
@@ -44,7 +63,7 @@ struct BorderTraceShape: Shape {
         var path = Path()
         
         // Create the border trace path
-        addBorderSegment(to: &path, in: rect, from: startPosition, to: endPosition, totalLength: totalLength, cornerRadius: cornerRadius)
+        addBorderSegment(to: &path, in: adjustedRect, from: startPosition, to: endPosition, totalLength: totalLength, cornerRadius: adjustedCornerRadius)
         
         return path
     }
@@ -310,19 +329,7 @@ extension View {
         lineWidth: Double = 3.0,
         borderPosition: BorderTraceShape.BorderPosition = .outside
     ) -> some View {
-        let offset = lineWidth / 2
-        let paddingValue: Double = {
-            switch borderPosition {
-            case .outside:
-                return -offset
-            case .inside:
-                return offset
-            case .center:
-                return 0
-            }
-        }()
-        
-        return self.overlay {
+        self.overlay {
             BorderTrace(
                 rotationDuration: rotationDuration,
                 pauseDuration: pauseDuration,
@@ -334,7 +341,6 @@ extension View {
                 lineWidth: lineWidth,
                 borderPosition: borderPosition
             )
-            .padding(paddingValue)
         }
     }
 }
