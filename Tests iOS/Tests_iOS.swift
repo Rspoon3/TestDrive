@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import Testing
+@testable import TestDrive
 
 final class ContentViewModelTests: XCTestCase {
     

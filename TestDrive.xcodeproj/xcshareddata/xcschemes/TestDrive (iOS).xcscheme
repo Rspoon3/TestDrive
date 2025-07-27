@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1540"
-   version = "1.7">
+   version = "1.8">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES"
       buildArchitectures = "Automatic">
       <BuildActionEntries>
          <BuildActionEntry
+            buildForTestDrive = "YES"
             buildForTesting = "YES"
             buildForRunning = "YES"
             buildForProfiling = "YES"
@@ -16,9 +17,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A6A262DA24E0BCB30091EA92"
-               BuildableName = "Testing.app"
-               BlueprintName = "Testing (iOS)"
-               ReferencedContainer = "container:Testing.xcodeproj">
+               BuildableName = "TestDrive.app"
+               BlueprintName = "TestDrive (iOS)"
+               ReferencedContainer = "container:TestDrive.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +46,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A6A262DA24E0BCB30091EA92"
-            BuildableName = "Testing.app"
-            BlueprintName = "Testing (iOS)"
-            ReferencedContainer = "container:Testing.xcodeproj">
+            BuildableName = "TestDrive.app"
+            BlueprintName = "TestDrive (iOS)"
+            ReferencedContainer = "container:TestDrive.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,9 +63,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A6A262DA24E0BCB30091EA92"
-            BuildableName = "Testing.app"
-            BlueprintName = "Testing (iOS)"
-            ReferencedContainer = "container:Testing.xcodeproj">
+            BuildableName = "TestDrive.app"
+            BlueprintName = "TestDrive (iOS)"
+            ReferencedContainer = "container:TestDrive.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

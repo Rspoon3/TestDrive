@@ -21,7 +21,7 @@
                BlueprintIdentifier = "A6A262EA24E0BCB30091EA92"
                BuildableName = "Tests iOS.xctest"
                BlueprintName = "Tests iOS"
-               ReferencedContainer = "container:Testing.xcodeproj">
+               ReferencedContainer = "container:TestDrive.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
