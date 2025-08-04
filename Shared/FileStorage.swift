@@ -134,18 +134,4 @@ public final class FileStorage {
             }
         }
     }
-
-    /// Checks whether a file exists and is still within the valid TTL window.
-    ///
-    /// - Parameter url: The local file URL to check.
-    /// - Returns: `true` if the file exists and is not expired; `false` otherwise.
-    private func isValidFile(at url: URL) -> Bool {
-        guard fileManager.fileExists(atPath: url.path),
-              let attributes = try? fileManager.attributesOfItem(atPath: url.path),
-              let modDate = attributes[.modificationDate] as? Date else {
-            return false
-        }
-
-        return Date().timeIntervalSince(modDate) < ttl
-    }
 }
