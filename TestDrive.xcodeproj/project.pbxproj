@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		94A35B5D2E40FE39006FA4BD /* FileStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A35B5C2E40FE39006FA4BD /* FileStorage.swift */; };
+		94A35B5E2E40FE39006FA4BD /* FileStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A35B5C2E40FE39006FA4BD /* FileStorage.swift */; };
 		A6A262F024E0BCB30091EA92 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262EF24E0BCB30091EA92 /* Tests_iOS.swift */; };
 		A6A262FB24E0BCB30091EA92 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262FA24E0BCB30091EA92 /* Tests_macOS.swift */; };
 		A6A262FD24E0BCB30091EA92 /* TestDriveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D424E0BCB20091EA92 /* TestDriveApp.swift */; };
@@ -35,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		94A35B5C2E40FE39006FA4BD /* FileStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileStorage.swift; sourceTree = "<group>"; };
 		A6A0310D266EBC6D001CBE2A /* TestDrive.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TestDrive.entitlements; sourceTree = "<group>"; };
 		A6A262D424E0BCB20091EA92 /* TestDriveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDriveApp.swift; sourceTree = "<group>"; };
 		A6A262D524E0BCB20091EA92 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -109,6 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				A6A262D424E0BCB20091EA92 /* TestDriveApp.swift */,
+				94A35B5C2E40FE39006FA4BD /* FileStorage.swift */,
 				A6A262D524E0BCB20091EA92 /* ContentView.swift */,
 				A6A262D624E0BCB30091EA92 /* Assets.xcassets */,
 			);
@@ -323,6 +327,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94A35B5D2E40FE39006FA4BD /* FileStorage.swift in Sources */,
 				A6A262FF24E0BCB30091EA92 /* ContentView.swift in Sources */,
 				A6A262FD24E0BCB30091EA92 /* TestDriveApp.swift in Sources */,
 			);
@@ -332,6 +337,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94A35B5E2E40FE39006FA4BD /* FileStorage.swift in Sources */,
 				A6A2630024E0BCB30091EA92 /* ContentView.swift in Sources */,
 				A6A262FE24E0BCB30091EA92 /* TestDriveApp.swift in Sources */,
 			);
