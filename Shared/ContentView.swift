@@ -14,8 +14,8 @@ struct ContentView: View {
     
     private let riveURL = URL(string: "https://prod-static-content.fetchrewards.com/content-service/spin_cta_pointling_animation_92bed5ced2.riv")!
     private let fileStorage = try! FileStorage(
-        directory: URL.cachesDirectory.appendingPathComponent("RiveAssets"),
-        ttl: 6// * 60
+        directory: FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("RiveAssets"),
+        ttl: 6 * 60
     )
     
     var body: some View {

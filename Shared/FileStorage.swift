@@ -9,6 +9,28 @@
 import Foundation
 import OSLog
 
+// MARK: - Protocols
+
+public protocol FileManagerProtocol {
+    func createDirectory(at url: URL, withIntermediateDirectories createIntermediates: Bool, attributes: [FileAttributeKey : Any]?) throws
+    func fileExists(atPath path: String) -> Bool
+    func contentsOfDirectory(at url: URL, includingPropertiesForKeys keys: [URLResourceKey]?, options mask: FileManager.DirectoryEnumerationOptions) throws -> [URL]
+    func attributesOfItem(atPath path: String) throws -> [FileAttributeKey: Any]
+    func setAttributes(_ attributes: [FileAttributeKey: Any], ofItemAtPath path: String) throws
+    func removeItem(at URL: URL) throws
+    func moveItem(at srcURL: URL, to dstURL: URL) throws
+}
+
+public protocol URLSessionProtocol {
+    func download(from url: URL, delegate: URLSessionTaskDelegate?) async throws -> (URL, URLResponse)
+}
+
+// MARK: - Protocol Conformances
+
+extension FileManager: FileManagerProtocol {}
+
+extension URLSession: URLSessionProtocol {}
+
 /// A utility class for downloading and storing files locally with a configurable time-to-live (TTL).
 ///
 /// This class stores files in a specified directory (e.g., Caches or Documents) and automatically
@@ -23,7 +45,8 @@ import OSLog
 public final class FileStorage {
     private let storageDirectory: URL
     private let ttl: TimeInterval
-    private let fileManager = FileManager.default
+    private let fileManager: FileManagerProtocol
+    private let urlSession: URLSessionProtocol
     private let logger = Logger(subsystem: "com.yourcompany.FileStorage", category: "Storage")
 
     /// Initializes a new `FileStorage` instance.
@@ -31,13 +54,22 @@ public final class FileStorage {
     /// - Parameters:
     ///   - directory: The folder where files should be stored. This can be in `.cachesDirectory`, `.documentDirectory`, or any other valid location.
     ///   - ttl: Time-to-live (in seconds). Files older than this will be automatically replaced on the next access.
+    ///   - fileManager: The file manager to use for file operations. Defaults to `FileManager.default`.
+    ///   - urlSession: The URL session to use for downloads. Defaults to `URLSession.shared`.
     ///
     /// - Throws: An error if the storage directory could not be created.
-    public init(directory: URL, ttl: TimeInterval) throws {
+    public init(
+        directory: URL,
+        ttl: TimeInterval,
+        fileManager: FileManagerProtocol = FileManager.default,
+        urlSession: URLSessionProtocol = URLSession.shared
+    ) throws {
         self.storageDirectory = directory
         self.ttl = ttl
+        self.fileManager = fileManager
+        self.urlSession = urlSession
 
-        try fileManager.createDirectory(at: storageDirectory, withIntermediateDirectories: true)
+        try fileManager.createDirectory(at: storageDirectory, withIntermediateDirectories: true, attributes: nil)
         logger.debug("Initialized FileStorage at directory: \(self.storageDirectory.path, privacy: .public) with TTL: \(ttl, privacy: .public) seconds")
     }
 
@@ -60,7 +92,7 @@ public final class FileStorage {
         }
 
         logger.info("Downloading file from: \(url.absoluteString, privacy: .public)")
-        let (tempURL, _) = try await URLSession.shared.download(from: url)
+        let (tempURL, _) = try await urlSession.download(from: url, delegate: nil)
 
         do {
             try fileManager.moveItem(at: tempURL, to: destinationURL)
@@ -80,7 +112,8 @@ public final class FileStorage {
         
         guard let files = try? fileManager.contentsOfDirectory(
             at: storageDirectory,
-            includingPropertiesForKeys: [.contentModificationDateKey]
+            includingPropertiesForKeys: [.contentModificationDateKey],
+            options: []
         ) else {
             logger.warning("Failed to list contents of storage directory")
             return
