@@ -51,7 +51,8 @@ public final class FileStorage {
         let fileName = url.lastPathComponent
         let destinationURL = storageDirectory.appendingPathComponent(fileName)
 
-        if isValidFile(at: destinationURL) {
+        // If file exists and has the same name as requested, return it (regardless of TTL)
+        if fileManager.fileExists(atPath: destinationURL.path) {
             // Update modification date to reset TTL
             try fileManager.setAttributes([.modificationDate: Date()], ofItemAtPath: destinationURL.path)
             logger.debug("Returning cached file: \(destinationURL.lastPathComponent, privacy: .public)")
@@ -62,11 +63,6 @@ public final class FileStorage {
         let (tempURL, _) = try await URLSession.shared.download(from: url)
 
         do {
-            if fileManager.fileExists(atPath: destinationURL.path) {
-                try fileManager.removeItem(at: destinationURL)
-                logger.debug("Removed expired file: \(destinationURL.lastPathComponent, privacy: .public)")
-            }
-
             try fileManager.moveItem(at: tempURL, to: destinationURL)
             logger.info("Stored new file at: \(destinationURL.path, privacy: .public)")
             return destinationURL
