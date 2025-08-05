@@ -55,19 +55,19 @@ public final class FileStorage {
     ///   - directory: The folder where files should be stored. This can be in `.cachesDirectory`, `.documentDirectory`, or any other valid location.
     ///   - ttl: Time-to-live (in seconds). Files older than this will be automatically replaced on the next access.
     ///   - fileManager: The file manager to use for file operations. Defaults to `FileManager.default`.
-    ///   - urlSession: The URL session to use for downloads. Defaults to `URLSession.shared`.
+    ///   - urlSession: The URL session to use for downloads. If nil, creates an ephemeral session to avoid double caching.
     ///
     /// - Throws: An error if the storage directory could not be created.
     public init(
         directory: URL,
         ttl: TimeInterval,
         fileManager: FileManagerProtocol = FileManager.default,
-        urlSession: URLSessionProtocol = URLSession.shared
+        urlSession: URLSessionProtocol? = nil
     ) throws {
         self.storageDirectory = directory
         self.ttl = ttl
         self.fileManager = fileManager
-        self.urlSession = urlSession
+        self.urlSession = urlSession ?? URLSession(configuration: .ephemeral)
 
         try fileManager.createDirectory(at: storageDirectory, withIntermediateDirectories: true, attributes: nil)
         logger.debug("Initialized FileStorage at directory: \(self.storageDirectory.path, privacy: .public) with TTL: \(ttl, privacy: .public) seconds")
@@ -81,12 +81,14 @@ public final class FileStorage {
     /// - Throws: Any file or network-related error that occurred during fetch or write.
     public func fetchFile(from url: URL) async throws -> URL {
         let fileName = url.lastPathComponent
-        let destinationURL = storageDirectory.appendingPathComponent(fileName)
+        var destinationURL = storageDirectory.appendingPathComponent(fileName)
 
         // If file exists and has the same name as requested, return it (regardless of TTL)
         if fileManager.fileExists(atPath: destinationURL.path) {
-            // Update modification date to reset TTL
-            try fileManager.setAttributes([.modificationDate: Date()], ofItemAtPath: destinationURL.path)
+            // Update content access date to reset TTL
+            var resourceValues = URLResourceValues()
+            resourceValues.contentAccessDate = Date()
+            try destinationURL.setResourceValues(resourceValues)
             logger.debug("Returning cached file: \(destinationURL.lastPathComponent, privacy: .public)")
             return destinationURL
         }
@@ -112,7 +114,7 @@ public final class FileStorage {
         
         guard let files = try? fileManager.contentsOfDirectory(
             at: storageDirectory,
-            includingPropertiesForKeys: [.contentModificationDateKey],
+            includingPropertiesForKeys: [.contentAccessDateKey],
             options: []
         ) else {
             logger.warning("Failed to list contents of storage directory")
@@ -120,9 +122,9 @@ public final class FileStorage {
         }
         
         for file in files {
-            guard let attributes = try? fileManager.attributesOfItem(atPath: file.path),
-                  let modDate = attributes[.modificationDate] as? Date,
-                  now.timeIntervalSince(modDate) > ttl else {
+            guard let resourceValues = try? file.resourceValues(forKeys: [.contentAccessDateKey]),
+                  let accessDate = resourceValues.contentAccessDate,
+                  now.timeIntervalSince(accessDate) > ttl else {
                 continue
             }
             
