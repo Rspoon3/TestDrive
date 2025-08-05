@@ -8,6 +8,7 @@
 
 import Foundation
 import OSLog
+import CryptoKit
 
 // MARK: - Protocols
 
@@ -72,6 +73,21 @@ public final class FileStorage {
         try fileManager.createDirectory(at: storageDirectory, withIntermediateDirectories: true, attributes: nil)
         logger.debug("Initialized FileStorage at directory: \(self.storageDirectory.path, privacy: .public) with TTL: \(ttl, privacy: .public) seconds")
     }
+    
+    /// Generates a unique filename for a URL using SHA256 hash while preserving file extension
+    private func uniqueFilename(for url: URL) -> String {
+        let urlString = url.absoluteString
+        let hash = SHA256.hash(data: Data(urlString.utf8))
+        let hashString = hash.compactMap { String(format: "%02x", $0) }.joined()
+        
+        // Preserve file extension if present
+        let pathExtension = url.pathExtension
+        if !pathExtension.isEmpty {
+            return "\(hashString).\(pathExtension)"
+        } else {
+            return hashString
+        }
+    }
 
     /// Retrieves a file from local storage, downloading and caching it if needed.
     ///
@@ -80,7 +96,7 @@ public final class FileStorage {
     ///
     /// - Throws: Any file or network-related error that occurred during fetch or write.
     public func fetchFile(from url: URL) async throws -> URL {
-        let fileName = url.lastPathComponent
+        let fileName = uniqueFilename(for: url)
         var destinationURL = storageDirectory.appendingPathComponent(fileName)
 
         // If file exists and has the same name as requested, return it (regardless of TTL)
