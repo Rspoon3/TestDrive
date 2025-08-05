@@ -13,9 +13,14 @@ struct ContentView: View {
     @State private var errorMessage: String?
     
     private let riveURL = URL(string: "https://prod-static-content.fetchrewards.com/content-service/spin_cta_pointling_animation_92bed5ced2.riv")!
+//    private let fileStorage = try! FileStorage(
+//        directory: FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("RiveAssets"),
+//        ttl: 6 //* 60
+//    )
+    
     private let fileStorage = try! FileStorage(
-        directory: FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("RiveAssets"),
-        ttl: 6 * 60
+        name: "RiveAssets",
+        ttl: 6 //* 60
     )
     
     var body: some View {

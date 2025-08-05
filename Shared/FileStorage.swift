@@ -39,8 +39,17 @@ extension URLSession: URLSessionProtocol {}
 ///
 /// ### Example:
 /// ```swift
+/// // Using convenience initializer (recommended)
+/// let fileStorage = try FileStorage(name: "RiveAssets", ttl: 14 * 24 * 60 * 60) // 2 weeks in caches (1_209_600)
+///
+/// // Or specify documents directory
+/// let fileStorage = try FileStorage(name: "RiveAssets", searchPathDirectory: .documentDirectory, ttl: 14 * 24 * 60 * 60)
+/// 
+/// // Using full initializer
 /// let folder = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("RiveAssets")
-/// let fileStorage = try FileStorage(directory: folder, ttl: 14 * 24 * 60 * 60) // 2 weeks
+/// let fileStorage = try FileStorage(directory: folder, ttl: 14 * 24 * 60 * 60)
+/// 
+/// // Fetch a file
 /// let fileURL = try await fileStorage.fetchFile(from: URL(string: "https://example.com/file.riv")!)
 /// ```
 public final class FileStorage {
@@ -72,6 +81,91 @@ public final class FileStorage {
 
         try fileManager.createDirectory(at: storageDirectory, withIntermediateDirectories: true, attributes: nil)
         logger.debug("Initialized FileStorage at directory: \(self.storageDirectory.path, privacy: .public) with TTL: \(ttl, privacy: .public) seconds")
+    }
+    
+    /// Convenience initializer that creates a FileStorage instance with a simple folder name.
+    ///
+    /// This initializer simplifies the creation of a FileStorage instance by automatically handling
+    /// the directory path construction. It's the recommended way to create a FileStorage instance
+    /// for most use cases.
+    ///
+    /// ## Overview
+    /// 
+    /// The storage directory will be created at:
+    /// - **Caches**: `~/Library/Caches/[name]/` (default, cleared by system when space is needed)
+    /// - **Documents**: `~/Documents/[name]/` (persistent, backed up by iCloud)
+    ///
+    /// ## Examples
+    ///
+    /// ### Basic Usage (Caches Directory)
+    /// ```swift
+    /// // Creates storage in ~/Library/Caches/RiveAssets/
+    /// let storage = try FileStorage(name: "RiveAssets")
+    /// ```
+    ///
+    /// ### Custom TTL
+    /// ```swift
+    /// // 7 days TTL instead of default 14 days
+    /// let storage = try FileStorage(
+    ///     name: "ImageCache",
+    ///     ttl: 7 * 24 * 60 * 60
+    /// )
+    /// ```
+    ///
+    /// ### Documents Directory for Persistence
+    /// ```swift
+    /// // Creates storage in ~/Documents/ImportantAssets/
+    /// let storage = try FileStorage(
+    ///     name: "ImportantAssets",
+    ///     directory: .documentDirectory,
+    ///     ttl: 30 * 24 * 60 * 60  // 30 days
+    /// )
+    /// ```
+    ///
+    /// ### Custom URLSession
+    /// ```swift
+    /// let config = URLSessionConfiguration.default
+    /// config.timeoutIntervalForRequest = 60
+    /// let session = URLSession(configuration: config)
+    /// 
+    /// let storage = try FileStorage(
+    ///     name: "NetworkAssets",
+    ///     urlSession: session
+    /// )
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - name: The name of the folder to create within the specified directory (e.g., "RiveAssets", "ImageCache").
+    ///           This becomes a subfolder in the chosen directory.
+    ///   - directory: The base directory to use. Defaults to `.cachesDirectory`. 
+    ///                Common options are `.cachesDirectory` (temporary) and `.documentDirectory` (persistent).
+    ///   - ttl: Time-to-live in seconds. Files older than this will be re-downloaded on next access.
+    ///          Defaults to 1,209,600 seconds (14 days).
+    ///   - fileManager: The file manager to use for file operations. Defaults to `FileManager.default`.
+    ///   - urlSession: The URL session to use for downloads. If `nil`, creates an ephemeral session 
+    ///                 to avoid double caching. Pass a custom session for specific networking requirements.
+    ///
+    /// - Throws: `NSError` if the specified directory cannot be found or created.
+    ///
+    /// - Important: Files in `.cachesDirectory` may be deleted by the system when storage space is low.
+    ///              Use `.documentDirectory` for files that must persist.
+    public convenience init(
+        name: String,
+        directory: FileManager.SearchPathDirectory = .cachesDirectory,
+        ttl: TimeInterval = 1_209_600,
+        fileManager: FileManagerProtocol = FileManager.default,
+        urlSession: URLSessionProtocol? = nil
+    ) throws {
+        guard let baseDirectory = FileManager.default.urls(for: directory, in: .userDomainMask).first else {
+            throw NSError(
+                domain: "FileStorage",
+                code: 1,
+                userInfo: [NSLocalizedDescriptionKey: "Could not find \(directory) directory"]
+            )
+        }
+        
+        let directory = baseDirectory.appendingPathComponent(name)
+        try self.init(directory: directory, ttl: ttl, fileManager: fileManager, urlSession: urlSession)
     }
     
     /// Generates a unique filename for a URL using SHA256 hash while preserving file extension
