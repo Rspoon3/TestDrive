@@ -10,6 +10,30 @@ import Foundation
 import OSLog
 import CryptoKit
 
+// MARK: - FileInfo
+
+/// Information about a file stored in FileStorage
+public struct FileInfo {
+    /// The SHA256 hash filename
+    public let name: String
+    
+    /// The original URL this file was downloaded from (if determinable)
+    public let originalURL: String?
+    
+    /// When the file was last accessed
+    public let lastAccessed: Date
+    
+    /// Size of the file in bytes
+    public let size: Int64
+    
+    /// Human-readable size string (e.g., "1.5 MB")
+    public var formattedSize: String {
+        let formatter = ByteCountFormatter()
+        formatter.countStyle = .file
+        return formatter.string(fromByteCount: size)
+    }
+}
+
 // MARK: - Protocols
 
 public protocol FileManagerProtocol {
@@ -245,5 +269,45 @@ public final class FileStorage {
                 logger.error("Failed to remove expired file: \(file.lastPathComponent, privacy: .public), error: \(error.localizedDescription, privacy: .public)")
             }
         }
+    }
+    
+    /// Lists all files currently stored in the storage directory.
+    ///
+    /// This method returns information about all files in the storage directory,
+    /// including their names, sizes, and last access dates. Useful for debugging
+    /// and monitoring storage usage.
+    ///
+    /// ## Example
+    /// ```swift
+    /// let files = try await storage.listFiles()
+    /// for file in files {
+    ///     print("\(file.name): \(file.formattedSize), accessed \(file.lastAccessed)")
+    /// }
+    /// ```
+    ///
+    /// - Returns: An array of `FileInfo` objects describing each stored file
+    /// - Throws: An error if the directory contents cannot be read
+    public func listFiles() async throws -> [FileInfo] {
+        let contents = try fileManager.contentsOfDirectory(
+            at: storageDirectory,
+            includingPropertiesForKeys: [.contentAccessDateKey, .fileSizeKey],
+            options: []
+        )
+        
+        return try contents.compactMap { fileURL in
+            let resourceValues = try fileURL.resourceValues(forKeys: [.contentAccessDateKey, .fileSizeKey])
+            
+            guard let accessDate = resourceValues.contentAccessDate,
+                  let fileSize = resourceValues.fileSize else {
+                return nil
+            }
+            
+            return FileInfo(
+                name: fileURL.lastPathComponent,
+                originalURL: nil, // We can't reverse the hash to get original URL
+                lastAccessed: accessDate,
+                size: Int64(fileSize)
+            )
+        }.sorted { $0.lastAccessed > $1.lastAccessed } // Most recently accessed first
     }
 }

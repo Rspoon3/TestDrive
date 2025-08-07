@@ -11,16 +11,13 @@ struct ContentView: View {
     @State private var fileURL: URL?
     @State private var isLoading = false
     @State private var errorMessage: String?
+    @State private var fileList: [FileInfo] = []
+    @State private var showingFileList = false
     
     private let riveURL = URL(string: "https://prod-static-content.fetchrewards.com/content-service/spin_cta_pointling_animation_92bed5ced2.riv")!
-//    private let fileStorage = try! FileStorage(
-//        directory: FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("RiveAssets"),
-//        ttl: 6 //* 60
-//    )
-    
     private let fileStorage = try! FileStorage(
         name: "RiveAssets",
-        ttl: 6 //* 60
+        ttl: 60 // 1 minute for testing
     )
     
     var body: some View {
@@ -59,8 +56,30 @@ struct ContentView: View {
                     }
                 }
             }
+            
+            Button("Show Storage Contents") {
+                Task {
+                    await loadFileList()
+                    showingFileList = true
+                }
+            }
+            
+            Spacer()
         }
         .padding()
+        .sheet(isPresented: $showingFileList) {
+            NavigationView {
+                FileListView(files: fileList)
+                    .navigationTitle("Storage Contents")
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("Done") {
+                                showingFileList = false
+                            }
+                        }
+                    }
+            }
+        }
     }
     
     private func downloadFile() async {
@@ -81,6 +100,51 @@ struct ContentView: View {
     private func clearCache() async {
         await fileStorage.clearExpiredFiles()
         self.fileURL = nil
+    }
+    
+    private func loadFileList() async {
+        do {
+            fileList = try await fileStorage.listFiles()
+        } catch {
+            print("Failed to load file list: \(error)")
+            fileList = []
+        }
+    }
+}
+
+struct FileListView: View {
+    let files: [FileInfo]
+    
+    var body: some View {
+        List {
+            if files.isEmpty {
+                Text("No files in storage")
+                    .foregroundColor(.secondary)
+                    .padding()
+            } else {
+                ForEach(files, id: \.name) { file in
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(file.name)
+                            .font(.system(.body, design: .monospaced))
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                        
+                        HStack {
+                            Label(file.formattedSize, systemImage: "doc")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            
+                            Spacer()
+                            
+                            Label(RelativeDateTimeFormatter().localizedString(for: file.lastAccessed, relativeTo: Date()), systemImage: "clock")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
+            }
+        }
     }
 }
 
