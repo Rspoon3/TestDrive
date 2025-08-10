@@ -24,18 +24,18 @@ class DatabaseManager {
                     t.autoIncrementedPrimaryKey("id")
                     t.column("title", .text).notNull()
                     t.column("author", .text).notNull()
-                    t.column("year_published", .integer).notNull()
-                    t.column("is_available", .boolean).notNull().defaults(to: true)
-                    t.column("created_at", .datetime).notNull().defaults(sql: "CURRENT_TIMESTAMP")
+                    t.column("yearPublished", .integer).notNull()
+                    t.column("isAvailable", .boolean).notNull().defaults(to: true)
+                    t.column("createdAt", .datetime).notNull().defaults(sql: "CURRENT_TIMESTAMP")
                 }
                 
                 try db.create(table: "authors", ifNotExists: true) { t in
                     t.autoIncrementedPrimaryKey("id")
                     t.column("name", .text).notNull()
-                    t.column("birth_year", .integer)
+                    t.column("birthYear", .integer)
                     t.column("nationality", .text).notNull()
-                    t.column("is_active", .boolean).notNull().defaults(to: true)
-                    t.column("created_at", .datetime).notNull().defaults(sql: "CURRENT_TIMESTAMP")
+                    t.column("isActive", .boolean).notNull().defaults(to: true)
+                    t.column("createdAt", .datetime).notNull().defaults(sql: "CURRENT_TIMESTAMP")
                 }
             }
         } catch {
