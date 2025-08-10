@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-struct ContentView: View {
+public struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \TimerFolder.sortOrder) private var folders: [TimerFolder]
     @Query(filter: #Predicate<TimerItem> { $0.isFavorite }) private var favoriteTimers: [TimerItem]
@@ -10,7 +10,13 @@ struct ContentView: View {
     @State private var selectedColor = Color(hex: "#E8B4A5")
     @State private var editingFolder: TimerFolder?
     
-    var body: some View {
+    // MARK: - Initializer
+    
+    public init() {}
+    
+    // MARK: - Public
+    
+    public var body: some View {
         NavigationStack {
             ZStack {
                 LinearGradient(

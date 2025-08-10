@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import ClocksyKit
 
 @main
 struct TestDriveApp: App {

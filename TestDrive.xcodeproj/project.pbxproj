@@ -8,31 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		944DA6BC2E484550007D9CA4 /* ClocksyKit in Frameworks */ = {isa = PBXBuildFile; productRef = 944DA6BB2E484550007D9CA4 /* ClocksyKit */; };
-		94FAE5162E483DB600DC65F3 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FAE5132E483DB600DC65F3 /* Models.swift */; };
-		94FAE5172E483DB600DC65F3 /* EditFolderSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FAE5102E483DB600DC65F3 /* EditFolderSheet.swift */; };
-		94FAE5182E483DB600DC65F3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FAE50F2E483DB600DC65F3 /* ContentView.swift */; };
-		94FAE5192E483DB600DC65F3 /* AddTimerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FAE50D2E483DB600DC65F3 /* AddTimerSheet.swift */; };
-		94FAE51A2E483DB600DC65F3 /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FAE50E2E483DB600DC65F3 /* ColorExtensions.swift */; };
-		94FAE51B2E483DB600DC65F3 /* AddFolderSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FAE50C2E483DB600DC65F3 /* AddFolderSheet.swift */; };
-		94FAE51C2E483DB600DC65F3 /* EditTimerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FAE5112E483DB600DC65F3 /* EditTimerSheet.swift */; };
-		94FAE51D2E483DB600DC65F3 /* FolderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FAE5122E483DB600DC65F3 /* FolderDetailView.swift */; };
 		94FAE51E2E483DB600DC65F3 /* TestDriveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FAE5142E483DB600DC65F3 /* TestDriveApp.swift */; };
-		94FAE51F2E483DB600DC65F3 /* TimerRunningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FAE5152E483DB600DC65F3 /* TimerRunningView.swift */; };
 		A6A2630124E0BCB30091EA92 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A6A262D624E0BCB30091EA92 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		943780842E4843EE00ACC51E /* ClocksyCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ClocksyCore; sourceTree = "<group>"; };
-		94FAE50C2E483DB600DC65F3 /* AddFolderSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFolderSheet.swift; sourceTree = "<group>"; };
-		94FAE50D2E483DB600DC65F3 /* AddTimerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTimerSheet.swift; sourceTree = "<group>"; };
-		94FAE50E2E483DB600DC65F3 /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
-		94FAE50F2E483DB600DC65F3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		94FAE5102E483DB600DC65F3 /* EditFolderSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFolderSheet.swift; sourceTree = "<group>"; };
-		94FAE5112E483DB600DC65F3 /* EditTimerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTimerSheet.swift; sourceTree = "<group>"; };
-		94FAE5122E483DB600DC65F3 /* FolderDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailView.swift; sourceTree = "<group>"; };
-		94FAE5132E483DB600DC65F3 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		94FAE5142E483DB600DC65F3 /* TestDriveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDriveApp.swift; sourceTree = "<group>"; };
-		94FAE5152E483DB600DC65F3 /* TimerRunningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerRunningView.swift; sourceTree = "<group>"; };
 		A6A0310D266EBC6D001CBE2A /* TestDrive.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TestDrive.entitlements; sourceTree = "<group>"; };
 		A6A262D624E0BCB30091EA92 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A6A262DB24E0BCB30091EA92 /* TestDrive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestDrive.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -81,16 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				A6A262DE24E0BCB30091EA92 /* Info.plist */,
-				94FAE50C2E483DB600DC65F3 /* AddFolderSheet.swift */,
-				94FAE50D2E483DB600DC65F3 /* AddTimerSheet.swift */,
-				94FAE50E2E483DB600DC65F3 /* ColorExtensions.swift */,
-				94FAE50F2E483DB600DC65F3 /* ContentView.swift */,
-				94FAE5102E483DB600DC65F3 /* EditFolderSheet.swift */,
-				94FAE5112E483DB600DC65F3 /* EditTimerSheet.swift */,
-				94FAE5122E483DB600DC65F3 /* FolderDetailView.swift */,
-				94FAE5132E483DB600DC65F3 /* Models.swift */,
 				94FAE5142E483DB600DC65F3 /* TestDriveApp.swift */,
-				94FAE5152E483DB600DC65F3 /* TimerRunningView.swift */,
 				A6A262D624E0BCB30091EA92 /* Assets.xcassets */,
 			);
 			path = iOS;
@@ -168,16 +141,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				94FAE5162E483DB600DC65F3 /* Models.swift in Sources */,
-				94FAE5172E483DB600DC65F3 /* EditFolderSheet.swift in Sources */,
-				94FAE5182E483DB600DC65F3 /* ContentView.swift in Sources */,
-				94FAE5192E483DB600DC65F3 /* AddTimerSheet.swift in Sources */,
-				94FAE51A2E483DB600DC65F3 /* ColorExtensions.swift in Sources */,
-				94FAE51B2E483DB600DC65F3 /* AddFolderSheet.swift in Sources */,
-				94FAE51C2E483DB600DC65F3 /* EditTimerSheet.swift in Sources */,
-				94FAE51D2E483DB600DC65F3 /* FolderDetailView.swift in Sources */,
 				94FAE51E2E483DB600DC65F3 /* TestDriveApp.swift in Sources */,
-				94FAE51F2E483DB600DC65F3 /* TimerRunningView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

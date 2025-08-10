@@ -2,17 +2,17 @@ import Foundation
 import SwiftData
 
 @Model
-final class TimerFolder {
-    var id: UUID
-    var name: String
-    var colorHex: String
-    var createdAt: Date
-    var sortOrder: Int
+public final class TimerFolder {
+    public var id: UUID
+    public var name: String
+    public var colorHex: String
+    public var createdAt: Date
+    public var sortOrder: Int
     
     @Relationship(deleteRule: .cascade, inverse: \TimerItem.folder)
-    var timers: [TimerItem]
+    public var timers: [TimerItem]
     
-    init(name: String, colorHex: String = "#E8B4A5", sortOrder: Int = 0) {
+    public init(name: String, colorHex: String = "#E8B4A5", sortOrder: Int = 0) {
         self.id = UUID()
         self.name = name
         self.colorHex = colorHex
@@ -23,19 +23,19 @@ final class TimerFolder {
 }
 
 @Model
-final class TimerItem {
-    var id: UUID
-    var name: String
-    var duration: TimeInterval
-    var colorHex: String
-    var soundName: String
-    var createdAt: Date
-    var sortOrder: Int
-    var isFavorite: Bool = false
+public final class TimerItem {
+    public var id: UUID
+    public var name: String
+    public var duration: TimeInterval
+    public var colorHex: String
+    public var soundName: String
+    public var createdAt: Date
+    public var sortOrder: Int
+    public var isFavorite: Bool = false
     
-    var folder: TimerFolder?
+    public var folder: TimerFolder?
     
-    init(name: String, duration: TimeInterval, colorHex: String = "#D4A373", soundName: String = "Gentle") {
+    public init(name: String, duration: TimeInterval, colorHex: String = "#D4A373", soundName: String = "Gentle") {
         self.id = UUID()
         self.name = name
         self.duration = duration
