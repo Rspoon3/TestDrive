@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		944DA6BC2E484550007D9CA4 /* ClocksyKit in Frameworks */ = {isa = PBXBuildFile; productRef = 944DA6BB2E484550007D9CA4 /* ClocksyKit */; };
 		94FAE5162E483DB600DC65F3 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FAE5132E483DB600DC65F3 /* Models.swift */; };
 		94FAE5172E483DB600DC65F3 /* EditFolderSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FAE5102E483DB600DC65F3 /* EditFolderSheet.swift */; };
 		94FAE5182E483DB600DC65F3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FAE50F2E483DB600DC65F3 /* ContentView.swift */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		943780842E4843EE00ACC51E /* ClocksyCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ClocksyCore; sourceTree = "<group>"; };
 		94FAE50C2E483DB600DC65F3 /* AddFolderSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFolderSheet.swift; sourceTree = "<group>"; };
 		94FAE50D2E483DB600DC65F3 /* AddTimerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTimerSheet.swift; sourceTree = "<group>"; };
 		94FAE50E2E483DB600DC65F3 /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
@@ -42,6 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				944DA6BC2E484550007D9CA4 /* ClocksyKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -58,6 +61,7 @@
 		A6A262CE24E0BCB20091EA92 = {
 			isa = PBXGroup;
 			children = (
+				943780842E4843EE00ACC51E /* ClocksyCore */,
 				A6A0310D266EBC6D001CBE2A /* TestDrive.entitlements */,
 				A6A262DD24E0BCB30091EA92 /* iOS */,
 				A6A262DC24E0BCB30091EA92 /* Products */,
@@ -377,6 +381,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		944DA6BB2E484550007D9CA4 /* ClocksyKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ClocksyKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A6A262CF24E0BCB20091EA92 /* Project object */;
 }
