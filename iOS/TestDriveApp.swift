@@ -6,9 +6,18 @@
 //
 
 import SwiftUI
+import SharingGRDB
 
 @main
 struct TestDriveApp: App {
+    init() {
+        prepareDependencies {
+            if let database = DatabaseManager.shared.database {
+                $0.defaultDatabase = database
+            }
+        }
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
