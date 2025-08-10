@@ -4,6 +4,7 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \TimerFolder.sortOrder) private var folders: [TimerFolder]
+    @Query(filter: #Predicate<TimerItem> { $0.isFavorite }) private var favoriteTimers: [TimerItem]
     @State private var showingAddFolder = false
     @State private var newFolderName = ""
     @State private var selectedColor = Color(hex: "#E8B4A5")
@@ -24,6 +25,37 @@ struct ContentView: View {
                 
                 ScrollView {
                     VStack(spacing: 20) {
+                        // Favorites Section
+                        if !favoriteTimers.isEmpty {
+                            VStack(alignment: .leading, spacing: 12) {
+                                HStack {
+                                    Image(systemName: "star.fill")
+                                        .foregroundColor(Color(hex: "#F4A460"))
+                                    Text("Favorites")
+                                        .font(.custom("Avenir Next", size: 20))
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(Color(hex: "#5C4033"))
+                                }
+                                .padding(.horizontal)
+                                
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 12) {
+                                        ForEach(favoriteTimers) { timer in
+                                            NavigationLink(destination: TimerRunningView(
+                                                timer: timer,
+                                                folderName: timer.folder?.name ?? "Favorites"
+                                            )) {
+                                                FavoriteTimerCard(timer: timer)
+                                            }
+                                        }
+                                    }
+                                    .padding(.horizontal)
+                                }
+                            }
+                            .padding(.top, 20)
+                        }
+                        
+                        // Folders Section
                         if folders.isEmpty {
                             VStack(spacing: 16) {
                                 Image(systemName: "folder.badge.plus")
@@ -41,33 +73,43 @@ struct ContentView: View {
                                     .multilineTextAlignment(.center)
                                     .padding(.horizontal, 40)
                             }
-                            .padding(.top, 100)
+                            .padding(.top, favoriteTimers.isEmpty ? 100 : 40)
                         } else {
-                            LazyVGrid(columns: [
-                                GridItem(.flexible()),
-                                GridItem(.flexible())
-                            ], spacing: 16) {
-                                ForEach(folders) { folder in
-                                    NavigationLink(destination: FolderDetailView(folder: folder)) {
-                                        FolderCardView(folder: folder)
-                                    }
-                                    .contextMenu {
-                                        Button {
-                                            editingFolder = folder
-                                        } label: {
-                                            Label("Edit", systemImage: "pencil")
+                            VStack(alignment: .leading, spacing: 12) {
+                                if !favoriteTimers.isEmpty {
+                                    Text("Folders")
+                                        .font(.custom("Avenir Next", size: 20))
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(Color(hex: "#5C4033"))
+                                        .padding(.horizontal)
+                                }
+                                
+                                LazyVGrid(columns: [
+                                    GridItem(.flexible()),
+                                    GridItem(.flexible())
+                                ], spacing: 16) {
+                                    ForEach(folders) { folder in
+                                        NavigationLink(destination: FolderDetailView(folder: folder)) {
+                                            FolderCardView(folder: folder)
                                         }
-                                        
-                                        Button(role: .destructive) {
-                                            deleteFolder(folder)
-                                        } label: {
-                                            Label("Delete", systemImage: "trash")
+                                        .contextMenu {
+                                            Button {
+                                                editingFolder = folder
+                                            } label: {
+                                                Label("Edit", systemImage: "pencil")
+                                            }
+                                            
+                                            Button(role: .destructive) {
+                                                deleteFolder(folder)
+                                            } label: {
+                                                Label("Delete", systemImage: "trash")
+                                            }
                                         }
                                     }
                                 }
+                                .padding(.horizontal)
                             }
-                            .padding(.horizontal)
-                            .padding(.top, 20)
+                            .padding(.top, favoriteTimers.isEmpty ? 20 : 0)
                         }
                     }
                     .padding(.bottom, 100)
@@ -117,6 +159,52 @@ struct ContentView: View {
     private func deleteFolder(_ folder: TimerFolder) {
         modelContext.delete(folder)
         try? modelContext.save()
+    }
+}
+
+struct FavoriteTimerCard: View {
+    let timer: TimerItem
+    
+    var formattedDuration: String {
+        let minutes = Int(timer.duration) / 60
+        let seconds = Int(timer.duration) % 60
+        if seconds == 0 {
+            return "\(minutes)m"
+        } else {
+            return String(format: "%d:%02d", minutes, seconds)
+        }
+    }
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            Circle()
+                .fill(Color(hex: timer.colorHex))
+                .frame(width: 60, height: 60)
+                .overlay(
+                    Image(systemName: "timer")
+                        .font(.system(size: 24))
+                        .foregroundColor(.white)
+                )
+            
+            Text(timer.name)
+                .font(.custom("Avenir Next", size: 14))
+                .fontWeight(.medium)
+                .foregroundColor(Color(hex: "#5C4033"))
+                .lineLimit(2)
+                .multilineTextAlignment(.center)
+                .frame(width: 80)
+            
+            Text(formattedDuration)
+                .font(.custom("Avenir Next", size: 12))
+                .foregroundColor(Color(hex: "#A0896C"))
+        }
+        .padding(.vertical, 12)
+        .padding(.horizontal, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.white.opacity(0.8))
+                .shadow(color: Color(hex: timer.colorHex).opacity(0.15), radius: 4, x: 0, y: 2)
+        )
     }
 }
 

@@ -31,6 +31,7 @@ final class TimerItem {
     var soundName: String
     var createdAt: Date
     var sortOrder: Int
+    var isFavorite: Bool = false
     
     var folder: TimerFolder?
     
@@ -42,6 +43,7 @@ final class TimerItem {
         self.soundName = soundName
         self.createdAt = Date()
         self.sortOrder = 0
+        self.isFavorite = false
     }
 }
 

@@ -45,6 +45,13 @@ struct FolderDetailView: View {
                             }
                             .contextMenu {
                                 Button {
+                                    toggleFavorite(timer)
+                                } label: {
+                                    Label(timer.isFavorite ? "Remove from Favorites" : "Add to Favorites",
+                                          systemImage: timer.isFavorite ? "star.slash" : "star")
+                                }
+                                
+                                Button {
                                     editingTimer = timer
                                 } label: {
                                     Label("Edit", systemImage: "pencil")
@@ -92,6 +99,11 @@ struct FolderDetailView: View {
             try? modelContext.save()
         }
     }
+    
+    private func toggleFavorite(_ timer: TimerItem) {
+        timer.isFavorite.toggle()
+        try? modelContext.save()
+    }
 }
 
 struct TimerCardView: View {
@@ -110,10 +122,18 @@ struct TimerCardView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text(timer.name)
-                    .font(.custom("Avenir Next", size: 18))
-                    .fontWeight(.semibold)
-                    .foregroundColor(Color(hex: "#5C4033"))
+                HStack(spacing: 6) {
+                    Text(timer.name)
+                        .font(.custom("Avenir Next", size: 18))
+                        .fontWeight(.semibold)
+                        .foregroundColor(Color(hex: "#5C4033"))
+                    
+                    if timer.isFavorite {
+                        Image(systemName: "star.fill")
+                            .font(.system(size: 12))
+                            .foregroundColor(Color(hex: "#F4A460"))
+                    }
+                }
                 
                 HStack(spacing: 12) {
                     Label(formattedDuration, systemImage: "timer")
