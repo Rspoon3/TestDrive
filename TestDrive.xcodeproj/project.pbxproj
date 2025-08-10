@@ -11,6 +11,7 @@
 		944DA93B2E486BB4007D9CA5 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944DA93C2E486BB4007D9CA6 /* Book.swift */; };
 		944DA93C2E486E50007D9CA4 /* Author.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944DA93B2E486E50007D9CA4 /* Author.swift */; };
 		944DA93D2E486BB4007D9CA7 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944DA93E2E486BB4007D9CA8 /* DatabaseManager.swift */; };
+		944DA93E2E4878D6007D9CA4 /* DebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944DA93D2E4878D6007D9CA4 /* DebugView.swift */; };
 		A6A262FD24E0BCB30091EA92 /* TestDriveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D424E0BCB20091EA92 /* TestDriveApp.swift */; };
 		A6A262FF24E0BCB30091EA92 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D524E0BCB20091EA92 /* ContentView.swift */; };
 		A6A2630124E0BCB30091EA92 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A6A262D624E0BCB30091EA92 /* Assets.xcassets */; };
@@ -19,6 +20,7 @@
 /* Begin PBXFileReference section */
 		944DA93B2E486E50007D9CA4 /* Author.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Author.swift; sourceTree = "<group>"; };
 		944DA93C2E486BB4007D9CA6 /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
+		944DA93D2E4878D6007D9CA4 /* DebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugView.swift; sourceTree = "<group>"; };
 		944DA93E2E486BB4007D9CA8 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		A6A0310D266EBC6D001CBE2A /* TestDrive.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TestDrive.entitlements; sourceTree = "<group>"; };
 		A6A262D424E0BCB20091EA92 /* TestDriveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDriveApp.swift; sourceTree = "<group>"; };
@@ -71,6 +73,7 @@
 				A6A262DE24E0BCB30091EA92 /* Info.plist */,
 				A6A262D424E0BCB20091EA92 /* TestDriveApp.swift */,
 				A6A262D524E0BCB20091EA92 /* ContentView.swift */,
+				944DA93D2E4878D6007D9CA4 /* DebugView.swift */,
 				944DA93C2E486BB4007D9CA6 /* Book.swift */,
 				944DA93B2E486E50007D9CA4 /* Author.swift */,
 				944DA93E2E486BB4007D9CA8 /* DatabaseManager.swift */,
@@ -151,6 +154,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				944DA93E2E4878D6007D9CA4 /* DebugView.swift in Sources */,
 				944DA93B2E486BB4007D9CA5 /* Book.swift in Sources */,
 				944DA93D2E486BB4007D9CA7 /* DatabaseManager.swift in Sources */,
 				A6A262FF24E0BCB30091EA92 /* ContentView.swift in Sources */,

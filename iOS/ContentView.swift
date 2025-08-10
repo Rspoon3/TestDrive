@@ -102,6 +102,12 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Library")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink("Debug", destination: DebugView())
+                        .font(.caption)
+                }
+            }
             .alert("Add Book", isPresented: $showingAddBook) {
                 Button("Add Sample") {
                     addSampleBook()
