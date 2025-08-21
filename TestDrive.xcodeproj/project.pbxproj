@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		94E5D2422E56ACB600BA1283 /* PhysicsBallClockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E5D23F2E56ACB600BA1283 /* PhysicsBallClockView.swift */; };
+		94E5D2432E56ACB600BA1283 /* PhysicsBallScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E5D2402E56ACB600BA1283 /* PhysicsBallScene.swift */; };
+		94E5D2442E56ACB600BA1283 /* PhysicsBallClockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E5D23F2E56ACB600BA1283 /* PhysicsBallClockView.swift */; };
+		94E5D2452E56ACB600BA1283 /* PhysicsBallScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E5D2402E56ACB600BA1283 /* PhysicsBallScene.swift */; };
+		94E5D2592E56B02200BA1283 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E5D2582E56B02200BA1283 /* ContentView.swift */; };
+		94E5D25A2E56B02200BA1283 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E5D2582E56B02200BA1283 /* ContentView.swift */; };
 		A6A262F024E0BCB30091EA92 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262EF24E0BCB30091EA92 /* Tests_iOS.swift */; };
 		A6A262FB24E0BCB30091EA92 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262FA24E0BCB30091EA92 /* Tests_macOS.swift */; };
 		A6A262FD24E0BCB30091EA92 /* TestDriveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D424E0BCB20091EA92 /* TestDriveApp.swift */; };
@@ -33,6 +39,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		94E5D23F2E56ACB600BA1283 /* PhysicsBallClockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicsBallClockView.swift; sourceTree = "<group>"; };
+		94E5D2402E56ACB600BA1283 /* PhysicsBallScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicsBallScene.swift; sourceTree = "<group>"; };
+		94E5D2582E56B02200BA1283 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A6A0310D266EBC6D001CBE2A /* TestDrive.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TestDrive.entitlements; sourceTree = "<group>"; };
 		A6A262D424E0BCB20091EA92 /* TestDriveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDriveApp.swift; sourceTree = "<group>"; };
 		A6A262D624E0BCB30091EA92 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -92,6 +101,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		94E5D2412E56ACB600BA1283 /* PhysicsBalls */ = {
+			isa = PBXGroup;
+			children = (
+				94E5D23F2E56ACB600BA1283 /* PhysicsBallClockView.swift */,
+				94E5D2402E56ACB600BA1283 /* PhysicsBallScene.swift */,
+			);
+			path = PhysicsBalls;
+			sourceTree = "<group>";
+		};
 		A6A262CE24E0BCB20091EA92 = {
 			isa = PBXGroup;
 			children = (
@@ -109,6 +127,8 @@
 		A6A262D324E0BCB20091EA92 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				94E5D2582E56B02200BA1283 /* ContentView.swift */,
+				94E5D2412E56ACB600BA1283 /* PhysicsBalls */,
 				A6A262D424E0BCB20091EA92 /* TestDriveApp.swift */,
 				94E5D23D2E56AB7400BA1283 /* EdgeBalls */,
 				A6A262D624E0BCB30091EA92 /* Assets.xcassets */,
@@ -330,6 +350,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94E5D25A2E56B02200BA1283 /* ContentView.swift in Sources */,
+				94E5D2442E56ACB600BA1283 /* PhysicsBallClockView.swift in Sources */,
+				94E5D2452E56ACB600BA1283 /* PhysicsBallScene.swift in Sources */,
 				A6A262FD24E0BCB30091EA92 /* TestDriveApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -338,6 +361,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94E5D2592E56B02200BA1283 /* ContentView.swift in Sources */,
+				94E5D2422E56ACB600BA1283 /* PhysicsBallClockView.swift in Sources */,
+				94E5D2432E56ACB600BA1283 /* PhysicsBallScene.swift in Sources */,
 				A6A262FE24E0BCB30091EA92 /* TestDriveApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
