@@ -62,6 +62,23 @@ struct ContentView: View {
                         }
                         .padding(.vertical, 4)
                     }
+                    
+                    NavigationLink(destination: CircularRingsClockView(showMilliseconds: showMilliseconds)) {
+                        HStack {
+                            Image(systemName: "circle.hexagongrid")
+                                .foregroundColor(.orange)
+                                .frame(width: 30)
+                            
+                            VStack(alignment: .leading) {
+                                Text("Circular Rings Clock")
+                                    .font(.headline)
+                                Text("Concentric rings like Apple Watch")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
                 }
                 
                 Section("Features") {
