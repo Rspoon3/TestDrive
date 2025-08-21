@@ -45,6 +45,23 @@ struct ContentView: View {
                         }
                         .padding(.vertical, 4)
                     }
+                    
+                    NavigationLink(destination: ProgressBarClockView(showMilliseconds: showMilliseconds)) {
+                        HStack {
+                            Image(systemName: "chart.bar.fill")
+                                .foregroundColor(.purple)
+                                .frame(width: 30)
+                            
+                            VStack(alignment: .leading) {
+                                Text("Progress Bar Clock")
+                                    .font(.headline)
+                                Text("Horizontal progress bars show time flow")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
                 }
                 
                 Section("Features") {
