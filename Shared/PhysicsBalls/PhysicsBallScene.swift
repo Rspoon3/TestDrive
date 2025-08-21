@@ -41,6 +41,9 @@ class PhysicsBallScene: SKScene, SKPhysicsContactDelegate {
     private var lastHapticTime: TimeInterval = 0
     private let hapticCooldown: TimeInterval = 0.1 // Minimum time between haptic events
     
+    // Update throttling
+    private var lastUpdateTime: TimeInterval = 0
+    
     override func didMove(to view: SKView) {
         setupPhysics()
         setupBoundaries()
@@ -54,11 +57,15 @@ class PhysicsBallScene: SKScene, SKPhysicsContactDelegate {
         lightImpact.prepare()
         mediumImpact.prepare()
         heavyImpact.prepare()
+    }
+    
+    override func update(_ currentTime: TimeInterval) {
+        // Throttle updates based on whether milliseconds are enabled
+        let updateInterval: TimeInterval = showMilliseconds ? 0.01 : 0.1
         
-        // Update timer - faster interval for milliseconds
-        let interval = showMilliseconds ? 0.01 : 0.1
-        Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { _ in
-            self.updateTimeBasedBalls()
+        if currentTime - lastUpdateTime >= updateInterval {
+            updateTimeBasedBalls()
+            lastUpdateTime = currentTime
         }
     }
     
