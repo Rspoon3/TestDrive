@@ -2,10 +2,15 @@ import SwiftUI
 import SpriteKit
 
 struct PhysicsBallClockView: View {
+    let showMilliseconds: Bool
     @State private var scene: PhysicsBallScene?
     @State private var currentTime = Date()
     
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
+    init(showMilliseconds: Bool = false) {
+        self.showMilliseconds = showMilliseconds
+    }
     
     var body: some View {
         GeometryReader { geometry in
@@ -25,6 +30,10 @@ struct PhysicsBallClockView: View {
                                 .foregroundColor(.blue)
                             Label("Seconds", systemImage: "circle.fill")
                                 .foregroundColor(.green)
+                            if showMilliseconds {
+                                Label("Milliseconds", systemImage: "circle.fill")
+                                    .foregroundColor(.purple)
+                            }
                         }
                         .font(.caption)
                         .padding()
@@ -56,10 +65,11 @@ struct PhysicsBallClockView: View {
         scene.size = size
         scene.scaleMode = .resizeFill
         scene.backgroundColor = .clear
+        scene.showMilliseconds = showMilliseconds
         return scene
     }
 }
 
 #Preview {
-    PhysicsBallClockView()
+    PhysicsBallClockView(showMilliseconds: true)
 }

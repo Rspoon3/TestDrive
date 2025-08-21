@@ -11,4 +11,5 @@ enum TimeUnit {
     case hours
     case minutes
     case seconds
+    case milliseconds
 }

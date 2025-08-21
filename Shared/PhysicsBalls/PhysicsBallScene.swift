@@ -3,14 +3,18 @@ import CoreMotion
 import UIKit
 
 class PhysicsBallScene: SKScene, SKPhysicsContactDelegate {
+    var showMilliseconds = false
+    
     private var motionManager = CMMotionManager()
     private var hourBalls: [SKShapeNode] = []
     private var minuteBalls: [SKShapeNode] = []
     private var secondBalls: [SKShapeNode] = []
+    private var millisecondBalls: [SKShapeNode] = []
     
     private var lastHour = -1
     private var lastMinute = -1
     private var lastSecond = -1
+    private var lastMillisecond = -1
     
     // Track balls that have already triggered haptics
     private var ballsWithHaptics: Set<ObjectIdentifier> = []
@@ -19,12 +23,14 @@ class PhysicsBallScene: SKScene, SKPhysicsContactDelegate {
     private let hourBallRadius: CGFloat = 15
     private let minuteBallRadius: CGFloat = 10
     private let secondBallRadius: CGFloat = 6
+    private let millisecondBallRadius: CGFloat = 4
     
     // Collision categories
     private let hourBallCategory: UInt32 = 0x1 << 0
     private let minuteBallCategory: UInt32 = 0x1 << 1
     private let secondBallCategory: UInt32 = 0x1 << 2
-    private let boundaryCategory: UInt32 = 0x1 << 3
+    private let millisecondBallCategory: UInt32 = 0x1 << 3
+    private let boundaryCategory: UInt32 = 0x1 << 4
     
     // Haptic feedback generators
     private let lightImpact = UIImpactFeedbackGenerator(style: .light)
@@ -49,8 +55,9 @@ class PhysicsBallScene: SKScene, SKPhysicsContactDelegate {
         mediumImpact.prepare()
         heavyImpact.prepare()
         
-        // Update timer
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+        // Update timer - faster interval for milliseconds
+        let interval = showMilliseconds ? 0.01 : 0.1
+        Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { _ in
             self.updateTimeBasedBalls()
         }
     }
@@ -106,6 +113,7 @@ class PhysicsBallScene: SKScene, SKPhysicsContactDelegate {
         let hour = calendar.component(.hour, from: now) % 12
         let minute = calendar.component(.minute, from: now)
         let second = calendar.component(.second, from: now)
+        let nanosecond = calendar.component(.nanosecond, from: now)
         
         // Create initial balls
         for _ in 0..<(hour == 0 ? 12 : hour) {
@@ -120,6 +128,16 @@ class PhysicsBallScene: SKScene, SKPhysicsContactDelegate {
             dropSecondBall()
         }
         
+        // Handle milliseconds if enabled
+        if showMilliseconds {
+            let millisecond = nanosecond / 1_000_000
+            let currentMillisecond = millisecond / 10 // Group into 10ms intervals
+            for _ in 0..<Int(currentMillisecond) {
+                dropMillisecondBall()
+            }
+            lastMillisecond = Int(currentMillisecond)
+        }
+        
         lastHour = hour
         lastMinute = minute
         lastSecond = second
@@ -132,6 +150,8 @@ class PhysicsBallScene: SKScene, SKPhysicsContactDelegate {
         let hour = calendar.component(.hour, from: now) % 12
         let minute = calendar.component(.minute, from: now)
         let second = calendar.component(.second, from: now)
+        let nanosecond = calendar.component(.nanosecond, from: now)
+        let millisecond = nanosecond / 1_000_000
         
         // Handle hours
         if hour != lastHour {
@@ -156,11 +176,24 @@ class PhysicsBallScene: SKScene, SKPhysicsContactDelegate {
         // Handle seconds
         if second != lastSecond {
             if second == 0 {
-                // Clear all second balls at 60
+                // Clear all second balls at 60 (top of minute)
                 clearBalls(&secondBalls)
+                // Also clear millisecond balls at top of minute
+                if showMilliseconds {
+                    clearBalls(&millisecondBalls)
+                }
             }
             dropSecondBall()
             lastSecond = second
+        }
+        
+        // Handle milliseconds (only if enabled)
+        if showMilliseconds {
+            let currentMillisecond = millisecond / 10 // Group into 10ms intervals
+            if currentMillisecond != lastMillisecond {
+                dropMillisecondBall()
+                lastMillisecond = currentMillisecond
+            }
         }
     }
     
@@ -192,6 +225,15 @@ class PhysicsBallScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.velocity = CGVector(dx: CGFloat.random(in: -50...50), dy: 0)
     }
     
+    private func dropMillisecondBall() {
+        let ball = createBall(radius: millisecondBallRadius, color: .purple, category: millisecondBallCategory)
+        ball.position = CGPoint(x: CGFloat.random(in: 50...frame.width-50), y: frame.height - 50)
+        millisecondBalls.append(ball)
+        addChild(ball)
+        
+        ball.physicsBody?.velocity = CGVector(dx: CGFloat.random(in: -30...30), dy: 0)
+    }
+    
     private func createBall(radius: CGFloat, color: UIColor, category: UInt32) -> SKShapeNode {
         let ball = SKShapeNode(circleOfRadius: radius)
         ball.fillColor = color
@@ -207,8 +249,8 @@ class PhysicsBallScene: SKScene, SKPhysicsContactDelegate {
         
         // Set up collision detection
         ball.physicsBody?.categoryBitMask = category
-        ball.physicsBody?.contactTestBitMask = hourBallCategory | minuteBallCategory | secondBallCategory | boundaryCategory
-        ball.physicsBody?.collisionBitMask = hourBallCategory | minuteBallCategory | secondBallCategory | boundaryCategory
+        ball.physicsBody?.contactTestBitMask = hourBallCategory | minuteBallCategory | secondBallCategory | millisecondBallCategory | boundaryCategory
+        ball.physicsBody?.collisionBitMask = hourBallCategory | minuteBallCategory | secondBallCategory | millisecondBallCategory | boundaryCategory
         
         return ball
     }
@@ -305,6 +347,16 @@ class PhysicsBallScene: SKScene, SKPhysicsContactDelegate {
                 hapticTriggered = true
             }
             
+        case millisecondBallCategory | millisecondBallCategory,
+             millisecondBallCategory | secondBallCategory,
+             secondBallCategory | millisecondBallCategory,
+             millisecondBallCategory | minuteBallCategory,
+             minuteBallCategory | millisecondBallCategory,
+             millisecondBallCategory | hourBallCategory,
+             hourBallCategory | millisecondBallCategory:
+            // Millisecond ball collisions - no haptic feedback (too frequent)
+            break
+            
         case let category where category & boundaryCategory != 0:
             // Ball hitting boundary - feedback based on ball type
             let ballCategory = collision & ~boundaryCategory
@@ -321,6 +373,8 @@ class PhysicsBallScene: SKScene, SKPhysicsContactDelegate {
                 lightImpact.impactOccurred()
                 lightImpact.prepare()
                 hapticTriggered = true
+            } else if ballCategory == millisecondBallCategory && collisionImpulse > 1.0 {
+                // No haptic feedback for millisecond balls hitting boundaries (too frequent)
             }
             
         default:

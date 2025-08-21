@@ -1,11 +1,18 @@
 import SwiftUI
 
 struct ContentView: View {
+    @AppStorage("showMilliseconds") private var showMilliseconds = false
+    
     var body: some View {
         NavigationStack {
             List {
+                Section("Settings") {
+                    Toggle("Show Milliseconds", isOn: $showMilliseconds)
+                        .tint(.purple)
+                }
+                
                 Section("Clock Faces") {
-                    NavigationLink(destination: RectangularClockView()) {
+                    NavigationLink(destination: RectangularClockView(showMilliseconds: showMilliseconds)) {
                         HStack {
                             Image(systemName: "clock")
                                 .foregroundColor(.blue)
@@ -22,7 +29,7 @@ struct ContentView: View {
                         .padding(.vertical, 4)
                     }
                     
-                    NavigationLink(destination: PhysicsBallClockView()) {
+                    NavigationLink(destination: PhysicsBallClockView(showMilliseconds: showMilliseconds)) {
                         HStack {
                             Image(systemName: "circles.hexagonpath")
                                 .foregroundColor(.green)
@@ -47,6 +54,10 @@ struct ContentView: View {
                         .foregroundColor(.blue)
                     Label("Seconds in green", systemImage: "circle.fill")
                         .foregroundColor(.green)
+                    if showMilliseconds {
+                        Label("Milliseconds in purple", systemImage: "circle.fill")
+                            .foregroundColor(.purple)
+                    }
                 }
                 .font(.footnote)
             }

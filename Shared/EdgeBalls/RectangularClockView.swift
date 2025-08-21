@@ -1,7 +1,12 @@
 import SwiftUI
 
 struct RectangularClockView: View {
+    let showMilliseconds: Bool
     @State private var showPath = true
+    
+    init(showMilliseconds: Bool = false) {
+        self.showMilliseconds = showMilliseconds
+    }
     
     var body: some View {
         TimelineView(.animation) { timeline in
@@ -22,6 +27,10 @@ struct RectangularClockView: View {
                     BallIndicator(rect: rect, date: timeline.date, timeUnit: .minutes)
                     BallIndicator(rect: rect, date: timeline.date, timeUnit: .seconds)
                     
+                    if showMilliseconds {
+                        BallIndicator(rect: rect, date: timeline.date, timeUnit: .milliseconds)
+                    }
+                    
                     Text(timeline.date.formatted(date: .omitted, time: .complete))
                         .foregroundStyle(.white)
                 }
@@ -36,5 +45,5 @@ struct RectangularClockView: View {
 }
 
 #Preview {
-    RectangularClockView()
+    RectangularClockView(showMilliseconds: true)
 }

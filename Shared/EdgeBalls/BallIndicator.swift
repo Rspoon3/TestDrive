@@ -47,6 +47,10 @@ struct BallIndicator: View {
             // Seconds ball completes a full cycle in 60 seconds
             let nanoFraction = Double(nanosecond) / 1_000_000_000
             fraction = (Double(second) + nanoFraction) / 60.0
+        case .milliseconds:
+            // Milliseconds ball completes a full cycle in 1000 milliseconds (1 second)
+            let millisecond = Double(nanosecond) / 1_000_000
+            fraction = millisecond / 1000.0
         }
         
         return pathHelper.timePosition(for: fraction)
@@ -57,6 +61,7 @@ struct BallIndicator: View {
         case .hours: return 30
         case .minutes: return 20
         case .seconds: return 12
+        case .milliseconds: return 8
         }
     }
     
@@ -65,6 +70,7 @@ struct BallIndicator: View {
         case .hours: return .orange
         case .minutes: return .blue
         case .seconds: return .green
+        case .milliseconds: return .purple
         }
     }
     
