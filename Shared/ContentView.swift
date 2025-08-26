@@ -9,7 +9,10 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        Text("Hello, World!")
+        UserDefaultsDebugView()
+//            .onAppear {
+//                UserDefaults.standard.set(123, forKey: "TestValue")
+//            }
     }
 }
 
