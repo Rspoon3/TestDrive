@@ -14,7 +14,7 @@ struct UserDefaultsDebugView: View {
         NavigationView {
             List {
                 if !viewModel.pinnedItems.isEmpty {
-                    Section(header: Text("Pinned").font(.caption)) {
+                    Section("Pinned") {
                         ForEach(viewModel.pinnedItems, id: \.key) { item in
                             UserDefaultsRowView(
                                 key: item.key,
@@ -25,17 +25,17 @@ struct UserDefaultsDebugView: View {
                                 }
                             )
                             .swipeActions(edge: .leading) {
-                                Button(action: {
+                                Button {
                                     viewModel.togglePin(forKey: item.key)
-                                }) {
+                                } label: {
                                     Label("Unpin", systemImage: "pin.slash")
                                 }
                                 .tint(.orange)
                             }
                             .swipeActions(edge: .trailing) {
-                                Button(role: .destructive, action: {
+                                Button(role: .destructive) {
                                     viewModel.deleteItem(withKey: item.key)
-                                }) {
+                                } label: {
                                     Label("Delete", systemImage: "trash")
                                 }
                             }
@@ -43,7 +43,7 @@ struct UserDefaultsDebugView: View {
                     }
                 }
                 
-                Section(header: viewModel.pinnedItems.isEmpty ? nil : Text("All").font(.caption)) {
+                Section("\(viewModel.pinnedItems.isEmpty ? "" : "All")") {
                     ForEach(viewModel.unpinnedItems, id: \.key) { item in
                         UserDefaultsRowView(
                             key: item.key,
@@ -54,17 +54,17 @@ struct UserDefaultsDebugView: View {
                             }
                         )
                         .swipeActions(edge: .leading) {
-                            Button(action: {
+                            Button {
                                 viewModel.togglePin(forKey: item.key)
-                            }) {
+                            } label: {
                                 Label("Pin", systemImage: "pin")
                             }
                             .tint(.orange)
                         }
                         .swipeActions(edge: .trailing) {
-                            Button(role: .destructive, action: {
+                            Button(role: .destructive) {
                                 viewModel.deleteItem(withKey: item.key)
-                            }) {
+                            } label: {
                                 Label("Delete", systemImage: "trash")
                             }
                         }

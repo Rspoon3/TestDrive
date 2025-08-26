@@ -14,7 +14,33 @@ final class UserDefaultsDebugViewModel: ObservableObject {
     @Published var editableValues: [String: Any] = [:]
     @Published var pinnedKeys: Set<String> = []
     
+    private let userDefaults = UserDefaults.standard
     private let pinnedKeysStorageKey = "__UserDefaultsDebugView_pinnedKeys"
+    
+    /// List of known built-in UserDefaults keys
+    private let builtInKeys: Set<String> = [
+        "AKLastIDMSEnvironment",
+        "AddingEmojiKeybordHandled",
+        "NSInterfaceStyle",
+        "NSHyphenatesAsLastResort",
+        "NSUsesCFStringTokenizerForLineBreaks",
+        "AppleKeyboards",
+        "AppleKeyboardsExpanded",
+        "AppleLanguages",
+        "AppleLanguagesSchemaVersion",
+        "ApplePasscodeKeyboards",
+        "AKLastLocale",
+        "AppleLocale",
+        "PKLogNotificationServiceResponsesKey",
+        "NSUsesTextStylesForLineBreaks",
+        "NSLanguages",
+        "NSVisualBidiSelectionEnabled",
+        "METAL_DEBUG_ERROR_MODE",
+        "METAL_DEVICE_WRAPPER_TYPE",
+        "METAL_ERROR_CHECK_EXTENDED_MODE",
+        "METAL_ERROR_MODE",
+        "METAL_WARNING_MODE",
+    ]
     
     var filteredItems: [(key: String, value: Any)] {
         // Use editableValues to show current edited values, not original values
@@ -42,15 +68,12 @@ final class UserDefaultsDebugViewModel: ObservableObject {
         filteredItems.filter { !pinnedKeys.contains($0.key) }
     }
     
-    init() {
-        loadUserDefaults()
-        loadPinnedKeys()
-    }
+    // MARK: - Public
     
     func loadUserDefaults() {
-        let userDefaults = UserDefaults.standard
         userDefaultsItems = userDefaults.dictionaryRepresentation()
             .filter { !$0.key.hasPrefix("__UserDefaultsDebugView_") }
+            .filter { !builtInKeys.contains($0.key) }
             .map { ($0.key, $0.value) }
         
         editableValues = userDefaultsItems.reduce(into: [:]) { result, item in
@@ -59,29 +82,23 @@ final class UserDefaultsDebugViewModel: ObservableObject {
     }
     
     func loadPinnedKeys() {
-        if let savedPins = UserDefaults.standard.array(forKey: pinnedKeysStorageKey) as? [String] {
-            pinnedKeys = Set(savedPins)
-        }
+        guard let savedPins = userDefaults.array(forKey: pinnedKeysStorageKey) as? [String] else { return }
+        pinnedKeys = Set(savedPins)
     }
     
     func savePinnedKeys() {
-        UserDefaults.standard.set(Array(pinnedKeys), forKey: pinnedKeysStorageKey)
+        userDefaults.set(Array(pinnedKeys), forKey: pinnedKeysStorageKey)
     }
     
     func updateValue(_ newValue: Any, forKey key: String) {
         // Save to editableValues
-        let oldEditableValue = editableValues[key]
         editableValues[key] = newValue
         
         // Save to UserDefaults
-        UserDefaults.standard.set(newValue, forKey: key)
-        
-        // Verify it was saved
-        let savedValue = UserDefaults.standard.object(forKey: key)
+        userDefaults.set(newValue, forKey: key)
         
         // Update the specific item in userDefaultsItems to trigger UI update
         if let index = userDefaultsItems.firstIndex(where: { $0.key == key }) {
-            let oldValue = userDefaultsItems[index].value
             userDefaultsItems[index] = (key: key, value: newValue)
         }
         
@@ -90,7 +107,7 @@ final class UserDefaultsDebugViewModel: ObservableObject {
     }
     
     func deleteItem(withKey key: String) {
-        UserDefaults.standard.removeObject(forKey: key)
+        userDefaults.removeObject(forKey: key)
         pinnedKeys.remove(key)
         savePinnedKeys()
         loadUserDefaults()

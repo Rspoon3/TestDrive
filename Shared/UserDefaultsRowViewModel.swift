@@ -17,6 +17,9 @@ final class UserDefaultsRowViewModel: ObservableObject {
     @Published var editedBoolValue: Bool = false
     @Published var editedNumberValue: String = ""
     @Published var editedArrayElements: [String] = []
+    @Published var editedDateValue: Date = Date()
+    
+    // MARK: - Initializer
     
     init(key: String, value: Any, isPinned: Bool, onValueChanged: @escaping (Any) -> Void) {
         self.key = key
@@ -25,6 +28,8 @@ final class UserDefaultsRowViewModel: ObservableObject {
         self.onValueChanged = onValueChanged
         setupInitialValues()
     }
+    
+    // MARK: - Public
     
     func updateValue(_ newValue: Any) {
         if !valuesAreEqual(value, newValue) {
@@ -77,7 +82,7 @@ final class UserDefaultsRowViewModel: ObservableObject {
     
     var isEditable: Bool {
         switch value {
-        case is Bool, is String, is Int, is Double, is Float, is [Any]:
+        case is Bool, is String, is Int, is Double, is Float, is [Any], is Date:
             return true
         default:
             return false
@@ -95,19 +100,23 @@ final class UserDefaultsRowViewModel: ObservableObject {
     }
     
     func updateIntValue() {
-        if let intValue = Int(editedNumberValue) {
-            onValueChanged(intValue)
-        }
+        guard let intValue = Int(editedNumberValue) else { return }
+        onValueChanged(intValue)
     }
     
     func updateDoubleValue() {
-        if let doubleValue = Double(editedNumberValue) {
-            if value is Float {
-                onValueChanged(Float(doubleValue))
-            } else {
-                onValueChanged(doubleValue)
-            }
+        guard let doubleValue = Double(editedNumberValue) else { return }
+        
+        if value is Float {
+            onValueChanged(Float(doubleValue))
+        } else {
+            onValueChanged(doubleValue)
         }
+    }
+    
+    func updateDateValue(_ newValue: Date) {
+        editedDateValue = newValue
+        onValueChanged(newValue)
     }
     
     func updateArrayFromEditedElements() {
@@ -144,6 +153,8 @@ final class UserDefaultsRowViewModel: ObservableObject {
             editedArrayElements = arrayValue.map { element in
                 String(describing: element)
             }
+        case let dateValue as Date:
+            editedDateValue = dateValue
         default:
             break
         }

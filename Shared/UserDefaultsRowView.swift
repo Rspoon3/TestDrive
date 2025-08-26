@@ -111,10 +111,7 @@ struct UserDefaultsRowView: View {
                 .font(.system(.body, design: .monospaced))
                 .focused($isTextFieldFocused)
                 .onChange(of: isTextFieldFocused) { _, focused in
-                    if !focused {
-                        // Save when focus is lost (including when Done button is tapped)
-                        viewModel.updateStringValue(viewModel.editedStringValue)
-                    }
+                    viewModel.updateStringValue(viewModel.editedStringValue)
                 }
                 .onSubmit {
                     viewModel.updateStringValue(viewModel.editedStringValue)
@@ -127,10 +124,7 @@ struct UserDefaultsRowView: View {
                 .font(.system(.body, design: .monospaced))
                 .focused($isTextFieldFocused)
                 .onChange(of: isTextFieldFocused) { _, focused in
-                    if !focused {
-                        // Save when focus is lost (including when Done button is tapped)
-                        viewModel.updateIntValue()
-                    }
+                    viewModel.updateIntValue()
                 }
                 .onSubmit {
                     viewModel.updateIntValue()
@@ -143,14 +137,16 @@ struct UserDefaultsRowView: View {
                 .font(.system(.body, design: .monospaced))
                 .focused($isTextFieldFocused)
                 .onChange(of: isTextFieldFocused) { _, focused in
-                    if !focused {
-                        // Save when focus is lost (including when Done button is tapped)
-                        viewModel.updateDoubleValue()
-                    }
+                    viewModel.updateDoubleValue()
                 }
                 .onSubmit {
                     viewModel.updateDoubleValue()
                     isTextFieldFocused = false
+                }
+        case is Date:
+            DatePicker("Date", selection: $viewModel.editedDateValue, displayedComponents: [.date, .hourAndMinute])
+                .onChange(of: viewModel.editedDateValue) { _, newValue in
+                    viewModel.updateDateValue(newValue)
                 }
         case is [Any]:
             VStack(alignment: .leading, spacing: 8) {
@@ -166,10 +162,7 @@ struct UserDefaultsRowView: View {
                             .font(.system(.body, design: .monospaced))
                             .focused($isTextFieldFocused)
                             .onChange(of: isTextFieldFocused) { _, focused in
-                                if !focused {
-                                    // Save when focus is lost (including when Done button is tapped)
-                                    viewModel.updateArrayFromEditedElements()
-                                }
+                                viewModel.updateArrayFromEditedElements()
                             }
                             .onSubmit {
                                 viewModel.updateArrayFromEditedElements()
