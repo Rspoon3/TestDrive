@@ -12,9 +12,10 @@ struct ContentView: View {
     @EnvironmentObject private var deepLinkManager: DeepLinkManager
     @EnvironmentObject private var navigationCoordinator: NavigationCoordinator
     @EnvironmentObject private var counterModel: CounterModel
+    @State private var selectedTab: Int = 0
     
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             QueueDemoView()
                 .environmentObject(deepLinkQueue)
                 .environmentObject(deepLinkManager)
@@ -24,6 +25,7 @@ struct ContentView: View {
                     Image(systemName: "list.bullet")
                     Text("Queue Demo")
                 }
+                .tag(0)
             
             SettingsView()
                 .environmentObject(deepLinkQueue)
@@ -31,6 +33,12 @@ struct ContentView: View {
                     Image(systemName: "gear")
                     Text("Settings")
                 }
+                .tag(1)
+        }
+        .onReceive(deepLinkQueue.immediatePublisher) { deepLink in
+            if case .presentColorSheet(let color) = deepLink.action, color.lowercased() == "purple" {
+                selectedTab = 1
+            }
         }
     }
 }
