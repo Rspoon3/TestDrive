@@ -74,11 +74,17 @@ struct DeepLink {
     let url: URL
     let action: DeepLinkAction
     let timestamp = Date()
+    var status: DeepLinkStatus = .queued
     
     init(url: URL) {
         self.url = url
         self.action = DeepLinkAction.parse(from: url)
     }
+}
+
+enum DeepLinkStatus {
+    case queued
+    case processing
 }
 
 enum DeepLinkAction {

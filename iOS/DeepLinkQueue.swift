@@ -17,10 +17,13 @@ class DeepLinkQueue: ObservableObject {
     private let deepLinkSubject = PassthroughSubject<DeepLink, Never>()
     private var isInitialized = false
     private var pendingColdStartLinks: [URL] = []
-    private var isProcessingItem = false
     
     var queueCount: Int {
-        queue.count
+        queue.filter { $0.status == .queued }.count
+    }
+    
+    private var isProcessing: Bool {
+        queue.contains { $0.status == .processing }
     }
     
     var deepLinkPublisher: AnyPublisher<DeepLink, Never> {
@@ -55,16 +58,19 @@ class DeepLinkQueue: ObservableObject {
         queue.append(deepLink)
         
         // Only start processing if we're not already processing an item
-        if !isProcessingItem {
+        if !isProcessing {
             processQueue()
         }
     }
     
     private func processQueue() {
-        guard !queue.isEmpty, !isProcessingItem else { return }
+        // Find first queued item
+        guard let index = queue.firstIndex(where: { $0.status == .queued }) else { return }
+        guard !isProcessing else { return }
         
-        isProcessingItem = true
-        let deepLink = queue.removeFirst()
+        // Mark as processing
+        queue[index].status = .processing
+        let deepLink = queue[index]
         print("📤 Emitting deep link from queue: \(deepLink.url.absoluteString)")
         
         // Emit the deep link for processing immediately
@@ -72,7 +78,8 @@ class DeepLinkQueue: ObservableObject {
     }
     
     func markProcessingComplete() {
-        isProcessingItem = false
+        // Remove the processing item
+        queue.removeAll { $0.status == .processing }
         
         // Continue processing the next item in queue if any
         processQueue()
