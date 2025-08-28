@@ -200,7 +200,7 @@ struct QueueDemoView: View {
         }
         .onAppear {
 //            deepLinkQueue.enqueue(url: .init(string: "testdrive://color/red")!)
-//            queueMultipleLinks()
+            queueMultipleLinks()
         }
         .task {
             await deepLinkManager.makeNetworkCall()
@@ -209,10 +209,10 @@ struct QueueDemoView: View {
     
     private func queueMultipleLinks() {
         let links = [
+            "testdrive://color/purple?sheet=true", // This will be caught by PurpleSheetModel
             "testdrive://color/red",
             "testdrive://color/green",
             "testdrive://color/blue?sheet=true",
-            "testdrive://color/purple?sheet=true", // This will be caught by PurpleSheetModel
             "testdrive://value/42",  // This will process immediately (out of order)
         ]
         

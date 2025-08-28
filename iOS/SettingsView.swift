@@ -28,7 +28,7 @@ struct SettingsView: View {
             .padding()
             .navigationTitle("Settings")
             .navigationDestination(isPresented: $showPurpleScreen) {
-                ColorScreen(colorName: "purple")
+                PurpleSheetView()
             }
             .task {
                 guard !hasNavigatedToPurpleScreen else { return }

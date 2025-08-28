@@ -14,8 +14,8 @@ class DeepLinkQueue: ObservableObject {
     static let shared = DeepLinkQueue()
     
     @Published private(set) var queue: [DeepLink] = []
-    private let sequentialSubject = PassthroughSubject<DeepLink, Never>() // Sequential emissions
-    private let immediateSubject = PassthroughSubject<DeepLink, Never>() // Immediate emissions
+    private let sequentialSubject = CurrentValueSubject<DeepLink?, Never>(nil) // Sequential emissions
+    private let immediateSubject = CurrentValueSubject<DeepLink?, Never>(nil) // Immediate emissions
     
     var queueCount: Int {
         queue.filter { $0.status == .queued }.count
@@ -26,11 +26,15 @@ class DeepLinkQueue: ObservableObject {
     }
     
     var sequentialPublisher: AnyPublisher<DeepLink, Never> {
-        sequentialSubject.eraseToAnyPublisher()
+        sequentialSubject
+            .compactMap { $0 }
+            .eraseToAnyPublisher()
     }
     
     var immediatePublisher: AnyPublisher<DeepLink, Never> {
-        immediateSubject.eraseToAnyPublisher()
+        immediateSubject
+            .compactMap { $0 }
+            .eraseToAnyPublisher()
     }
     
     // MARK: - Initializer

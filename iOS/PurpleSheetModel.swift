@@ -20,13 +20,9 @@ class PurpleSheetModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private let queue = DeepLinkQueue.shared
     
-    init() {
-        setupSubscription()
-    }
-    
-    private func setupSubscription() {
+    func setupSubscription() {
         // Create helper publisher for purple sheet deep links
-        let purpleSheetDeepLinks = queue.immediatePublisher.filter { deepLink in
+        let purpleSheetDeepLinks = queue.sequentialPublisher.filter { deepLink in
             if case .presentColorSheet(let color) = deepLink.action, color.lowercased() == "purple" {
                 return true
             }

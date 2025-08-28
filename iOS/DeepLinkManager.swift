@@ -47,21 +47,21 @@ class DeepLinkManager: ObservableObject {
         
         
         
-        
-        let sheetDeepLinks = queue.sequentialPublisher.filter { deepLink in
-            if case .presentColorSheet = deepLink.action {
-                return true
-            }
-            return false
-        }
-        // Create a subscription for sheet deep links that just prints
-        sheetDeepLinks
-            .sink { [weak self] deepLink in
-                print("📋 Sheet deep link received: \(deepLink.url.absoluteString)")
-                // Remove from queue after printing
-                self?.queue.markProcessingComplete(id: deepLink.id)
-            }
-            .store(in: &cancellables)
+//        
+//        let sheetDeepLinks = queue.sequentialPublisher.filter { deepLink in
+//            if case .presentColorSheet = deepLink.action {
+//                return !deepLink.url.absoluteString.contains("purple")
+//            }
+//            return false
+//        }
+//        // Create a subscription for sheet deep links that just prints
+//        sheetDeepLinks
+//            .sink { [weak self] deepLink in
+//                print("📋 Sheet deep link received: \(deepLink.url.absoluteString)")
+//                // Remove from queue after printing
+//                self?.queue.markProcessingComplete(id: deepLink.id)
+//            }
+//            .store(in: &cancellables)
     }
     
     func makeNetworkCall() async {
