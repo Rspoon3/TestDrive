@@ -46,5 +46,16 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.rspoon3.TestDrive</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>testdrive</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

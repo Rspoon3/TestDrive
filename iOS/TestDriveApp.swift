@@ -9,9 +9,15 @@ import SwiftUI
 
 @main
 struct TestDriveApp: App {
+    @State private var deepLinkURL: URL?
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(deepLinkURL: $deepLinkURL)
+                .onOpenURL { url in
+                    print("Received deep link: \(url)")
+                    deepLinkURL = url
+                }
         }
     }
 }
