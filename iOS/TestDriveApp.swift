@@ -23,10 +23,6 @@ struct TestDriveApp: App {
                     print("📱 App received deep link: \(url)")
                     deepLinkQueue.enqueue(url: url)
                 }
-                .onAppear {
-                    // Initialize the deep link queue when app starts
-                    deepLinkQueue.initialize()
-                }
         }
     }
 }

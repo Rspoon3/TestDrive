@@ -15,8 +15,6 @@ class DeepLinkQueue: ObservableObject {
     
     @Published private(set) var queue: [DeepLink] = []
     private let deepLinkSubject = PassthroughSubject<DeepLink, Never>()
-    private var isInitialized = false
-    private var pendingColdStartLinks: [URL] = []
     
     var queueCount: Int {
         queue.filter { $0.status == .queued }.count
@@ -30,38 +28,32 @@ class DeepLinkQueue: ObservableObject {
         deepLinkSubject.eraseToAnyPublisher()
     }
     
+    // MARK: - Initializer
+    
     private init() {}
     
-    func initialize() {
-        isInitialized = true
-        
-        // Process any cold start deep links that were queued before initialization
-        for url in pendingColdStartLinks {
-            enqueue(url: url)
-        }
-        pendingColdStartLinks.removeAll()
-        
-        // Start emitting queued deep links
-        processQueue()
-    }
+    // MARK: - Public
     
     func enqueue(url: URL) {
         let deepLink = DeepLink(url: url)
-        
-        // If not initialized yet (cold start), store for later processing
-        guard isInitialized else {
-            pendingColdStartLinks.append(url)
-            return
-        }
         
         print("🔗 Enqueuing deep link: \(url.absoluteString)")
         queue.append(deepLink)
         
         // Only start processing if we're not already processing an item
-        if !isProcessing {
-            processQueue()
-        }
+        guard !isProcessing else { return }
+        processQueue()
     }
+    
+    func markProcessingComplete() {
+        // Remove the processing item
+        queue.removeAll { $0.status == .processing }
+        
+        // Continue processing the next item in queue if any
+        processQueue()
+    }
+    
+    // MARK: - Private
     
     private func processQueue() {
         // Find first queued item
@@ -75,13 +67,5 @@ class DeepLinkQueue: ObservableObject {
         
         // Emit the deep link for processing immediately
         deepLinkSubject.send(deepLink)
-    }
-    
-    func markProcessingComplete() {
-        // Remove the processing item
-        queue.removeAll { $0.status == .processing }
-        
-        // Continue processing the next item in queue if any
-        processQueue()
     }
 }
