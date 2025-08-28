@@ -14,6 +14,9 @@
 		941AA82F2E609ABF00B8D481 /* DeepLinkQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941AA82E2E609ABF00B8D481 /* DeepLinkQueue.swift */; };
 		941ACA522E60A34300B8D481 /* FakeNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941ACA512E60A34300B8D481 /* FakeNetworkService.swift */; };
 		941ACA542E60AABF00B8D481 /* CounterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941ACA532E60AABF00B8D481 /* CounterModel.swift */; };
+		941ACA572E60B54900B8D481 /* PurpleSheetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941ACA552E60B54900B8D481 /* PurpleSheetModel.swift */; };
+		941ACA582E60B54900B8D481 /* PurpleSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941ACA562E60B54900B8D481 /* PurpleSheetView.swift */; };
+		941ACA5A2E60B68F00B8D481 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941ACA592E60B68F00B8D481 /* SettingsView.swift */; };
 		A6A262F024E0BCB30091EA92 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262EF24E0BCB30091EA92 /* Tests_iOS.swift */; };
 		A6A262FD24E0BCB30091EA92 /* TestDriveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D424E0BCB20091EA92 /* TestDriveApp.swift */; };
 		A6A262FF24E0BCB30091EA92 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D524E0BCB20091EA92 /* ContentView.swift */; };
@@ -37,6 +40,9 @@
 		941AA82E2E609ABF00B8D481 /* DeepLinkQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkQueue.swift; sourceTree = "<group>"; };
 		941ACA512E60A34300B8D481 /* FakeNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeNetworkService.swift; sourceTree = "<group>"; };
 		941ACA532E60AABF00B8D481 /* CounterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterModel.swift; sourceTree = "<group>"; };
+		941ACA552E60B54900B8D481 /* PurpleSheetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurpleSheetModel.swift; sourceTree = "<group>"; };
+		941ACA562E60B54900B8D481 /* PurpleSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurpleSheetView.swift; sourceTree = "<group>"; };
+		941ACA592E60B68F00B8D481 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A6A0310D266EBC6D001CBE2A /* TestDrive.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TestDrive.entitlements; sourceTree = "<group>"; };
 		A6A262D424E0BCB20091EA92 /* TestDriveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDriveApp.swift; sourceTree = "<group>"; };
 		A6A262D524E0BCB20091EA92 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -98,6 +104,9 @@
 				941AA8262E60965D00B8D481 /* DeepLinkExamples.md */,
 				941AA82C2E60966000B8D481 /* ColorViews.swift */,
 				941AA8272E60965D00B8D481 /* DeepLinkManager.swift */,
+				941ACA552E60B54900B8D481 /* PurpleSheetModel.swift */,
+				941ACA562E60B54900B8D481 /* PurpleSheetView.swift */,
+				941ACA592E60B68F00B8D481 /* SettingsView.swift */,
 				941AA82E2E609ABF00B8D481 /* DeepLinkQueue.swift */,
 				941ACA512E60A34300B8D481 /* FakeNetworkService.swift */,
 				941AA8282E60965D00B8D481 /* NavigationCoordinator.swift */,
@@ -224,11 +233,14 @@
 				A6A262FF24E0BCB30091EA92 /* ContentView.swift in Sources */,
 				A6A262FD24E0BCB30091EA92 /* TestDriveApp.swift in Sources */,
 				941AA82A2E60965D00B8D481 /* DeepLinkManager.swift in Sources */,
+				941ACA572E60B54900B8D481 /* PurpleSheetModel.swift in Sources */,
+				941ACA582E60B54900B8D481 /* PurpleSheetView.swift in Sources */,
 				941AA82F2E609ABF00B8D481 /* DeepLinkQueue.swift in Sources */,
 				941AA82D2E60966000B8D481 /* ColorViews.swift in Sources */,
 				941ACA522E60A34300B8D481 /* FakeNetworkService.swift in Sources */,
 				941ACA542E60AABF00B8D481 /* CounterModel.swift in Sources */,
 				941AA82B2E60965D00B8D481 /* NavigationCoordinator.swift in Sources */,
+				941ACA5A2E60B68F00B8D481 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -14,6 +14,34 @@ struct ContentView: View {
     @EnvironmentObject private var counterModel: CounterModel
     
     var body: some View {
+        TabView {
+            QueueDemoView()
+                .environmentObject(deepLinkQueue)
+                .environmentObject(deepLinkManager)
+                .environmentObject(navigationCoordinator)
+                .environmentObject(counterModel)
+                .tabItem {
+                    Image(systemName: "list.bullet")
+                    Text("Queue Demo")
+                }
+            
+            SettingsView()
+                .environmentObject(deepLinkQueue)
+                .tabItem {
+                    Image(systemName: "gear")
+                    Text("Settings")
+                }
+        }
+    }
+}
+
+struct QueueDemoView: View {
+    @EnvironmentObject private var deepLinkQueue: DeepLinkQueue
+    @EnvironmentObject private var deepLinkManager: DeepLinkManager
+    @EnvironmentObject private var navigationCoordinator: NavigationCoordinator
+    @EnvironmentObject private var counterModel: CounterModel
+    
+    var body: some View {
         NavigationStack(path: $navigationCoordinator.navigationPath) {
             VStack(spacing: 24) {
                 Text("TestDrive Deep Link Queuing")
@@ -172,7 +200,7 @@ struct ContentView: View {
         }
         .onAppear {
 //            deepLinkQueue.enqueue(url: .init(string: "testdrive://color/red")!)
-            queueMultipleLinks()
+//            queueMultipleLinks()
         }
         .task {
             await deepLinkManager.makeNetworkCall()
@@ -184,6 +212,7 @@ struct ContentView: View {
             "testdrive://color/red",
             "testdrive://color/green",
             "testdrive://color/blue?sheet=true",
+            "testdrive://color/purple?sheet=true", // This will be caught by PurpleSheetModel
             "testdrive://value/42",  // This will process immediately (out of order)
         ]
         
