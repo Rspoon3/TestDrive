@@ -11,6 +11,7 @@ struct ContentView: View {
     @EnvironmentObject private var deepLinkQueue: DeepLinkQueue
     @EnvironmentObject private var deepLinkManager: DeepLinkManager
     @EnvironmentObject private var navigationCoordinator: NavigationCoordinator
+    @EnvironmentObject private var counterModel: CounterModel
     
     var body: some View {
         NavigationStack(path: $navigationCoordinator.navigationPath) {
@@ -55,6 +56,59 @@ struct ContentView: View {
                                 .padding(8)
                                 .background(Color.yellow.opacity(0.1))
                                 .cornerRadius(6)
+                        }
+                    }
+                    
+                    if let networkResponse = deepLinkManager.lastNetworkResponse {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Last Network Response:")
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                            
+                            HStack {
+                                Text("Value: \(networkResponse.value)")
+                                    .fontWeight(.semibold)
+                                Spacer()
+                                Text(networkResponse.timestamp.formatted(.dateTime.hour().minute().second()))
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding(8)
+                            .background(Color.green.opacity(0.1))
+                            .cornerRadius(6)
+                        }
+                    }
+                }
+                .padding()
+                .background(Color.gray.opacity(0.05))
+                .cornerRadius(12)
+                
+                // Counter Status
+                VStack(spacing: 12) {
+                    Text("Counter Model:")
+                        .font(.headline)
+                    
+                    VStack(spacing: 8) {
+                        HStack {
+                            Text("Current Value:")
+                            Spacer()
+                            Text("\(counterModel.currentValue)")
+                                .fontWeight(.bold)
+                                .foregroundColor(.blue)
+                        }
+                        
+                        if !counterModel.lastProcessedDeepLink.isEmpty {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Last Processed:")
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                
+                                Text(counterModel.lastProcessedDeepLink)
+                                    .font(.system(.caption, design: .monospaced))
+                                    .padding(8)
+                                    .background(Color.blue.opacity(0.1))
+                                    .cornerRadius(6)
+                            }
                         }
                     }
                 }
@@ -116,13 +170,21 @@ struct ContentView: View {
                 ColorSheet(colorName: colorName)
             }
         }
+        .onAppear {
+//            deepLinkQueue.enqueue(url: .init(string: "testdrive://color/red")!)
+            queueMultipleLinks()
+        }
+        .task {
+            await deepLinkManager.makeNetworkCall()
+        }
     }
     
     private func queueMultipleLinks() {
         let links = [
             "testdrive://color/red",
+            "testdrive://color/green",
             "testdrive://color/blue?sheet=true",
-            "testdrive://color/green"
+            "testdrive://value/42",  // This will process immediately (out of order)
         ]
         
         for link in links {
@@ -170,4 +232,5 @@ struct DeepLinkButton: View {
         .environmentObject(DeepLinkQueue.shared)
         .environmentObject(DeepLinkManager.shared)
         .environmentObject(NavigationCoordinator.shared)
+        .environmentObject(CounterModel.shared)
 }

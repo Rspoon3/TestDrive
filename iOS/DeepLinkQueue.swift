@@ -14,7 +14,8 @@ class DeepLinkQueue: ObservableObject {
     static let shared = DeepLinkQueue()
     
     @Published private(set) var queue: [DeepLink] = []
-    private let deepLinkSubject = PassthroughSubject<DeepLink, Never>()
+    private let sequentialSubject = PassthroughSubject<DeepLink, Never>() // Sequential emissions
+    private let immediateSubject = PassthroughSubject<DeepLink, Never>() // Immediate emissions
     
     var queueCount: Int {
         queue.filter { $0.status == .queued }.count
@@ -24,8 +25,12 @@ class DeepLinkQueue: ObservableObject {
         queue.contains { $0.status == .processing }
     }
     
-    var deepLinkPublisher: AnyPublisher<DeepLink, Never> {
-        deepLinkSubject.eraseToAnyPublisher()
+    var sequentialPublisher: AnyPublisher<DeepLink, Never> {
+        sequentialSubject.eraseToAnyPublisher()
+    }
+    
+    var immediatePublisher: AnyPublisher<DeepLink, Never> {
+        immediateSubject.eraseToAnyPublisher()
     }
     
     // MARK: - Initializer
@@ -40,14 +45,17 @@ class DeepLinkQueue: ObservableObject {
         print("🔗 Enqueuing deep link: \(url.absoluteString)")
         queue.append(deepLink)
         
-        // Only start processing if we're not already processing an item
+        // Emit immediately for consumers that need instant processing
+        immediateSubject.send(deepLink)
+        
+        // Only start sequential processing if we're not already processing an item
         guard !isProcessing else { return }
         processQueue()
     }
     
-    func markProcessingComplete() {
-        // Remove the processing item
-        queue.removeAll { $0.status == .processing }
+    func markProcessingComplete(id: UUID) {
+        // Remove the specific item by ID
+        queue.removeAll { $0.id == id }
         
         // Continue processing the next item in queue if any
         processQueue()
@@ -65,7 +73,7 @@ class DeepLinkQueue: ObservableObject {
         let deepLink = queue[index]
         print("📤 Emitting deep link from queue: \(deepLink.url.absoluteString)")
         
-        // Emit the deep link for processing immediately
-        deepLinkSubject.send(deepLink)
+        // Emit the deep link for processing
+        sequentialSubject.send(deepLink)
     }
 }

@@ -15,26 +15,61 @@ class DeepLinkManager: ObservableObject {
     
     @Published var isProcessing = false // Used for demo UI only
     @Published var currentDeepLink: DeepLink? // Used for demo UI only
+    @Published var lastNetworkResponse: NetworkResponse? // Used for demo UI only
     
     private var cancellables = Set<AnyCancellable>()
     private let queue = DeepLinkQueue.shared
+    private let networkService = FakeNetworkService.shared
     
     private init() {
         setupSubscription()
     }
     
-    private func setupSubscription() {
-        // Subscribe to deep links from the queue
-        queue.deepLinkPublisher
-            .sink { [weak self] deepLink in
+    func setupSubscription() {
+        // Create helper publishers
+        let navigationDeepLinks = queue.sequentialPublisher.filter { deepLink in
+            if case .navigateToColor = deepLink.action {
+                return true
+            }
+            return false
+        }
+        
+        let networkResponses = $lastNetworkResponse.compactMap { $0 }
+        
+        // Create a pipeline that waits for both deep link and network response
+        Publishers.CombineLatest(navigationDeepLinks, networkResponses)
+            .sink { [weak self] deepLink, networkResponse in
                 Task { @MainActor in
-                    await self?.processDeepLink(deepLink)
+                    await self?.processDeepLink(deepLink, with: networkResponse)
                 }
+            }
+            .store(in: &cancellables)
+        
+        
+        
+        
+        let sheetDeepLinks = queue.sequentialPublisher.filter { deepLink in
+            if case .presentColorSheet = deepLink.action {
+                return true
+            }
+            return false
+        }
+        // Create a subscription for sheet deep links that just prints
+        sheetDeepLinks
+            .sink { [weak self] deepLink in
+                print("📋 Sheet deep link received: \(deepLink.url.absoluteString)")
+                // Remove from queue after printing
+                self?.queue.markProcessingComplete(id: deepLink.id)
             }
             .store(in: &cancellables)
     }
     
-    private func processDeepLink(_ deepLink: DeepLink) async {
+    func makeNetworkCall() async {
+        let response = await networkService.fetchRandomValue()
+        lastNetworkResponse = response
+    }
+    
+    private func processDeepLink(_ deepLink: DeepLink, with networkResponse: NetworkResponse) async {
         // Mark as processing
         isProcessing = true
         currentDeepLink = deepLink
@@ -45,13 +80,7 @@ class DeepLinkManager: ObservableObject {
             isProcessing = false
         }
         
-        print("🚀 Processing deep link: \(deepLink.url.absoluteString)")
-        
-        // Simulate network call delay
-        print("⏳ Simulating network call for: \(deepLink.url.absoluteString)")
-        try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
-        
-        print("✅ Network call completed, executing deep link action")
+        print("🚀 Processing deep link: \(deepLink.url.absoluteString) with network value: \(networkResponse.value)")
         
         // Execute the deep link action
         switch deepLink.action {
@@ -63,14 +92,17 @@ class DeepLinkManager: ObservableObject {
             
         case .unknown:
             print("⚠️ Unknown deep link action: \(deepLink.url.absoluteString)")
+        case .setValue(_):
+            print("Set value action not implemented")
         }
         
         // Notify queue that processing is complete
-        queue.markProcessingComplete()
+        queue.markProcessingComplete(id: deepLink.id)
     }
 }
 
 struct DeepLink {
+    let id = UUID()
     let url: URL
     let action: DeepLinkAction
     let timestamp = Date()
@@ -90,6 +122,7 @@ enum DeepLinkStatus {
 enum DeepLinkAction {
     case navigateToColor(String)
     case presentColorSheet(String)
+    case setValue(Int)
     case unknown
     
     static func parse(from url: URL) -> DeepLinkAction {
@@ -105,6 +138,11 @@ enum DeepLinkAction {
                 } else {
                     return .navigateToColor(colorName)
                 }
+            }
+        case "value":
+            if let valueString = pathComponents.first,
+               let value = Int(valueString) {
+                return .setValue(value)
             }
         default:
             break
