@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		941AA8292E60965D00B8D481 /* DeepLinkExamples.md in Resources */ = {isa = PBXBuildFile; fileRef = 941AA8262E60965D00B8D481 /* DeepLinkExamples.md */; };
+		941AA82A2E60965D00B8D481 /* DeepLinkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941AA8272E60965D00B8D481 /* DeepLinkManager.swift */; };
+		941AA82B2E60965D00B8D481 /* NavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941AA8282E60965D00B8D481 /* NavigationCoordinator.swift */; };
+		941AA82D2E60966000B8D481 /* ColorViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941AA82C2E60966000B8D481 /* ColorViews.swift */; };
+		941AA82F2E609ABF00B8D481 /* DeepLinkQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941AA82E2E609ABF00B8D481 /* DeepLinkQueue.swift */; };
 		A6A262F024E0BCB30091EA92 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262EF24E0BCB30091EA92 /* Tests_iOS.swift */; };
 		A6A262FD24E0BCB30091EA92 /* TestDriveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D424E0BCB20091EA92 /* TestDriveApp.swift */; };
 		A6A262FF24E0BCB30091EA92 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A262D524E0BCB20091EA92 /* ContentView.swift */; };
@@ -23,6 +28,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		941AA8262E60965D00B8D481 /* DeepLinkExamples.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = DeepLinkExamples.md; sourceTree = "<group>"; };
+		941AA8272E60965D00B8D481 /* DeepLinkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkManager.swift; sourceTree = "<group>"; };
+		941AA8282E60965D00B8D481 /* NavigationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationCoordinator.swift; sourceTree = "<group>"; };
+		941AA82C2E60966000B8D481 /* ColorViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorViews.swift; sourceTree = "<group>"; };
+		941AA82E2E609ABF00B8D481 /* DeepLinkQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkQueue.swift; sourceTree = "<group>"; };
 		A6A0310D266EBC6D001CBE2A /* TestDrive.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TestDrive.entitlements; sourceTree = "<group>"; };
 		A6A262D424E0BCB20091EA92 /* TestDriveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDriveApp.swift; sourceTree = "<group>"; };
 		A6A262D524E0BCB20091EA92 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -81,6 +91,11 @@
 		A6A262DD24E0BCB30091EA92 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
+				941AA8262E60965D00B8D481 /* DeepLinkExamples.md */,
+				941AA82C2E60966000B8D481 /* ColorViews.swift */,
+				941AA8272E60965D00B8D481 /* DeepLinkManager.swift */,
+				941AA82E2E609ABF00B8D481 /* DeepLinkQueue.swift */,
+				941AA8282E60965D00B8D481 /* NavigationCoordinator.swift */,
 				A6A262D424E0BCB20091EA92 /* TestDriveApp.swift */,
 				A6A262D524E0BCB20091EA92 /* ContentView.swift */,
 				A6A262DE24E0BCB30091EA92 /* Info.plist */,
@@ -182,6 +197,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				941AA8292E60965D00B8D481 /* DeepLinkExamples.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -201,6 +217,10 @@
 			files = (
 				A6A262FF24E0BCB30091EA92 /* ContentView.swift in Sources */,
 				A6A262FD24E0BCB30091EA92 /* TestDriveApp.swift in Sources */,
+				941AA82A2E60965D00B8D481 /* DeepLinkManager.swift in Sources */,
+				941AA82F2E609ABF00B8D481 /* DeepLinkQueue.swift in Sources */,
+				941AA82D2E60966000B8D481 /* ColorViews.swift in Sources */,
+				941AA82B2E60965D00B8D481 /* NavigationCoordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

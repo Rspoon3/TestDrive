@@ -9,14 +9,23 @@ import SwiftUI
 
 @main
 struct TestDriveApp: App {
-    @State private var deepLinkURL: URL?
+    @StateObject private var deepLinkQueue = DeepLinkQueue.shared
+    @StateObject private var deepLinkManager = DeepLinkManager.shared
+    @StateObject private var navigationCoordinator = NavigationCoordinator.shared
     
     var body: some Scene {
         WindowGroup {
-            ContentView(deepLinkURL: $deepLinkURL)
+            ContentView()
+                .environmentObject(deepLinkQueue)
+                .environmentObject(deepLinkManager)
+                .environmentObject(navigationCoordinator)
                 .onOpenURL { url in
-                    print("Received deep link: \(url)")
-                    deepLinkURL = url
+                    print("📱 App received deep link: \(url)")
+                    deepLinkQueue.enqueue(url: url)
+                }
+                .onAppear {
+                    // Initialize the deep link queue when app starts
+                    deepLinkQueue.initialize()
                 }
         }
     }

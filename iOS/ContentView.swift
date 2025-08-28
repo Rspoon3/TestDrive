@@ -8,61 +8,166 @@
 import SwiftUI
 
 struct ContentView: View {
-    @Binding var deepLinkURL: URL?
+    @EnvironmentObject private var deepLinkQueue: DeepLinkQueue
+    @EnvironmentObject private var deepLinkManager: DeepLinkManager
+    @EnvironmentObject private var navigationCoordinator: NavigationCoordinator
     
     var body: some View {
-        VStack(spacing: 20) {
-            Text("TestDrive Deep Link Handler")
-                .font(.title)
-                .padding()
-            
-            if let url = deepLinkURL {
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("Received Deep Link:")
-                        .font(.headline)
-                    
-                    Text(url.absoluteString)
-                        .font(.system(.body, design: .monospaced))
-                        .padding()
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(8)
-                    
-                    if let scheme = url.scheme {
-                        Text("Scheme: \(scheme)")
-                            .foregroundColor(.blue)
+        NavigationStack(path: $navigationCoordinator.navigationPath) {
+            VStack(spacing: 24) {
+                Text("TestDrive Deep Link Queuing")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .multilineTextAlignment(.center)
+                
+                // Queue Status
+                VStack(spacing: 12) {
+                    HStack {
+                        Text("Queue Status:")
+                            .font(.headline)
+                        Spacer()
+                        if deepLinkManager.isProcessing {
+                            HStack {
+                                ProgressView()
+                                    .scaleEffect(0.8)
+                                Text("Processing")
+                                    .font(.caption)
+                            }
+                        }
                     }
                     
-                    if let host = url.host {
-                        Text("Host: \(host)")
-                            .foregroundColor(.blue)
+                    HStack {
+                        Text("Queue Count:")
+                        Spacer()
+                        Text("\(deepLinkQueue.queueCount)")
+                            .fontWeight(.semibold)
+                            .foregroundColor(deepLinkQueue.queueCount > 0 ? .orange : .green)
                     }
                     
-                    if !url.pathComponents.filter({ $0 != "/" }).isEmpty {
-                        Text("Path: \(url.path)")
-                            .foregroundColor(.blue)
-                    }
-                    
-                    if let query = url.query {
-                        Text("Query: \(query)")
-                            .foregroundColor(.blue)
+                    if let currentLink = deepLinkManager.currentDeepLink {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Currently Processing:")
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                            
+                            Text(currentLink.url.absoluteString)
+                                .font(.system(.caption, design: .monospaced))
+                                .padding(8)
+                                .background(Color.yellow.opacity(0.1))
+                                .cornerRadius(6)
+                        }
                     }
                 }
                 .padding()
-                .background(Color.blue.opacity(0.05))
+                .background(Color.gray.opacity(0.05))
                 .cornerRadius(12)
-            } else {
-                Text("No deep link received yet")
-                    .foregroundColor(.gray)
                 
-                Text("Try opening a testdrive:// URL")
-                    .font(.caption)
-                    .foregroundColor(.gray)
+                // Example Deep Links
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("Try These Deep Links:")
+                        .font(.headline)
+                    
+                    VStack(spacing: 12) {
+                        // Navigation examples
+                        Group {
+                            DeepLinkButton("Red Screen", url: "testdrive://color/red")
+                            DeepLinkButton("Blue Screen", url: "testdrive://color/blue")
+                            DeepLinkButton("Green Screen", url: "testdrive://color/green")
+                        }
+                        
+                        Divider()
+                        
+                        // Sheet examples
+                        Group {
+                            DeepLinkButton("Purple Sheet", url: "testdrive://color/purple?sheet=true")
+                            DeepLinkButton("Orange Sheet", url: "testdrive://color/orange?sheet=true")
+                            DeepLinkButton("Pink Sheet", url: "testdrive://color/pink?sheet=true")
+                        }
+                    }
+                }
+                
+                Spacer()
+                
+                // Quick test buttons
+                VStack(spacing: 8) {
+                    Text("Queue Multiple Links:")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    
+                    Button("Queue 3 Links") {
+                        queueMultipleLinks()
+                    }
+                    .padding()
+                    .background(Color.blue.opacity(0.1))
+                    .cornerRadius(8)
+                }
+            }
+            .padding()
+            .navigationDestination(for: ColorDestination.self) { destination in
+                switch destination {
+                case .color(let colorName):
+                    ColorScreen(colorName: colorName)
+                }
             }
         }
-        .padding()
+        .sheet(item: $navigationCoordinator.presentedSheet) { sheet in
+            switch sheet {
+            case .colorSheet(let colorName):
+                ColorSheet(colorName: colorName)
+            }
+        }
+    }
+    
+    private func queueMultipleLinks() {
+        let links = [
+            "testdrive://color/red",
+            "testdrive://color/blue?sheet=true",
+            "testdrive://color/green"
+        ]
+        
+        for link in links {
+            if let url = URL(string: link) {
+                deepLinkQueue.enqueue(url: url)
+            }
+        }
+    }
+}
+
+struct DeepLinkButton: View {
+    let title: String
+    let urlString: String
+    
+    init(_ title: String, url: String) {
+        self.title = title
+        self.urlString = url
+    }
+    
+    var body: some View {
+        Button(action: {
+            if let url = URL(string: urlString) {
+                DeepLinkQueue.shared.enqueue(url: url)
+            }
+        }) {
+            HStack {
+                Text(title)
+                    .fontWeight(.medium)
+                Spacer()
+                Text(urlString)
+                    .font(.system(.caption, design: .monospaced))
+                    .foregroundColor(.secondary)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(Color.blue.opacity(0.05))
+            .cornerRadius(8)
+        }
+        .buttonStyle(.plain)
     }
 }
 
 #Preview {
-    ContentView(deepLinkURL: .constant(nil))
+    ContentView()
+        .environmentObject(DeepLinkQueue.shared)
+        .environmentObject(DeepLinkManager.shared)
+        .environmentObject(NavigationCoordinator.shared)
 }
