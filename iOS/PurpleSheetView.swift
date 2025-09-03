@@ -98,11 +98,6 @@ struct PurpleSheetView: View {
             .task {
                 try? await Task.sleep(for: .seconds(1))
                 purpleSheetModel.setupSubscription()
-
-                // Navigate to purple sheet view immediately
-                if let url = URL(string: "testdrive://color/purple?sheet=true") {
-                    deepLinkQueue.enqueue(url: url)
-                }
             }
         }
     }

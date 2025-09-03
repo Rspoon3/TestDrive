@@ -36,8 +36,10 @@ struct ContentView: View {
                 .tag(1)
         }
         .onReceive(deepLinkQueue.immediatePublisher) { deepLink in
+            print("RSW immediatePublisher: \(deepLink.url)")
             if case .presentColorSheet(let color) = deepLink.action, color.lowercased() == "purple" {
                 selectedTab = 1
+                print("Going to tab 1")
             }
         }
     }
@@ -218,10 +220,10 @@ struct QueueDemoView: View {
     private func queueMultipleLinks() {
         let links = [
             "testdrive://color/purple?sheet=true", // This will be caught by PurpleSheetModel
-            "testdrive://color/red",
-            "testdrive://color/green",
-            "testdrive://color/blue?sheet=true",
-            "testdrive://value/42",  // This will process immediately (out of order)
+//            "testdrive://color/red",
+//            "testdrive://color/green",
+//            "testdrive://color/blue?sheet=true",
+//            "testdrive://value/42",  // This will process immediately (out of order)
         ]
         
         for link in links {
