@@ -1,0 +1,83 @@
+//
+//  RankedPhotosListView.swift
+//  TestDrive
+//
+
+import SwiftUI
+
+struct RankedPhotosListView: View {
+    let photos: [PhotoItem]
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                Text("Final Ranking")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .padding(.horizontal)
+
+                ForEach(Array(photos.enumerated()), id: \.element.id) { index, photo in
+                    HStack(spacing: 15) {
+                        // Rank indicator
+                        ZStack {
+                            Circle()
+                                .fill(rankColor(for: index))
+                                .frame(width: 50, height: 50)
+
+                            Text("#\(index + 1)")
+                                .font(.headline)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                        }
+
+                        // Photo thumbnail
+                        Image(uiImage: photo.image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 100, height: 100)
+                            .clipped()
+                            .cornerRadius(10)
+
+                        // Rank label
+                        VStack(alignment: .leading) {
+                            Text(rankTitle(for: index))
+                                .font(.headline)
+
+                            Text("Rank \(index + 1) of \(photos.count)")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+
+                        Spacer()
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.gray.opacity(0.05))
+                    )
+                    .padding(.horizontal)
+                }
+            }
+            .padding(.vertical)
+        }
+    }
+
+    private func rankColor(for index: Int) -> Color {
+        switch index {
+        case 0: return .yellow
+        case 1: return .gray
+        case 2: return .orange
+        default: return .blue
+        }
+    }
+
+    private func rankTitle(for index: Int) -> String {
+        switch index {
+        case 0: return "🥇 Best Photo"
+        case 1: return "🥈 Second Place"
+        case 2: return "🥉 Third Place"
+        default: return "Rank \(index + 1)"
+        }
+    }
+}
