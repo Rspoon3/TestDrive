@@ -35,6 +35,10 @@ This document outlines preferred conventions and practices for Swift projects.
 
 - Use `NavigationStack` instead of `NavigationView` for navigation containers.
 
+- Prefer the modern SwiftUI preview syntax:
+  - `#Preview { QuotesView(quotes: ["Hello"]) }`
+  - Not `struct QuotesView_Previews: PreviewProvider { ... }`
+
 ## Code Structure and MARK Placement
 Every SwiftUI view should follow this order for clarity and consistency. View Models should be similar just without the Body and Views:
 
