@@ -9,17 +9,31 @@ struct TranscriptionCardView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(entry.title)
                 .font(.headline)
-                .lineLimit(2)
                 .foregroundColor(.primary)
 
-            Text(entry.date, style: .date)
-                .font(.caption)
-                .foregroundColor(.secondary)
+            HStack {
+                Text(entry.date, style: .date)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
 
-            Text(String(entry.text.characters))
-                .font(.caption)
-                .lineLimit(3)
-                .foregroundColor(.secondary)
+                Spacer()
+
+                if let category = entry.category {
+                    Image(systemName: category.icon)
+                        .font(.caption)
+                        .foregroundColor(.blue)
+                }
+            }
+
+            if let summary = entry.summary, !summary.isEmpty {
+                Text(summary)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            } else {
+                Text(String(entry.text.characters))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
 
             if entry.hasAudioFile {
                 HStack {

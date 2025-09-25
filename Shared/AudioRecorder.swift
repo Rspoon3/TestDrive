@@ -72,10 +72,6 @@ class AudioRecorder {
         entry.isDone.wrappedValue = true
 
         try await transcriber.finishTranscribing()
-
-        Task {
-            self.entry.title.wrappedValue = try await entry.wrappedValue.suggestedTitle() ?? entry.title.wrappedValue
-        }
     }
 
     func pauseRecording() {

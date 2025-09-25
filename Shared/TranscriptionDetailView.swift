@@ -22,13 +22,63 @@ struct TranscriptionDetailView: View {
                         .bold()
                 }
 
-                Text(entry.date, style: .date)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                HStack {
+                    Text(entry.date, style: .date)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+
+                    Spacer()
+
+                    if let category = entry.category {
+                        Label(category.rawValue, systemImage: category.icon)
+                            .font(.caption)
+                            .foregroundColor(.blue)
+                    }
+                }
 
                 if entry.hasAudioFile, let audioURL = entry.url {
                     AudioPlayerView(audioURL: audioURL)
                         .padding(.vertical, 8)
+                }
+
+                if let summary = entry.summary, !summary.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("AI Summary")
+                            .font(.headline)
+                            .foregroundColor(.primary)
+
+                        Text(summary)
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                            .padding()
+                            .background(Color(.systemGray6))
+                            .cornerRadius(8)
+                    }
+                    .padding(.vertical, 8)
+                }
+
+                if let keyPoints = entry.keyPoints, !keyPoints.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Key Points")
+                            .font(.headline)
+                            .foregroundColor(.primary)
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            ForEach(keyPoints, id: \.self) { point in
+                                HStack(alignment: .top) {
+                                    Text("•")
+                                        .foregroundColor(.blue)
+                                    Text(point)
+                                        .font(.body)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                        }
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                    }
+                    .padding(.vertical, 8)
                 }
 
                 Divider()
@@ -66,15 +116,45 @@ struct TranscriptionDetailView: View {
                                 saveChanges()
                             }
                         } else {
-                            Menu {
-                                Button("Edit") {
-                                    startEditing()
+                            HStack(spacing: 12) {
+                                if AIManager.shared.isAvailable {
+                                    Menu {
+                                        Button("Generate Summary") {
+                                            Task {
+                                                try? await entry.generateSummary()
+                                                store.updateTranscription(entry)
+                                            }
+                                        }
+                                        Button("Extract Key Points") {
+                                            Task {
+                                                try? await entry.extractKeyPoints()
+                                                store.updateTranscription(entry)
+                                            }
+                                        }
+                                        Button("Regenerate Title") {
+                                            Task {
+                                                if let newTitle = try? await entry.suggestedTitle() {
+                                                    entry.title = newTitle
+                                                    store.updateTranscription(entry)
+                                                }
+                                            }
+                                        }
+                                    } label: {
+                                        Image(systemName: "brain.head.profile")
+                                            .foregroundColor(.purple)
+                                    }
                                 }
-                                Button("Delete", role: .destructive) {
-                                    deleteTranscription()
+
+                                Menu {
+                                    Button("Edit") {
+                                        startEditing()
+                                    }
+                                    Button("Delete", role: .destructive) {
+                                        deleteTranscription()
+                                    }
+                                } label: {
+                                    Image(systemName: "ellipsis.circle")
                                 }
-                            } label: {
-                                Image(systemName: "ellipsis.circle")
                             }
                         }
                     }
