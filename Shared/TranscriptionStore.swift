@@ -13,6 +13,7 @@ class TranscriptionStore {
 
     func addTranscription(_ entry: TranscriptionEntry) {
         transcriptions.append(entry)
+        sortTranscriptions()
         saveTranscriptions()
     }
 
@@ -24,6 +25,7 @@ class TranscriptionStore {
     func updateTranscription(_ entry: TranscriptionEntry) {
         if let index = transcriptions.firstIndex(where: { $0.id == entry.id }) {
             transcriptions[index] = entry
+            sortTranscriptions()
             saveTranscriptions()
         }
     }
@@ -38,7 +40,12 @@ class TranscriptionStore {
         if let data = UserDefaults.standard.data(forKey: saveKey),
            let decoded = try? JSONDecoder().decode([TranscriptionEntry].self, from: data) {
             transcriptions = decoded
+            sortTranscriptions()
         }
+    }
+
+    private func sortTranscriptions() {
+        transcriptions.sort { $0.date > $1.date }
     }
 
     func isAvailable() async -> Bool {

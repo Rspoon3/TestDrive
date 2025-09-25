@@ -29,7 +29,12 @@ final class SpokenWordTranscriber {
     }
 
     func setUpTranscriber() async throws {
-        transcriber = SpeechTranscriber(locale: Locale.current,
+        let locale = Locale.current
+
+        // First, allocate the locale if needed
+        try await allocateLocaleIfNeeded(locale: locale)
+
+        transcriber = SpeechTranscriber(locale: locale,
                                         transcriptionOptions: [],
                                         reportingOptions: [.volatileResults],
                                         attributeOptions: [.audioTimeRange])
@@ -41,7 +46,7 @@ final class SpokenWordTranscriber {
         analyzer = SpeechAnalyzer(modules: [transcriber])
 
         do {
-            try await ensureModel(transcriber: transcriber, locale: Locale.current)
+            try await ensureModel(transcriber: transcriber, locale: locale)
         } catch let error as TranscriptionError {
             print(error)
             return
@@ -93,10 +98,64 @@ final class SpokenWordTranscriber {
         try await analyzer?.finalizeAndFinishThroughEndOfInput()
         recognizerTask?.cancel()
         recognizerTask = nil
+
+        // Clean up resources
+        await cleanup()
+    }
+
+    public func cleanup() async {
+        // Cancel any ongoing recognition task
+        recognizerTask?.cancel()
+        recognizerTask = nil
+
+        // Clear transcriber and analyzer references
+        transcriber = nil
+        analyzer = nil
+
+        // Release locale resources - but only release the current locale, not all
+        // to avoid affecting other transcription sessions
     }
 }
 
 extension SpokenWordTranscriber {
+    private func allocateLocaleIfNeeded(locale: Locale) async throws {
+        // Check if the locale is already allocated
+        let reservedLocales = await AssetInventory.reservedLocales
+        let localeIdentifier = locale.identifier(.bcp47)
+
+        // Check if locale is already reserved
+        if reservedLocales.contains(where: { locale in
+            locale.identifier(.bcp47) == localeIdentifier
+        }) {
+            print("Locale \(localeIdentifier) is already allocated")
+            return
+        }
+
+        print("Allocating locale: \(localeIdentifier)")
+
+        // If we have too many reserved locales, release one to make room
+        // The system typically supports a limited number of reserved locales
+        if reservedLocales.count >= 3 { // Conservative limit
+            print("At reserved locales limit, releasing oldest...")
+            // Release the oldest locale to make room
+            if let oldestLocale = reservedLocales.first {
+                print("Releasing locale: \(oldestLocale.identifier(.bcp47))")
+                await AssetInventory.release(reservedLocale: oldestLocale)
+            }
+        }
+
+        // The actual "allocation" in iOS 18+ happens through downloading the model
+        // if it's not already installed on the device
+        if !(await installed(locale: locale)) {
+            print("Locale \(localeIdentifier) not installed, downloading...")
+            // This will install and effectively "allocate" the locale
+            let transcriber = SpeechTranscriber(locale: locale, transcriptionOptions: [], reportingOptions: [], attributeOptions: [])
+            try await downloadIfNeeded(for: transcriber)
+        }
+
+        print("Successfully allocated locale: \(localeIdentifier)")
+    }
+
     public func ensureModel(transcriber: SpeechTranscriber, locale: Locale) async throws {
         guard await supported(locale: locale) else {
             throw TranscriptionError.localeNotSupported
@@ -139,6 +198,7 @@ public enum TranscriptionError: Error {
     case failedToSetupRecognitionStream
     case invalidAudioDataType
     case localeNotSupported
+    case localeAllocationFailed
     case noInternetForModelDownload
     case audioFilePathNotFound
 
@@ -154,6 +214,8 @@ public enum TranscriptionError: Error {
             return "This locale is not yet supported by SpeechAnalyzer."
         case .noInternetForModelDownload:
             return "The model could not be downloaded because the user is not connected to internet."
+        case .localeAllocationFailed:
+            return "Failed to allocate the required locale for speech recognition."
         case .audioFilePathNotFound:
             return "Couldn't write audio to file."
         }
