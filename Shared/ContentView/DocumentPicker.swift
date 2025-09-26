@@ -7,6 +7,7 @@ import SwiftUI
 import UIKit
 import UniformTypeIdentifiers
 
+/// A document picker for selecting image files from the file system.
 struct DocumentPicker: UIViewControllerRepresentable {
     let completion: ([URL]) -> Void
 
@@ -26,9 +27,13 @@ struct DocumentPicker: UIViewControllerRepresentable {
     class Coordinator: NSObject, UIDocumentPickerDelegate {
         let parent: DocumentPicker
 
+        // MARK: - Initializer
+
         init(_ parent: DocumentPicker) {
             self.parent = parent
         }
+
+        // MARK: - UIDocumentPickerDelegate
 
         func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
             parent.completion(urls)

@@ -4,7 +4,9 @@
 //
 
 import SwiftUI
+import SFSymbols
 
+/// Displays two photos side by side for comparison and selection.
 struct PhotoComparisonView: View {
     let leftPhoto: PhotoItem
     let rightPhoto: PhotoItem
@@ -12,6 +14,8 @@ struct PhotoComparisonView: View {
     let onUndo: () -> Void
     let canUndo: Bool
     let progress: Double
+
+    // MARK: - Body
 
     var body: some View {
         VStack(spacing: 20) {
@@ -28,17 +32,22 @@ struct PhotoComparisonView: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
-
-                Spacer()
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 if canUndo {
-                    Button(action: onUndo) {
-                        Label("Undo", systemImage: "arrow.uturn.backward")
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(Color.orange)
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
+                    Button {
+                        onUndo()
+                    } label: {
+                        HStack {
+                            Image(symbol: .arrowUturnBackward)
+                                .foregroundColor(.white)
+                            Text("Undo")
+                                .foregroundColor(.white)
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(Color.orange)
+                        .cornerRadius(8)
                     }
                 }
             }
@@ -66,7 +75,9 @@ struct PhotoComparisonView: View {
                             }
                         }
 
-                    Button(action: { onSelection(true) }) {
+                    Button {
+                        onSelection(true)
+                    } label: {
                         Text("Select This")
                             .frame(maxWidth: .infinity)
                             .padding()
@@ -93,7 +104,9 @@ struct PhotoComparisonView: View {
                             }
                         }
 
-                    Button(action: { onSelection(false) }) {
+                    Button {
+                        onSelection(false)
+                    } label: {
                         Text("Select This")
                             .frame(maxWidth: .infinity)
                             .padding()

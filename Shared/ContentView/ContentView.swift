@@ -8,20 +8,24 @@
 import SwiftUI
 import PhotosUI
 import UniformTypeIdentifiers
+import SFSymbols
 
+/// Main view for the photo ranking application.
 struct ContentView: View {
     @StateObject private var viewModel = PhotoRankingViewModel()
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var isPickerPresented = false
     @State private var showDocumentPicker = false
 
+    // MARK: - Body
+
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 if viewModel.selectedPhotos.isEmpty {
                     // Initial state - show photo picker
                     VStack(spacing: 30) {
-                        Image(systemName: "photo.stack")
+                        Image(symbol: .photoStack)
                             .font(.system(size: 80))
                             .foregroundColor(.blue)
 
@@ -42,12 +46,16 @@ struct ContentView: View {
                                 matching: .images,
                                 photoLibrary: .shared()
                             ) {
-                                Label("Select from Photos", systemImage: "photo.on.rectangle.angled")
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Color.blue)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(10)
+                                HStack {
+                                    Image(symbol: .photoOnRectangleAngled)
+                                        .foregroundColor(.white)
+                                    Text("Select from Photos")
+                                        .foregroundColor(.white)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.blue)
+                                .cornerRadius(10)
                             }
                             .onChange(of: selectedItems) { _, newItems in
                                 Task {
@@ -55,15 +63,19 @@ struct ContentView: View {
                                 }
                             }
 
-                            Button(action: {
+                            Button {
                                 showDocumentPicker = true
-                            }) {
-                                Label("Select from Files", systemImage: "folder")
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Color.green)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(10)
+                            } label: {
+                                HStack {
+                                    Image(symbol: .folder)
+                                        .foregroundColor(.white)
+                                    Text("Select from Files")
+                                        .foregroundColor(.white)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.green)
+                                .cornerRadius(10)
                             }
                         }
                         .padding(.horizontal, 40)
@@ -88,28 +100,36 @@ struct ContentView: View {
                         RankedPhotosListView(photos: viewModel.selectedPhotos)
 
                         HStack(spacing: 20) {
-                            Button(action: {
+                            Button {
                                 viewModel.selectedPhotos = []
                                 selectedItems = []
-                            }) {
-                                Label("New Ranking", systemImage: "arrow.clockwise")
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Color.blue)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(10)
+                            } label: {
+                                HStack {
+                                    Image(symbol: .arrowClockwise)
+                                        .foregroundColor(.white)
+                                    Text("New Ranking")
+                                        .foregroundColor(.white)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.blue)
+                                .cornerRadius(10)
                             }
 
                             ShareLink(
                                 item: createShareText(),
                                 subject: Text("Photo Ranking Results")
                             ) {
-                                Label("Share", systemImage: "square.and.arrow.up")
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Color.green)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(10)
+                                HStack {
+                                    Image(symbol: .squareAndArrowUp)
+                                        .foregroundColor(.white)
+                                    Text("Share")
+                                        .foregroundColor(.white)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.green)
+                                .cornerRadius(10)
                             }
                         }
                         .padding(.horizontal)
@@ -137,7 +157,6 @@ struct ContentView: View {
                 }
             }
         }
-        .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $showDocumentPicker) {
             DocumentPicker(completion: { urls in
                 Task {
@@ -146,6 +165,8 @@ struct ContentView: View {
             })
         }
     }
+
+    // MARK: - Private Helpers
 
     private func createShareText() -> String {
         var text = "My Photo Rankings:\n\n"

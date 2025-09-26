@@ -5,8 +5,11 @@
 
 import SwiftUI
 
+/// Displays a ranked list of photos after comparison.
 struct RankedPhotosListView: View {
     let photos: [PhotoItem]
+
+    // MARK: - Body
 
     var body: some View {
         ScrollView {
@@ -47,8 +50,7 @@ struct RankedPhotosListView: View {
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
-
-                        Spacer()
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .padding(.horizontal)
                     .padding(.vertical, 8)
@@ -62,6 +64,8 @@ struct RankedPhotosListView: View {
             .padding(.vertical)
         }
     }
+
+    // MARK: - Private Helpers
 
     private func rankColor(for index: Int) -> Color {
         switch index {

@@ -20,6 +20,8 @@ class PhotoRankingViewModel: ObservableObject {
     private var currentComparisonIndex = 0
     private var comparisonResults: [Bool] = []
 
+    // MARK: - Public Helpers
+
     func loadPhotos(from items: [PhotosPickerItem]) async {
         selectedPhotos = []
 
@@ -75,6 +77,8 @@ class PhotoRankingViewModel: ObservableObject {
         // Start with first comparison
         showNextComparison()
     }
+
+    // MARK: - Private Helpers
 
     private func generateAllComparisons() {
         allComparisons = []
