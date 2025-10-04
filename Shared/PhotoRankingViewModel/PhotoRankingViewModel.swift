@@ -6,23 +6,29 @@
 import SwiftUI
 import PhotosUI
 
+/// Represents the current state of the photo ranking flow.
+enum ViewState {
+    case initial
+    case loading
+    case comparing(left: PhotoItem, right: PhotoItem, progress: Double, canUndo: Bool)
+    case complete([PhotoItem])
+}
+
 @MainActor
 class PhotoRankingViewModel: ObservableObject {
+    @Published var viewState: ViewState = .initial
     @Published var selectedPhotos: [PhotoItem] = []
-    @Published var isRanking = false
-    @Published var currentComparison: (left: PhotoItem, right: PhotoItem)?
-    @Published var totalComparisons = 0
-    @Published var completedComparisons = 0
-    @Published var rankingComplete = false
-    @Published var canUndo = false
 
     private var allComparisons: [(PhotoItem, PhotoItem)] = []
     private var currentComparisonIndex = 0
     private var comparisonResults: [Bool] = []
+    private var totalComparisons = 0
+    private var completedComparisons = 0
 
     // MARK: - Public Helpers
 
     func loadPhotos(from items: [PhotosPickerItem]) async {
+        viewState = .loading
         selectedPhotos = []
 
         for (index, item) in items.enumerated() {
@@ -36,10 +42,13 @@ class PhotoRankingViewModel: ObservableObject {
 
         if !selectedPhotos.isEmpty {
             startRanking()
+        } else {
+            viewState = .initial
         }
     }
 
     func loadPhotosFromFiles(urls: [URL]) async {
+        viewState = .loading
         selectedPhotos = []
 
         for url in urls {
@@ -52,21 +61,30 @@ class PhotoRankingViewModel: ObservableObject {
 
         if !selectedPhotos.isEmpty {
             startRanking()
+        } else {
+            viewState = .initial
         }
+    }
+
+    func reset() {
+        selectedPhotos = []
+        viewState = .initial
+        currentComparisonIndex = 0
+        comparisonResults = []
+        allComparisons = []
+        totalComparisons = 0
+        completedComparisons = 0
     }
 
     func startRanking() {
         guard selectedPhotos.count > 1 else {
-            rankingComplete = true
+            viewState = .complete(selectedPhotos)
             return
         }
 
-        isRanking = true
-        rankingComplete = false
         completedComparisons = 0
         currentComparisonIndex = 0
         comparisonResults = []
-        canUndo = false
 
         // Generate all comparison pairs needed for ranking
         generateAllComparisons()
@@ -96,8 +114,9 @@ class PhotoRankingViewModel: ObservableObject {
     private func showNextComparison() {
         if currentComparisonIndex < allComparisons.count {
             let comparison = allComparisons[currentComparisonIndex]
-            currentComparison = (comparison.0, comparison.1)
-            canUndo = currentComparisonIndex > 0
+            let progress = Double(completedComparisons) / Double(max(totalComparisons, 1))
+            let canUndo = currentComparisonIndex > 0
+            viewState = .comparing(left: comparison.0, right: comparison.1, progress: progress, canUndo: canUndo)
         } else {
             // All comparisons done, calculate final ranking
             calculateFinalRanking()
@@ -160,8 +179,6 @@ class PhotoRankingViewModel: ObservableObject {
         }
 
         selectedPhotos = sortedPhotos
-        currentComparison = nil
-        isRanking = false
-        rankingComplete = true
+        viewState = .complete(sortedPhotos)
     }
 }
