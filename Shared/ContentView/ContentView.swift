@@ -16,7 +16,6 @@ struct ContentView: View {
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var isPickerPresented = false
     @State private var showDocumentPicker = false
-    @State private var showSettings = false
 
     // MARK: - Body
 
@@ -54,17 +53,6 @@ struct ContentView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                if case .initial = viewModel.viewState {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            showSettings = true
-                        } label: {
-                            Image(symbol: .gearshape)
-                        }
-                    }
-                }
-            }
         }
         .sheet(isPresented: $showDocumentPicker) {
             DocumentPicker(completion: { urls in
@@ -72,9 +60,6 @@ struct ContentView: View {
                     await viewModel.loadPhotosFromFiles(urls: urls)
                 }
             })
-        }
-        .sheet(isPresented: $showSettings) {
-            SettingsView()
         }
     }
 

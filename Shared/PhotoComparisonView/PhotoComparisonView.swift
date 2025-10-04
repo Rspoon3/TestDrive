@@ -16,10 +16,10 @@ struct PhotoComparisonView: View {
     let progress: Double
 
     @State private var isVerticalLayout = false
-    @AppStorage("photoSpacing") private var photoSpacing: Double = 20
     @Namespace private var photoAnimation
 
     private let layoutPreferenceKey = "PhotoComparisonVerticalLayout"
+    private let photoSpacing: CGFloat = 20
 
     // MARK: - Body
 
@@ -79,7 +79,9 @@ struct PhotoComparisonView: View {
                         UserDefaults.standard.set(isVerticalLayout, forKey: layoutPreferenceKey)
                     }
                 } label: {
-                    Image(symbol: isVerticalLayout ? .rectanglePortraitSplit2x1 : .rectangleSplit1x2)
+                    Image(symbol: .rectangleSplit1x2)
+                        .rotationEffect(.degrees(isVerticalLayout ? 90 : 0))
+                        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isVerticalLayout)
                 }
             }
         }
