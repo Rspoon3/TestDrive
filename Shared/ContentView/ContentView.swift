@@ -67,6 +67,14 @@ struct ContentView: View {
                     print("File import error: \(error.localizedDescription)")
                 }
             }
+            .alert(
+                "Selection Error",
+                isPresented: $viewModel.showError
+            ) {
+                Button("OK") { }
+            } message: {
+                Text(viewModel.errorMessage)
+            }
         }
     }
 }

@@ -10,6 +10,8 @@ import PhotosUI
 class PhotoRankingViewModel: ObservableObject {
     @Published var selectedPhotos: [PhotoItem] = []
     @Published var isComparing = false
+    @Published var showError = false
+    @Published var errorMessage = ""
 
     // MARK: - Public Helpers
 
@@ -25,9 +27,7 @@ class PhotoRankingViewModel: ObservableObject {
             }
         }
 
-        if !selectedPhotos.isEmpty {
-            isComparing = true
-        }
+        validateAndStartComparison()
     }
 
     func loadPhotosFromFiles(urls: [URL]) async {
@@ -41,13 +41,23 @@ class PhotoRankingViewModel: ObservableObject {
             }
         }
 
-        if !selectedPhotos.isEmpty {
-            isComparing = true
-        }
+        validateAndStartComparison()
     }
 
     func reset() {
         selectedPhotos = []
         isComparing = false
+    }
+
+    // MARK: - Private Helpers
+
+    /// Validates that at least 2 photos are selected before starting comparison.
+    private func validateAndStartComparison() {
+        if selectedPhotos.count < 2 {
+            errorMessage = "Please select at least 2 photos to compare"
+            showError = true
+        } else {
+            isComparing = true
+        }
     }
 }
