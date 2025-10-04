@@ -57,6 +57,7 @@ struct PhotoComparisonView: View {
         NavigationStack {
             contentView
                 .sensoryFeedback(.increase, trigger: viewModel.progress)
+                .sensoryFeedback(.increase, trigger: leftPhotoOnTop)
                 .sensoryFeedback(.increase, trigger: layout)
                 .navigationTitle("Which One?")
                 .navigationBarTitleDisplayMode(.inline)
@@ -82,6 +83,9 @@ struct PhotoComparisonView: View {
                         } label: {
                             Image(symbol: layoutIcon)
                         }
+                        .contentTransition(
+                            .symbolEffect(.replace.magic(fallback: .replace))
+                        )
                     }
                 }
                 .onAppear {
