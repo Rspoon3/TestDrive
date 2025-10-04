@@ -29,6 +29,8 @@ struct ContentView: View {
                 showDocumentPicker = true
             }
         )
+//        .sensoryFeedback(.increase, trigger: viewModel.isComparing)
+//        .sensoryFeedback(.increase, trigger: showDocumentPicker)
         .fullScreenCover(isPresented: $viewModel.isComparing) {
             PhotoComparisonView(photos: viewModel.selectedPhotos) {
                 viewModel.reset()
