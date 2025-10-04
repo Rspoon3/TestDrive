@@ -11,12 +11,13 @@ struct PhotoComparisonView: View {
     @StateObject private var viewModel: PhotoComparisonViewModel
     @State private var isVerticalLayout = false
     @Namespace private var photoAnimation
-    
+    @Environment(\.dismiss) private var dismiss
+
     private let layoutPreferenceKey = "PhotoComparisonVerticalLayout"
     private let photoSpacing: CGFloat = 20
-    
+
     // MARK: - Initializer
-    
+
     init(photos: [PhotoItem]) {
         _viewModel = StateObject(wrappedValue: PhotoComparisonViewModel(photos: photos))
     }
@@ -54,9 +55,10 @@ struct PhotoComparisonView: View {
                     isVerticalLayout = UserDefaults.standard.bool(forKey: layoutPreferenceKey)
                 }
         }
-        .sheet(isPresented: $viewModel.rankingComplete) {
+        .fullScreenCover(isPresented: $viewModel.rankingComplete) {
             ResultsView(photos: viewModel.rankedPhotos) {
                 viewModel.rankingComplete = false
+                dismiss()
             }
         }
     }
