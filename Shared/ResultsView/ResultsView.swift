@@ -10,6 +10,7 @@ import SFSymbols
 struct ResultsView: View {
     let photos: [PhotoItem]
     let onDismiss: () -> Void
+    @State private var trigger: Bool = false
 
     // MARK: - Body
 
@@ -19,6 +20,7 @@ struct ResultsView: View {
                 RankedPhotosListView(photos: photos)
 
                 Button {
+                    trigger = true
                     onDismiss()
                 } label: {
                     Text("Done")
@@ -31,6 +33,7 @@ struct ResultsView: View {
                 .padding(.horizontal)
                 .padding(.bottom)
             }
+            .sensoryFeedback(.impact, trigger: trigger)
             .navigationTitle("Final Ranking")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

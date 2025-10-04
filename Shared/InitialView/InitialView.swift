@@ -9,49 +9,42 @@ import SFSymbols
 
 /// Initial view for selecting photos to rank.
 struct InitialView: View {
-    @Binding var selectedItems: [PhotosPickerItem]
-    let onPhotosSelected: ([PhotosPickerItem]) async -> Void
+    let onShowPhotosPicker: () -> Void
     let onShowDocumentPicker: () -> Void
 
     // MARK: - Body
 
     var body: some View {
         VStack(spacing: 30) {
-            Image(symbol: .photoStack)
-                .font(.system(size: 80))
-                .foregroundColor(.blue)
+            
+            Spacer()
 
-            Text("Photo Ranker")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-
-            Text("Select photos to rank them from best to worst")
-                .font(.body)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
+            Button {
+                onShowPhotosPicker()
+            } label: {
+                Image(symbol: .photoStack)
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: 200)
+            }
+            
+            Spacer()
 
             VStack(spacing: 15) {
-                PhotosPicker(
-                    selection: $selectedItems,
-                    matching: .images,
-                    photoLibrary: .shared()
-                ) {
+                Button {
+                    onShowPhotosPicker()
+                } label: {
                     HStack {
                         Image(symbol: .photoOnRectangleAngled)
                             .foregroundColor(.white)
                         Text("Select from Photos")
                             .foregroundColor(.white)
                     }
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: 300)
                     .padding()
                     .background(Color.blue)
                     .cornerRadius(10)
-                }
-                .onChange(of: selectedItems) { _, newItems in
-                    Task {
-                        await onPhotosSelected(newItems)
-                    }
                 }
 
                 Button {
@@ -63,21 +56,20 @@ struct InitialView: View {
                         Text("Select from Files")
                             .foregroundColor(.white)
                     }
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: 300)
                     .padding()
                     .background(Color.green)
                     .cornerRadius(10)
                 }
             }
-            .padding(.horizontal, 40)
+            .padding(.horizontal)
         }
     }
 }
 
 #Preview {
     InitialView(
-        selectedItems: .constant([]),
-        onPhotosSelected: { _ in },
+        onShowPhotosPicker: { },
         onShowDocumentPicker: { }
     )
 }

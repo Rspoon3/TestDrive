@@ -4,6 +4,7 @@
 //
 
 import UIKit
+import PhotosUI
 
 extension UIViewController {
     /// Swizzles the present method to trigger haptic feedback when a view controller is presented.
@@ -20,9 +21,11 @@ extension UIViewController {
     }
 
     @objc private func swizzled_present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
-        // Trigger haptic feedback
-        let generator = UIImpactFeedbackGenerator(style: .light)
-        generator.impactOccurred()
+        // Trigger haptic feedback for PHPickerViewController and UIDocumentPickerViewController
+        if viewControllerToPresent is UIActivityViewController {
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.impactOccurred()
+        }
 
         // Call the original method
         swizzled_present(viewControllerToPresent, animated: flag, completion: completion)

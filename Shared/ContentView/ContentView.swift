@@ -14,43 +14,58 @@ import SFSymbols
 struct ContentView: View {
     @StateObject private var viewModel = PhotoRankingViewModel()
     @State private var selectedItems: [PhotosPickerItem] = []
-    @State private var isPickerPresented = false
+    @State private var showPhotosPicker = false
     @State private var showFileImporter = false
 
     // MARK: - Body
 
     var body: some View {
-        InitialView(
-            selectedItems: $selectedItems,
-            onPhotosSelected: { items in
-                await viewModel.loadPhotos(from: items)
-            },
-            onShowDocumentPicker: {
-                showFileImporter = true
-            }
-        )
-//        .sensoryFeedback(.increase, trigger: viewModel.isComparing)
-        .sensoryFeedback(trigger: showFileImporter){ _, newValue in
-            newValue ? .increase : nil
-        }
-        .fullScreenCover(isPresented: $viewModel.isComparing) {
-            PhotoComparisonView(photos: viewModel.selectedPhotos) {
-                viewModel.reset()
-                selectedItems = []
-            }
-        }
-        .fileImporter(
-            isPresented: $showFileImporter,
-            allowedContentTypes: [.image],
-            allowsMultipleSelection: true
-        ) { result in
-            switch result {
-            case .success(let urls):
-                Task {
-                    await viewModel.loadPhotosFromFiles(urls: urls)
+        NavigationStack {
+            InitialView(
+                onShowPhotosPicker: {
+                    showPhotosPicker = true
+                },
+                onShowDocumentPicker: {
+                    showFileImporter = true
                 }
-            case .failure(let error):
-                print("File import error: \(error.localizedDescription)")
+            )
+            .navigationTitle("Photo Ranker")
+            .sensoryFeedback(trigger: showPhotosPicker) { _, newValue in
+                newValue ? .increase : nil
+            }
+            .sensoryFeedback(trigger: showFileImporter) { _, newValue in
+                newValue ? .increase : nil
+            }
+            .photosPicker(
+                isPresented: $showPhotosPicker,
+                selection: $selectedItems,
+                matching: .images,
+                photoLibrary: .shared()
+            )
+            .onChange(of: selectedItems) { _, newItems in
+                Task {
+                    await viewModel.loadPhotos(from: newItems)
+                }
+            }
+            .fullScreenCover(isPresented: $viewModel.isComparing) {
+                PhotoComparisonView(photos: viewModel.selectedPhotos) {
+                    viewModel.reset()
+                    selectedItems = []
+                }
+            }
+            .fileImporter(
+                isPresented: $showFileImporter,
+                allowedContentTypes: [.image],
+                allowsMultipleSelection: true
+            ) { result in
+                switch result {
+                case .success(let urls):
+                    Task {
+                        await viewModel.loadPhotosFromFiles(urls: urls)
+                    }
+                case .failure(let error):
+                    print("File import error: \(error.localizedDescription)")
+                }
             }
         }
     }
