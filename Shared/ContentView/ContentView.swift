@@ -15,10 +15,10 @@ struct ContentView: View {
     @StateObject private var viewModel = PhotoRankingViewModel()
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var isPickerPresented = false
-    @State private var showDocumentPicker = false
+    @State private var showFileImporter = false
 
     // MARK: - Body
-    
+
     var body: some View {
         InitialView(
             selectedItems: $selectedItems,
@@ -26,22 +26,31 @@ struct ContentView: View {
                 await viewModel.loadPhotos(from: items)
             },
             onShowDocumentPicker: {
-                showDocumentPicker = true
+                showFileImporter = true
             }
         )
 //        .sensoryFeedback(.increase, trigger: viewModel.isComparing)
-//        .sensoryFeedback(.increase, trigger: showDocumentPicker)
+        .sensoryFeedback(trigger: showFileImporter){ _, newValue in
+            newValue ? .increase : nil
+        }
         .fullScreenCover(isPresented: $viewModel.isComparing) {
             PhotoComparisonView(photos: viewModel.selectedPhotos) {
                 viewModel.reset()
                 selectedItems = []
             }
         }
-        .sheet(isPresented: $showDocumentPicker) {
-            DocumentPicker { urls in
+        .fileImporter(
+            isPresented: $showFileImporter,
+            allowedContentTypes: [.image],
+            allowsMultipleSelection: true
+        ) { result in
+            switch result {
+            case .success(let urls):
                 Task {
                     await viewModel.loadPhotosFromFiles(urls: urls)
                 }
+            case .failure(let error):
+                print("File import error: \(error.localizedDescription)")
             }
         }
     }

@@ -34,7 +34,6 @@ struct InitialView: View {
             VStack(spacing: 15) {
                 PhotosPicker(
                     selection: $selectedItems,
-                    maxSelectionCount: 20,
                     matching: .images,
                     photoLibrary: .shared()
                 ) {
