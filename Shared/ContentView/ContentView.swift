@@ -33,14 +33,13 @@ struct ContentView: View {
             PhotoComparisonView(photos: viewModel.selectedPhotos)
         }
         .sheet(isPresented: $showDocumentPicker) {
-            DocumentPicker(completion: { urls in
+            DocumentPicker { urls in
                 Task {
                     await viewModel.loadPhotosFromFiles(urls: urls)
                 }
-            })
+            }
         }
     }
-
 }
 
 #Preview {

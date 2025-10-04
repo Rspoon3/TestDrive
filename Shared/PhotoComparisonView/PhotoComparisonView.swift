@@ -55,12 +55,14 @@ struct PhotoComparisonView: View {
                 }
         }
         .sheet(isPresented: $viewModel.rankingComplete) {
-            completionView(photos: viewModel.rankedPhotos)
+            ResultsView(photos: viewModel.rankedPhotos) {
+                viewModel.rankingComplete = false
+            }
         }
     }
-    
+
     // MARK: - Private Views
-    
+
     @ViewBuilder
     private var contentView: some View {
         if let comparison = viewModel.currentComparison {
@@ -69,7 +71,7 @@ struct PhotoComparisonView: View {
             ProgressView()
         }
     }
-    
+
     private func comparisonView(_ comparison: (left: PhotoItem, right: PhotoItem)) -> some View {
         VStack(spacing: 20) {
             // Progress indicator
@@ -115,6 +117,7 @@ struct PhotoComparisonView: View {
             .resizable()
             .scaledToFit()
             .cornerRadius(12)
+            .padding(4)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(Color.blue.opacity(0.3), lineWidth: 2)
@@ -125,48 +128,5 @@ struct PhotoComparisonView: View {
                     viewModel.selectPhoto(isLeft: isLeft)
                 }
             }
-    }
-    
-    private func completionView(photos: [PhotoItem]) -> some View {
-        NavigationStack {
-            VStack {
-                RankedPhotosListView(photos: photos)
-
-                Button {
-                    viewModel.rankingComplete = false
-                } label: {
-                    Text("Done")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-                .padding(.horizontal)
-                .padding(.bottom)
-            }
-            .navigationTitle("Results")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    ShareLink(
-                        item: createShareText(photos: photos),
-                        subject: Text("Photo Ranking Results")
-                    ) {
-                        Image(symbol: .squareAndArrowUp)
-                    }
-                }
-            }
-        }
-    }
-    
-    // MARK: - Private Helpers
-    
-    private func createShareText(photos: [PhotoItem]) -> String {
-        var text = "My Photo Rankings:\n\n"
-        for (index, photo) in photos.enumerated() {
-            text += "\(index + 1). \(photo.filename)\n"
-        }
-        return text
     }
 }
