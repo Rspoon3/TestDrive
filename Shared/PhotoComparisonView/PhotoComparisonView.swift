@@ -6,22 +6,32 @@
 import SwiftUI
 import SFSymbols
 
+/// Layout orientation options for photo comparison.
+enum ComparisonLayout: String, CaseIterable {
+    case horizontal
+    case vertical
+    case stack
+}
+
 /// Displays two photos side by side for comparison and selection.
 ///
 /// This view presents pairs of photos and allows the user to select their preferred image.
-/// The layout can be toggled between horizontal and vertical orientations, with the preference
+/// The layout can be toggled between horizontal, vertical, and stack orientations, with the preference
 /// persisted across app launches.
 ///
 /// ## Layout Preference
-/// The `isVerticalLayout` property uses `@State` with manual UserDefaults persistence instead of
+/// The `layout` property uses `@State` with manual UserDefaults persistence instead of
 /// `@AppStorage` to ensure smooth matched geometry effect animations when toggling between layouts.
 /// `@AppStorage` can interfere with SwiftUI's animation system for matched geometry effects.
 struct PhotoComparisonView: View {
     @StateObject private var viewModel: PhotoComparisonViewModel
 
-    /// Controls the layout orientation (vertical vs horizontal).
+    /// Controls the layout orientation (horizontal, vertical, or stack).
     /// Uses `@State` instead of `@AppStorage` to preserve matched geometry effect animations.
-    @State private var isVerticalLayout = false
+    @State private var layout: ComparisonLayout = .horizontal
+
+    /// In stack mode, controls which photo is on top (true = left, false = right).
+    @State private var leftPhotoOnTop = true
 
     @Namespace private var photoAnimation
     @Environment(\.dismiss) private var dismiss
@@ -29,7 +39,7 @@ struct PhotoComparisonView: View {
     let onDismiss: () -> Void
 
     /// UserDefaults key for persisting the layout preference.
-    private let layoutPreferenceKey = "PhotoComparisonVerticalLayout"
+    private let layoutPreferenceKey = "PhotoComparisonLayout"
 
     /// Spacing between photos in both vertical and horizontal layouts.
     private let photoSpacing: CGFloat = 20
@@ -47,7 +57,7 @@ struct PhotoComparisonView: View {
         NavigationStack {
             contentView
                 .sensoryFeedback(.increase, trigger: viewModel.progress)
-                .sensoryFeedback(.increase, trigger: isVerticalLayout)
+                .sensoryFeedback(.increase, trigger: layout)
                 .navigationTitle("Which One?")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -67,18 +77,15 @@ struct PhotoComparisonView: View {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
                             withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                                isVerticalLayout.toggle()
-                                UserDefaults.standard.set(isVerticalLayout, forKey: layoutPreferenceKey)
+                                cycleLayout()
                             }
                         } label: {
-                            Image(symbol: .rectangleSplit1x2)
-                                .rotationEffect(.degrees(isVerticalLayout ? 90 : 0))
-                                .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isVerticalLayout)
+                            Image(symbol: layoutIcon)
                         }
                     }
                 }
                 .onAppear {
-                    isVerticalLayout = UserDefaults.standard.bool(forKey: layoutPreferenceKey)
+                    loadLayoutPreference()
                 }
         }
         .fullScreenCover(isPresented: $viewModel.rankingComplete) {
@@ -116,19 +123,31 @@ struct PhotoComparisonView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal)
             
-            if isVerticalLayout {
-                // Vertical layout
+            switch layout {
+            case .horizontal:
+                HStack(spacing: photoSpacing) {
+                    photoCard(photo: comparison.left, isLeft: true)
+                    photoCard(photo: comparison.right, isLeft: false)
+                }
+                .padding(.horizontal)
+
+            case .vertical:
                 VStack(spacing: photoSpacing) {
                     photoCard(photo: comparison.left, isLeft: true)
                     photoCard(photo: comparison.right, isLeft: false)
                 }
                 .padding(.horizontal)
                 .frame(maxWidth: .infinity)
-            } else {
-                // Horizontal layout
-                HStack(spacing: photoSpacing) {
-                    photoCard(photo: comparison.left, isLeft: true)
-                    photoCard(photo: comparison.right, isLeft: false)
+
+            case .stack:
+                ZStack {
+                    if leftPhotoOnTop {
+                        stackPhotoCard(photo: comparison.right, isLeft: false)
+                        stackPhotoCard(photo: comparison.left, isLeft: true)
+                    } else {
+                        stackPhotoCard(photo: comparison.left, isLeft: true)
+                        stackPhotoCard(photo: comparison.right, isLeft: false)
+                    }
                 }
                 .padding(.horizontal)
             }
@@ -143,16 +162,51 @@ struct PhotoComparisonView: View {
             .resizable()
             .scaledToFit()
             .cornerRadius(12)
-            .padding(4)
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.blue.opacity(0.3), lineWidth: 2)
-            )
             .matchedGeometryEffect(id: isLeft ? "leftPhoto" : "rightPhoto", in: photoAnimation)
             .onTapGesture {
                 withAnimation(.spring(response: 0.3)) {
                     viewModel.selectPhoto(isLeft: isLeft)
                 }
             }
+    }
+
+    private func stackPhotoCard(photo: PhotoItem, isLeft: Bool) -> some View {
+        Image(uiImage: photo.image)
+            .resizable()
+            .scaledToFit()
+            .cornerRadius(12)
+            .matchedGeometryEffect(id: isLeft ? "leftPhoto" : "rightPhoto", in: photoAnimation)
+            .onTapGesture {
+                leftPhotoOnTop.toggle()
+            }
+    }
+
+    // MARK: - Private Helpers
+
+    private var layoutIcon: SFSymbol {
+        switch layout {
+        case .horizontal:
+            return .rectangleSplit1x2
+        case .vertical:
+            return .rectangleSplit2x1
+        case .stack:
+            return .squareStack
+        }
+    }
+
+    private func cycleLayout() {
+        let allCases = ComparisonLayout.allCases
+        if let currentIndex = allCases.firstIndex(of: layout) {
+            let nextIndex = (currentIndex + 1) % allCases.count
+            layout = allCases[nextIndex]
+            UserDefaults.standard.set(layout.rawValue, forKey: layoutPreferenceKey)
+        }
+    }
+
+    private func loadLayoutPreference() {
+        if let savedLayout = UserDefaults.standard.string(forKey: layoutPreferenceKey),
+           let layout = ComparisonLayout(rawValue: savedLayout) {
+            self.layout = layout
+        }
     }
 }
