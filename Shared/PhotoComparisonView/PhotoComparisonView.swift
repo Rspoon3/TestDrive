@@ -36,6 +36,9 @@ struct PhotoComparisonView: View {
     @Namespace private var photoAnimation
     @Environment(\.dismiss) private var dismiss
 
+    /// Controls whether the share sheet is presented.
+    @State private var showShareSheet = false
+
     let onDismiss: () -> Void
 
     /// UserDefaults key for persisting the layout preference.
@@ -63,29 +66,43 @@ struct PhotoComparisonView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        if viewModel.canUndo {
+                        HStack {
+                            if viewModel.canUndo {
+                                Button {
+                                    withAnimation {
+                                        viewModel.undoLastComparison()
+                                    }
+                                } label: {
+                                    Image(symbol: .arrowUturnBackward)
+                                }
+                                .transition(.opacity)
+                            }
+
                             Button {
-                                withAnimation {
-                                    viewModel.undoLastComparison()
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                    cycleLayout()
                                 }
                             } label: {
-                                Image(symbol: .arrowUturnBackward)
+                                Image(symbol: layoutIcon)
                             }
-                            .transition(.opacity)
+                            .contentTransition(
+                                .symbolEffect(.replace.magic(fallback: .replace))
+                            )
                         }
                     }
 
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                                cycleLayout()
-                            }
+                            showShareSheet = true
                         } label: {
-                            Image(symbol: layoutIcon)
+                            Image(symbol: .squareAndArrowUp)
                         }
-                        .contentTransition(
-                            .symbolEffect(.replace.magic(fallback: .replace))
-                        )
+                        .disabled(layout == .stack)
+                    }
+                }
+                .sheet(isPresented: $showShareSheet) {
+                    if let compositeImage = createCompositeImage() {
+                        ShareSheet(items: [compositeImage])
                     }
                 }
                 .onAppear {
@@ -212,5 +229,68 @@ struct PhotoComparisonView: View {
            let layout = ComparisonLayout(rawValue: savedLayout) {
             self.layout = layout
         }
+    }
+
+    /// Creates a composite image of the two current photos based on the layout.
+    private func createCompositeImage() -> UIImage? {
+        guard let comparison = viewModel.currentComparison else { return nil }
+
+        let leftImage = comparison.left.image
+        let rightImage = comparison.right.image
+
+        switch layout {
+        case .horizontal:
+            return createHorizontalComposite(left: leftImage, right: rightImage)
+        case .vertical:
+            return createVerticalComposite(top: leftImage, bottom: rightImage)
+        case .stack:
+            return nil // Stack layout doesn't support sharing
+        }
+    }
+
+    /// Creates a composite image with two images side by side.
+    /// - Parameters:
+    ///   - left: The left image.
+    ///   - right: The right image.
+    /// - Returns: A composite image with both images side by side, or nil if creation fails.
+    private func createHorizontalComposite(left: UIImage, right: UIImage) -> UIImage? {
+        let targetHeight = max(left.size.height, right.size.height)
+        let leftWidth = (left.size.width / left.size.height) * targetHeight
+        let rightWidth = (right.size.width / right.size.height) * targetHeight
+        let spacing: CGFloat = photoSpacing
+
+        let totalWidth = leftWidth + spacing + rightWidth
+        let size = CGSize(width: totalWidth, height: targetHeight)
+
+        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
+        defer { UIGraphicsEndImageContext() }
+
+        left.draw(in: CGRect(x: 0, y: 0, width: leftWidth, height: targetHeight))
+        right.draw(in: CGRect(x: leftWidth + spacing, y: 0, width: rightWidth, height: targetHeight))
+
+        return UIGraphicsGetImageFromCurrentImageContext()
+    }
+
+    /// Creates a composite image with two images stacked vertically.
+    /// - Parameters:
+    ///   - top: The top image.
+    ///   - bottom: The bottom image.
+    /// - Returns: A composite image with both images stacked vertically, or nil if creation fails.
+    private func createVerticalComposite(top: UIImage, bottom: UIImage) -> UIImage? {
+        let targetWidth = max(top.size.width, bottom.size.width)
+        let topHeight = (top.size.height / top.size.width) * targetWidth
+        let bottomHeight = (bottom.size.height / bottom.size.width) * targetWidth
+        let spacing: CGFloat = photoSpacing
+
+        let totalHeight = topHeight + spacing + bottomHeight
+        let size = CGSize(width: targetWidth, height: totalHeight)
+
+        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
+        defer { UIGraphicsEndImageContext() }
+
+        top.draw(in: CGRect(x: 0, y: 0, width: targetWidth, height: topHeight))
+        bottom.draw(in: CGRect(x: 0, y: topHeight + spacing, width: targetWidth, height: bottomHeight))
+
+        return UIGraphicsGetImageFromCurrentImageContext()
     }
 }
