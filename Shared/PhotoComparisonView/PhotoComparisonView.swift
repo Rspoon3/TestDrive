@@ -13,13 +13,16 @@ struct PhotoComparisonView: View {
     @Namespace private var photoAnimation
     @Environment(\.dismiss) private var dismiss
 
+    let onDismiss: () -> Void
+
     private let layoutPreferenceKey = "PhotoComparisonVerticalLayout"
     private let photoSpacing: CGFloat = 20
 
     // MARK: - Initializer
 
-    init(photos: [PhotoItem]) {
+    init(photos: [PhotoItem], onDismiss: @escaping () -> Void) {
         _viewModel = StateObject(wrappedValue: PhotoComparisonViewModel(photos: photos))
+        self.onDismiss = onDismiss
     }
     
     // MARK: - Body
@@ -57,7 +60,7 @@ struct PhotoComparisonView: View {
         }
         .fullScreenCover(isPresented: $viewModel.rankingComplete) {
             ResultsView(photos: viewModel.rankedPhotos) {
-                viewModel.rankingComplete = false
+                onDismiss()
                 dismiss()
             }
         }

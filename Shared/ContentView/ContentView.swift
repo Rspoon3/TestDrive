@@ -30,7 +30,10 @@ struct ContentView: View {
             }
         )
         .fullScreenCover(isPresented: $viewModel.isComparing) {
-            PhotoComparisonView(photos: viewModel.selectedPhotos)
+            PhotoComparisonView(photos: viewModel.selectedPhotos) {
+                viewModel.reset()
+                selectedItems = []
+            }
         }
         .sheet(isPresented: $showDocumentPicker) {
             DocumentPicker { urls in
