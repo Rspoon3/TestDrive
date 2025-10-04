@@ -133,7 +133,6 @@ struct PhotoComparisonView: View {
 
     private func comparisonView(_ comparison: (left: PhotoItem, right: PhotoItem)) -> some View {
         VStack(spacing: 20) {
-            // Progress indicator
             VStack(alignment: .leading, spacing: 8) {
                 ProgressView(value: viewModel.progress)
                     .progressViewStyle(.linear)
@@ -142,7 +141,7 @@ struct PhotoComparisonView: View {
                 Text("\(viewModel.progress.formatted(.percent.precision(.fractionLength(0)))) Complete")
                     .font(.caption)
                     .foregroundColor(.secondary)
-                    .animation(.easeInOut, value: viewModel.progress)
+                    .contentTransition(.numericText(value: viewModel.progress))
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal)
