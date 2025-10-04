@@ -10,7 +10,10 @@ import SFSymbols
 struct ResultsView: View {
     let photos: [PhotoItem]
     let onDismiss: () -> Void
-    @State private var trigger: Bool = false
+    @State private var trigger: UUID = .init()
+    @State private var errorTrigger: UUID = .init()
+    @State private var showShareSheet = false
+    @State private var compositeImage: IdentafiableItem<UIImage>?
 
     // MARK: - Body
 
@@ -20,7 +23,7 @@ struct ResultsView: View {
                 RankedPhotosListView(photos: photos)
 
                 Button {
-                    trigger = true
+                    trigger = .init()
                     onDismiss()
                 } label: {
                     Text("Done")
@@ -33,30 +36,64 @@ struct ResultsView: View {
                 .padding(.horizontal)
                 .padding(.bottom)
             }
+            .sensoryFeedback(.error, trigger: errorTrigger)
             .sensoryFeedback(.impact, trigger: trigger)
             .navigationTitle("Final Ranking")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    ShareLink(
-                        item: createShareText(),
-                        subject: Text("Photo Ranking Results")
-                    ) {
+                    Button {
+                        guard let image = createCompositeImage() else {
+                            errorTrigger = .init()
+                            return
+                        }
+                        
+                        trigger = .init()
+                        compositeImage = IdentafiableItem(item: image)
+                        showShareSheet = true
+                    } label: {
                         Image(symbol: .squareAndArrowUp)
                     }
                 }
+            }
+            .sheet(item: $compositeImage) { image in
+                ShareSheet(items: [image.item])
             }
         }
     }
 
     // MARK: - Private Helpers
 
-    private func createShareText() -> String {
-        var text = "My Photo Rankings:\n\n"
-        for (index, photo) in photos.enumerated() {
-            text += "\(index + 1). \(photo.filename)\n"
+    /// Creates a composite image from the RankedPhotosListView.
+    /// - Returns: A rendered image of the ranked photos list, or nil if creation fails.
+    @MainActor
+    private func createCompositeImage() -> UIImage? {
+        let view = RankedPhotosListView(
+            photos: photos,
+            useScrollView: false
+        ).background(Color.white)
+        
+        let renderer = ImageRenderer(content: view)
+        renderer.scale = 3.0
+        return renderer.uiImage
+    }
+
+    private func rankColor(for index: Int) -> Color {
+        switch index {
+        case 0: return .yellow
+        case 1: return .gray
+        case 2: return .orange
+        default: return .blue
         }
-        return text
+    }
+
+    private func rankTitle(for index: Int) -> String {
+        switch index {
+        case 0: return "🥇 Best Photo"
+        case 1: return "🥈 Second Place"
+        case 2: return "🥉 Third Place"
+        default: return "Rank \(index + 1)"
+        }
     }
 }
 
