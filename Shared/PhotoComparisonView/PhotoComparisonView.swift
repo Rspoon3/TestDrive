@@ -62,6 +62,9 @@ struct PhotoComparisonView: View {
                 .sensoryFeedback(.increase, trigger: viewModel.progress)
                 .sensoryFeedback(.increase, trigger: leftPhotoOnTop)
                 .sensoryFeedback(.increase, trigger: layout)
+                .sensoryFeedback(trigger: showShareSheet) { _, newValue in
+                    newValue ? .increase : nil
+                }
                 .navigationTitle("Which One?")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -164,9 +167,15 @@ struct PhotoComparisonView: View {
                 ZStack {
                     if leftPhotoOnTop {
                         stackPhotoCard(photo: comparison.right, isLeft: false)
+                            .frame(width: 0, height: 0)
+                            .opacity(0)
+                            .accessibilityHidden(true)
                         stackPhotoCard(photo: comparison.left, isLeft: true)
                     } else {
                         stackPhotoCard(photo: comparison.left, isLeft: true)
+                            .frame(width: 0, height: 0)
+                            .opacity(0)
+                            .accessibilityHidden(true)
                         stackPhotoCard(photo: comparison.right, isLeft: false)
                     }
                 }
