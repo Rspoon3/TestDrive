@@ -8,6 +8,7 @@ import SFSymbols
 
 /// Displays the ranked photos and allows sharing results.
 struct ResultsView: View {
+    @Environment(\.colorScheme) var colorScheme
     let photos: [PhotoItem]
     let onDismiss: () -> Void
     @State private var trigger: UUID = .init()
@@ -66,12 +67,15 @@ struct ResultsView: View {
 
     /// Creates a composite image from the RankedPhotosListView.
     /// - Returns: A rendered image of the ranked photos list, or nil if creation fails.
+    ///
+    /// Need to use colorScheme because `systemBackground` never shows in black
+    /// for some reason. I think it's a bug with `ImageRenderer`.
     @MainActor
     private func createCompositeImage() -> UIImage? {
         let view = RankedPhotosListView(
             photos: photos,
             useScrollView: false
-        ).background(Color.white)
+        ).background(Color(colorScheme == .light ? .white : .black))
         
         let renderer = ImageRenderer(content: view)
         renderer.scale = 3.0

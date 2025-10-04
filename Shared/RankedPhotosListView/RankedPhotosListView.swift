@@ -68,7 +68,7 @@ struct RankedPhotosListView: View {
                 .padding(.vertical, 8)
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.gray.opacity(0.05))
+                        .fill(Color(.secondarySystemBackground))
                 )
                 .padding(.horizontal)
             }
