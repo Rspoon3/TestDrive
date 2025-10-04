@@ -6,29 +6,14 @@
 import SwiftUI
 import PhotosUI
 
-/// Represents the current state of the photo ranking flow.
-enum ViewState {
-    case initial
-    case loading
-    case comparing(left: PhotoItem, right: PhotoItem, progress: Double, canUndo: Bool)
-    case complete([PhotoItem])
-}
-
 @MainActor
 class PhotoRankingViewModel: ObservableObject {
-    @Published var viewState: ViewState = .initial
     @Published var selectedPhotos: [PhotoItem] = []
-
-    private var allComparisons: [(PhotoItem, PhotoItem)] = []
-    private var currentComparisonIndex = 0
-    private var comparisonResults: [Bool] = []
-    private var totalComparisons = 0
-    private var completedComparisons = 0
+    @Published var isComparing = false
 
     // MARK: - Public Helpers
 
     func loadPhotos(from items: [PhotosPickerItem]) async {
-        viewState = .loading
         selectedPhotos = []
 
         for (index, item) in items.enumerated() {
@@ -41,14 +26,11 @@ class PhotoRankingViewModel: ObservableObject {
         }
 
         if !selectedPhotos.isEmpty {
-            startRanking()
-        } else {
-            viewState = .initial
+            isComparing = true
         }
     }
 
     func loadPhotosFromFiles(urls: [URL]) async {
-        viewState = .loading
         selectedPhotos = []
 
         for url in urls {
@@ -60,125 +42,12 @@ class PhotoRankingViewModel: ObservableObject {
         }
 
         if !selectedPhotos.isEmpty {
-            startRanking()
-        } else {
-            viewState = .initial
+            isComparing = true
         }
     }
 
     func reset() {
         selectedPhotos = []
-        viewState = .initial
-        currentComparisonIndex = 0
-        comparisonResults = []
-        allComparisons = []
-        totalComparisons = 0
-        completedComparisons = 0
-    }
-
-    func startRanking() {
-        guard selectedPhotos.count > 1 else {
-            viewState = .complete(selectedPhotos)
-            return
-        }
-
-        completedComparisons = 0
-        currentComparisonIndex = 0
-        comparisonResults = []
-
-        // Generate all comparison pairs needed for ranking
-        generateAllComparisons()
-
-        // Estimate total comparisons
-        totalComparisons = allComparisons.count
-
-        // Start with first comparison
-        showNextComparison()
-    }
-
-    // MARK: - Private Helpers
-
-    private func generateAllComparisons() {
-        allComparisons = []
-        let photos = selectedPhotos
-
-        // Generate all pairs for bubble sort style comparisons
-        // This allows us to have a predictable set of comparisons
-        for i in 0..<photos.count {
-            for j in (i + 1)..<photos.count {
-                allComparisons.append((photos[i], photos[j]))
-            }
-        }
-    }
-
-    private func showNextComparison() {
-        if currentComparisonIndex < allComparisons.count {
-            let comparison = allComparisons[currentComparisonIndex]
-            let progress = Double(completedComparisons) / Double(max(totalComparisons, 1))
-            let canUndo = currentComparisonIndex > 0
-            viewState = .comparing(left: comparison.0, right: comparison.1, progress: progress, canUndo: canUndo)
-        } else {
-            // All comparisons done, calculate final ranking
-            calculateFinalRanking()
-        }
-    }
-
-    func selectPhoto(isLeft: Bool) {
-        guard currentComparisonIndex < allComparisons.count else { return }
-
-        // Store the result
-        if currentComparisonIndex < comparisonResults.count {
-            // Replacing an existing result (after undo)
-            comparisonResults[currentComparisonIndex] = isLeft
-            // Remove any results after this point
-            comparisonResults = Array(comparisonResults.prefix(currentComparisonIndex + 1))
-        } else {
-            // Adding new result
-            comparisonResults.append(isLeft)
-        }
-
-        completedComparisons = comparisonResults.count
-        currentComparisonIndex += 1
-
-        showNextComparison()
-    }
-
-    func undoLastComparison() {
-        guard currentComparisonIndex > 0 else { return }
-
-        currentComparisonIndex -= 1
-        completedComparisons = max(0, completedComparisons - 1)
-
-        showNextComparison()
-    }
-
-    private func calculateFinalRanking() {
-        // Calculate win counts for each photo
-        var winCounts: [PhotoItem: Int] = [:]
-
-        for photo in selectedPhotos {
-            winCounts[photo] = 0
-        }
-
-        // Count wins based on comparison results
-        for (index, comparison) in allComparisons.enumerated() {
-            guard index < comparisonResults.count else { break }
-
-            let winner = comparisonResults[index] ? comparison.0 : comparison.1
-            winCounts[winner, default: 0] += 1
-        }
-
-        // Sort photos by win count (descending)
-        var sortedPhotos = selectedPhotos.sorted { photo1, photo2 in
-            winCounts[photo1, default: 0] > winCounts[photo2, default: 0]
-        }
-
-        // Assign ranks
-        for index in 0..<sortedPhotos.count {
-            sortedPhotos[index].rank = index + 1
-        }
-
-        selectedPhotos = sortedPhotos
-        viewState = .complete(sortedPhotos)
+        isComparing = false
     }
 }
