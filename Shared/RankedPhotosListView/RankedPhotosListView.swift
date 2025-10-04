@@ -14,11 +14,6 @@ struct RankedPhotosListView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text("Final Ranking")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding(.horizontal)
-
                 ForEach(Array(photos.enumerated()), id: \.element.id) { index, photo in
                     HStack(spacing: 15) {
                         // Rank indicator

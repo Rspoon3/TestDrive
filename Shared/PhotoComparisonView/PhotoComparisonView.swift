@@ -7,15 +7,31 @@ import SwiftUI
 import SFSymbols
 
 /// Displays two photos side by side for comparison and selection.
+///
+/// This view presents pairs of photos and allows the user to select their preferred image.
+/// The layout can be toggled between horizontal and vertical orientations, with the preference
+/// persisted across app launches.
+///
+/// ## Layout Preference
+/// The `isVerticalLayout` property uses `@State` with manual UserDefaults persistence instead of
+/// `@AppStorage` to ensure smooth matched geometry effect animations when toggling between layouts.
+/// `@AppStorage` can interfere with SwiftUI's animation system for matched geometry effects.
 struct PhotoComparisonView: View {
     @StateObject private var viewModel: PhotoComparisonViewModel
+
+    /// Controls the layout orientation (vertical vs horizontal).
+    /// Uses `@State` instead of `@AppStorage` to preserve matched geometry effect animations.
     @State private var isVerticalLayout = false
+
     @Namespace private var photoAnimation
     @Environment(\.dismiss) private var dismiss
 
     let onDismiss: () -> Void
 
+    /// UserDefaults key for persisting the layout preference.
     private let layoutPreferenceKey = "PhotoComparisonVerticalLayout"
+
+    /// Spacing between photos in both vertical and horizontal layouts.
     private let photoSpacing: CGFloat = 20
 
     // MARK: - Initializer
@@ -30,17 +46,24 @@ struct PhotoComparisonView: View {
     var body: some View {
         NavigationStack {
             contentView
+                .sensoryFeedback(.increase, trigger: viewModel.progress)
+                .sensoryFeedback(.increase, trigger: isVerticalLayout)
+                .navigationTitle("Which One?")
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         if viewModel.canUndo {
                             Button {
-                                viewModel.undoLastComparison()
+                                withAnimation {
+                                    viewModel.undoLastComparison()
+                                }
                             } label: {
                                 Image(symbol: .arrowUturnBackward)
                             }
+                            .transition(.opacity)
                         }
                     }
-                    
+
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
                             withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
@@ -83,17 +106,15 @@ struct PhotoComparisonView: View {
             VStack(alignment: .leading, spacing: 8) {
                 ProgressView(value: viewModel.progress)
                     .progressViewStyle(.linear)
-                
+                    .animation(.easeInOut, value: viewModel.progress)
+
                 Text("\(viewModel.progress.formatted(.percent.precision(.fractionLength(0)))) Complete")
                     .font(.caption)
                     .foregroundColor(.secondary)
+                    .animation(.easeInOut, value: viewModel.progress)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal)
-            
-            Text("Which photo do you prefer?")
-                .font(.title2)
-                .fontWeight(.semibold)
             
             if isVerticalLayout {
                 // Vertical layout

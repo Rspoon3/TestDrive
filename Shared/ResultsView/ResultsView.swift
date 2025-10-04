@@ -31,7 +31,7 @@ struct ResultsView: View {
                 .padding(.horizontal)
                 .padding(.bottom)
             }
-            .navigationTitle("Results")
+            .navigationTitle("Final Ranking")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
