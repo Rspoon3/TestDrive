@@ -103,6 +103,7 @@ struct PhotoComparisonView: View {
                 }
                 .onAppear {
                     loadLayoutPreference()
+                    AppRatingUserStoreLive.shared.recordStartedPhotoComparison()
                 }
         }
         .fullScreenCover(isPresented: $viewModel.rankingComplete) {

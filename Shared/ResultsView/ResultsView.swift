@@ -41,6 +41,9 @@ struct ResultsView: View {
             .sensoryFeedback(.impact, trigger: trigger)
             .navigationTitle("Final Ranking")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                AppRatingUserStoreLive.shared.recordCompletedPhotoComparison()
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
