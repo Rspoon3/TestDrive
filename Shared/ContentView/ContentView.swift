@@ -16,6 +16,10 @@ struct ContentView: View {
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var showPhotosPicker = false
     @State private var showFileImporter = false
+    
+    #if DEBUG
+    @State private var showSettings = false
+    #endif
 
     // MARK: - Body
 
@@ -30,6 +34,20 @@ struct ContentView: View {
                 }
             )
             .navigationTitle("Photo Ranker")
+            #if DEBUG
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        showSettings = true
+                    } label: {
+                        Image(symbol: .gearshape)
+                    }
+                }
+            }
+            .sheet(isPresented: $showSettings) {
+                SettingsView()
+            }
+            #endif
             .sensoryFeedback(trigger: showPhotosPicker) { _, newValue in
                 newValue ? .increase : nil
             }
