@@ -28,7 +28,7 @@ struct ResultsView: View {
                     onDismiss()
                 } label: {
                     Text("Done")
-                        .frame(maxWidth: .infinity)
+                        .frame(maxWidth: 300)
                         .padding()
                         .background(Color.blue)
                         .foregroundColor(.white)

@@ -6,13 +6,6 @@
 import SwiftUI
 import SFSymbols
 
-/// Layout orientation options for photo comparison.
-enum ComparisonLayout: String, CaseIterable {
-    case horizontal
-    case vertical
-    case stack
-}
-
 /// Displays two photos side by side for comparison and selection.
 ///
 /// This view presents pairs of photos and allows the user to select their preferred image.
