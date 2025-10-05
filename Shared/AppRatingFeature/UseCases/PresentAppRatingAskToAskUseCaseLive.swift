@@ -62,7 +62,7 @@ public final class PresentAppRatingAskToAskUseCaseLive: PresentAppRatingAskToAsk
                 try? await Task.sleep(for: .seconds(0.5))
 
                 if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                    SKStoreReviewController.requestReview(in: windowScene)
+                    AppStore.requestReview(in: windowScene)
                 }
             }
         } else {

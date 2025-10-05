@@ -39,14 +39,14 @@ public struct AppRatingAskToAskView: View {
                 // Content card
                 VStack(spacing: 30) {
                     // App Icon
-                    Image("AppIcon1024")
+                    Image("AppIcon1024-TODO")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 60)
                         .cornerRadius(12)
                     
                     // Title
-                    Text("Are you loving Hot Takes?")
+                    Text("Are you loving Photo Recorder?")
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
@@ -62,6 +62,8 @@ public struct AppRatingAskToAskView: View {
                     }
                 }
                 .padding(40)
+                .background(Color.blue)
+                .cornerRadius(20)
                 .padding()
                 
                 Spacer()

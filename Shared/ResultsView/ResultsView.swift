@@ -15,7 +15,41 @@ struct ResultsView: View {
     @State private var errorTrigger: UUID = .init()
     @State private var showShareSheet = false
     @State private var compositeImage: IdentafiableItem<UIImage>?
+    @State private var showingAppRating = false
+    private let appRatingUseCase: PresentAppRatingAskToAskUseCase
+    private let appRatingUserStore: AppRatingUserStore
+    private let appRatingAnalyticsRecording: AppRatingAnalyticsRecording
 
+    // MARK: - Initializer
+    
+    init(
+        photos: [PhotoItem],
+        appRatingUseCase: PresentAppRatingAskToAskUseCase? = nil,
+        appRatingUserStore: AppRatingUserStore = AppRatingUserStoreLive.shared,
+        appRatingViewedStore: AppRatingViewedStore = AppRatingViewedStoreLive(),
+        appRatingAnalyticsRecording: AppRatingAnalyticsRecording = ConsoleAppRatingAnalyticsRecorder(),
+        onDismiss: @escaping () -> Void,
+    ) {
+        self.photos = photos
+        self.appRatingAnalyticsRecording = appRatingAnalyticsRecording
+        self.appRatingUserStore = appRatingUserStore
+        self.onDismiss = onDismiss
+
+        if let appRatingUseCase {
+            self.appRatingUseCase = appRatingUseCase
+        } else {
+            let eligibilityRepository = AppRatingEligibilityRepositoryLive(
+                viewedStore: appRatingViewedStore,
+                userStore: appRatingUserStore
+            )
+            self.appRatingUseCase = PresentAppRatingAskToAskUseCaseLive(
+                eligibilityRepository: eligibilityRepository,
+                analytics: appRatingAnalyticsRecording,
+                userStore: appRatingUserStore
+            )
+        }
+    }
+    
     // MARK: - Body
 
     var body: some View {
@@ -42,26 +76,52 @@ struct ResultsView: View {
             .navigationTitle("Final Ranking")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                AppRatingUserStoreLive.shared.recordCompletedPhotoComparison()
+                appRatingUserStore.recordCompletedPhotoComparison()
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        guard let image = createCompositeImage() else {
-                            errorTrigger = .init()
-                            return
-                        }
-                        
-                        trigger = .init()
-                        compositeImage = IdentafiableItem(item: image)
-                        showShareSheet = true
-                    } label: {
-                        Image(symbol: .squareAndArrowUp)
+            .task {
+                try? await Task.sleep(for: .seconds(1))
+                
+                if appRatingUseCase.shouldPresentAskToAsk() {
+                    withAnimation {
+                        showingAppRating = true
                     }
                 }
             }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    if !showingAppRating {
+                        Button {
+                            guard let image = createCompositeImage() else {
+                                errorTrigger = .init()
+                                return
+                            }
+                            
+                            trigger = .init()
+                            compositeImage = IdentafiableItem(item: image)
+                            showShareSheet = true
+                        } label: {
+                            Image(symbol: .squareAndArrowUp)
+                        }
+                        .transition(.opacity)
+                    }
+                }
+            }
+            .disabled(showingAppRating)
             .sheet(item: $compositeImage) { image in
                 ShareSheet(items: [image.item])
+            }
+            .overlay {
+                if showingAppRating {
+                    AppRatingAskToAskView(
+                        analytics: appRatingAnalyticsRecording,
+                        useCase: appRatingUseCase
+                    ) {
+                        withAnimation {
+                            showingAppRating = false
+                        }
+                    }
+                    .transition(.opacity)
+                }
             }
         }
     }
