@@ -107,7 +107,7 @@ public struct AppRatingDebugView: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                         ForEach(viewedStore.viewedHistory, id: \.self) { date in
-                            Text(formatDate(date))
+                            Text(date.formatted())
                                 .font(.caption2)
                                 .foregroundColor(.secondary)
                         }
@@ -139,13 +139,6 @@ public struct AppRatingDebugView: View {
 
     private func refreshStatus() {
         status = eligibilityRepository.eligibilityStatus
-    }
-
-    private func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .short
-        return formatter.string(from: date)
     }
 }
 #endif
