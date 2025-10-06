@@ -49,11 +49,20 @@ struct OrderDetailView: View {
                         .fontWeight(.semibold)
                 }
             }
+
+            if viewModel.order.status == .shipped || viewModel.order.status == .delivered {
+                Section {
+                    trackOrderButton
+                }
+            }
         }
         .navigationTitle("Order Details")
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(for: OrderItem.self) { item in
             OrderItemView(viewModel: viewModel.makeOrderItemViewModel(for: item))
+        }
+        .navigationDestination(for: OrderBoundFactory.self) { factory in
+            OrderTrackingView(viewModel: factory.makeOrderTrackingViewModel())
         }
     }
 
@@ -71,6 +80,24 @@ struct OrderDetailView: View {
             Spacer()
             Text("$\(item.totalPrice, specifier: "%.2f")")
                 .fontWeight(.medium)
+        }
+    }
+
+    @MainActor
+    private var trackOrderButton: some View {
+        NavigationLink(value: OrderBoundFactory(
+            user: viewModel.getUser(),
+            order: viewModel.getOrder(),
+            rootFactory: RootFactory()
+        )) {
+            HStack {
+                Image(systemName: "location.fill")
+                Text("Track Order")
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 }

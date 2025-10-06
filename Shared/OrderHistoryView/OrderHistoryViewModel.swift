@@ -39,6 +39,12 @@ class OrderHistoryViewModel {
         OrderDetailViewModel(order: order, user: user)
     }
 
+    /// Gets the user for creating factories.
+    /// - Returns: The current user.
+    func getUser() -> User {
+        user
+    }
+
     // MARK: - Private Helpers
 
     /// Generates sample order data for demonstration.

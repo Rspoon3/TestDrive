@@ -9,7 +9,7 @@ import SwiftUI
 
 /// Main view demonstrating the locks and keys pattern with factories.
 struct ContentView: View {
-    private let factory = RootFactory()
+    @Environment(\.factory) private var factory
     @State private var loginViewModel: LoginViewModel?
 
     // MARK: - Body

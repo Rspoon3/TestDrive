@@ -3,15 +3,51 @@
 ## Locks and Keys Pattern
 A SwiftUI implementation of the locks and keys architectural pattern for managing object dependencies and state. The pattern uses factories to ensure compile-time safety when creating views that require specific dependencies (like a logged-in user), preventing undefined states and reducing reliance on optionals and global state.
 
-Key components:
-- **RootFactory**: Base factory that manages root-level dependencies and creates user-bound factories
-- **UserBoundFactory**: Specialized factory that requires a valid User to be created, ensuring user-specific views always have access to user data
-- **User Model**: Simple user model with id, name, and email
-- **LoginView/LoginViewModel**: Handles user authentication and creates user-bound factories upon successful login
-- **ProfileView/ProfileViewModel**: Displays user profile information (can only be created through UserBoundFactory)
-- **SettingsView/SettingsViewModel**: Manages user settings (can only be created through UserBoundFactory)
-- **OrderHistoryView/OrderHistoryViewModel**: Displays user's order history (Level 1 navigation, can only be created through UserBoundFactory)
-- **OrderDetailView/OrderDetailViewModel**: Shows detailed order information (Level 2 navigation)
-- **OrderItemView/OrderItemViewModel**: Displays individual item details (Level 3 navigation)
+## Factory Hierarchy
+The app demonstrates a 3-level factory hierarchy:
 
-The pattern demonstrates how to use factory methods as "locks" that can only be opened with the right "key" (in this case, a User object), ensuring more robust and predictable application architecture. The Order History feature showcases a 3-level deep navigation hierarchy that all requires a valid user to be accessible.
+1. **RootFactory** - Manages shared services and creates user-bound factories
+   - Holds shared services: `ImageLoader`, `APIClient`
+   - Creates `UserBoundFactory` (requires User key)
+   - Creates `LoginViewModel`
+
+2. **UserBoundFactory** - Creates user-specific views and order-bound factories
+   - Requires a valid User to be created
+   - Creates user-specific view models: `ProfileViewModel`, `SettingsViewModel`, `OrderHistoryViewModel`
+   - Creates `OrderBoundFactory` (requires Order key)
+   - Provides access to shared services from RootFactory
+
+3. **OrderBoundFactory** - Creates order-specific views
+   - Requires both a valid User AND a valid Order to be created
+   - Creates `OrderTrackingViewModel`
+   - Provides access to shared services from RootFactory
+
+## Shared Services
+- **ImageLoader**: Service for loading and caching images
+- **APIClient**: Service for making API requests
+
+Services are created once in RootFactory and shared throughout the app, demonstrating proper dependency management.
+
+## Views and Navigation
+- **LoginView/LoginViewModel**: Handles authentication and creates user-bound factories
+- **ProfileView/ProfileViewModel**: Displays user profile (requires User via UserBoundFactory)
+- **SettingsView/SettingsViewModel**: Manages user settings (requires User via UserBoundFactory)
+- **OrderHistoryView/OrderHistoryViewModel**: Lists user orders (Level 1, requires User)
+- **OrderDetailView/OrderDetailViewModel**: Shows order details (Level 2, requires User)
+- **OrderItemView/OrderItemViewModel**: Displays item details (Level 3, requires User)
+- **OrderTrackingView/OrderTrackingViewModel**: Tracks order shipment (requires User AND Order via OrderBoundFactory)
+
+## Environment Integration
+The RootFactory is injected via SwiftUI's environment system:
+- Created in `TestDriveApp` and provided to the view hierarchy
+- Accessed in `ContentView` using `@Environment(\.factory)`
+- Demonstrates proper SwiftUI integration and testability
+
+## Key Benefits Demonstrated
+- **Compile-time safety**: Views can only be created when required dependencies exist
+- **Shared service management**: Services created once and passed through factories
+- **Clear dependency boundaries**: Each factory level has explicit requirements
+- **No global state**: All dependencies explicitly passed through factory chain
+- **Testability**: Can inject mock factories via environment for testing
+
+The pattern demonstrates how to use factory methods as "locks" that can only be opened with the right "key" (User, Order, etc.), ensuring more robust and predictable application architecture.

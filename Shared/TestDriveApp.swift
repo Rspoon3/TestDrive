@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct TestDriveApp: App {
+    private let factory = RootFactory()
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(\.factory, factory)
         }
     }
 }

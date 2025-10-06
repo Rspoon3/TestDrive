@@ -53,4 +53,16 @@ class OrderDetailViewModel {
     func makeOrderItemViewModel(for item: OrderItem) -> OrderItemViewModel {
         OrderItemViewModel(item: item, user: user)
     }
+
+    /// Gets the order for creating order-bound factories.
+    /// - Returns: The current order.
+    func getOrder() -> Order {
+        order
+    }
+
+    /// Gets the user for creating order-bound factories.
+    /// - Returns: The current user.
+    func getUser() -> User {
+        user
+    }
 }

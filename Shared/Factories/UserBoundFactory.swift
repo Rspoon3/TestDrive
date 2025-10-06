@@ -43,4 +43,23 @@ class UserBoundFactory {
     func makeOrderHistoryViewModel() -> OrderHistoryViewModel {
         OrderHistoryViewModel(user: user)
     }
+
+    /// Creates an order-bound factory using the provided order as a key.
+    /// - Parameter order: The order to bind the factory to.
+    /// - Returns: A factory that can create order-specific views and view models.
+    func makeOrderBoundFactory(for order: Order) -> OrderBoundFactory {
+        OrderBoundFactory(user: user, order: order, rootFactory: rootFactory)
+    }
+
+    /// Gets the shared image loader service from the root factory.
+    /// - Returns: The image loader instance.
+    func getImageLoader() -> ImageLoader {
+        rootFactory.getImageLoader()
+    }
+
+    /// Gets the shared API client service from the root factory.
+    /// - Returns: The API client instance.
+    func getAPIClient() -> APIClient {
+        rootFactory.getAPIClient()
+    }
 }
