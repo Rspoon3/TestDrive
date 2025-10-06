@@ -37,4 +37,10 @@ class UserBoundFactory {
     func makeSettingsViewModel() -> SettingsViewModel {
         SettingsViewModel(user: user)
     }
+
+    /// Creates an order history view model for the bound user.
+    /// - Returns: An order history view model configured with the user.
+    func makeOrderHistoryViewModel() -> OrderHistoryViewModel {
+        OrderHistoryViewModel(user: user)
+    }
 }

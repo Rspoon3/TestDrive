@@ -26,6 +26,13 @@ struct ContentView: View {
                     }
 
                     NavigationStack {
+                        OrderHistoryView(viewModel: userBoundFactory.makeOrderHistoryViewModel())
+                    }
+                    .tabItem {
+                        Label("Orders", systemImage: "shippingbox.fill")
+                    }
+
+                    NavigationStack {
                         SettingsView(viewModel: userBoundFactory.makeSettingsViewModel())
                     }
                     .tabItem {
