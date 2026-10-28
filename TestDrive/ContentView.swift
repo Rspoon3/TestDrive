@@ -8,14 +8,22 @@
 import SwiftUI
 
 struct ContentView: View {
+    // MARK: - Body
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView {
+            Tab("Basic", systemImage: "b.circle") {
+                BasicArrangementView()
+            }
+            
+            Tab("Stacked", systemImage: "s.circle") {
+                StackedScrollSampleView()
+            }
+            
+            Tab("Overlay", systemImage: "o.circle") {
+                OverlaySampleView()
+            }
         }
-        .padding()
     }
 }
 
