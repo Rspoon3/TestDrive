@@ -5,42 +5,50 @@
 
 import SwiftUI
 
-/// A `.split` arrangement limited to side by side, with the color moving into the scroll view otherwise.
+/// A `.split` arrangement that moves the color into the scroll view on the closed outer display.
 ///
-/// - Side by side (open or book pose): the text scrolls on the left and the color is on the right.
-/// - Anything else (closed, laptop): the system can't split horizontally, so only the primary is shown.
-///   It then holds the color at the bottom of its scroll view.
+/// - Open or book pose: the text scrolls on the left and the color is on the right.
+/// - Laptop pose: the text scrolls on top and the color is on the bottom.
+/// - Closed: one scroll view with the text and the color at the bottom.
 ///
-/// The default split also stacks the views vertically when the Duo is fully open, which put the color
-/// below the text instead of beside it. Limiting the axes to horizontal avoids that.
+/// The closed outer display and laptop pose would both stack the views vertically, so the width size class
+/// tells them apart: the outer display is compact, the inner display is regular. When compact, the split is
+/// limited to horizontal, which the outer display can't fit, so only the primary is shown and it holds the color.
 struct StackedScrollSampleView: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
+    private var isCompact: Bool {
+        horizontalSizeClass == .compact
+    }
+    
+    /// Compact (closed) can only split side by side, which it can't fit, so the primary is shown alone.
+    private var allowedAxes: Axis.Set {
+        isCompact ? .horizontal : [.horizontal, .vertical]
+    }
+    
     // MARK: - Body
     
     var body: some View {
         ArrangementView {
-            ZStack { Primary() }
+            Primary()
         } secondary: {
-            ZStack { ColorPanel().padding() }
+            ColorPanel()
+                .padding()
         }
-        .arrangementViewStyle(.split.axes(.horizontal))
+        .arrangementViewStyle(.split.axes(allowedAxes))
     }
     
     // MARK: - Private Views
     
     private func Primary() -> some View {
-        SplitAxisReader { axis in
-            ScrollView {
-                Text("axis: \(String(describing: axis))")
-                    .font(.headline)
-                
-                Text(Self.copy)
+        ScrollView {
+            Text(Self.copy)
+                .padding()
+            
+            if isCompact {
+                ColorPanel()
+                    .frame(height: 300)
                     .padding()
-                
-                if axis != .horizontal {
-                    ColorPanel()
-                        .frame(height: 300)
-                        .padding()
-                }
             }
         }
     }
