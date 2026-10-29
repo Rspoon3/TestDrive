@@ -11,7 +11,27 @@ import SwiftUI
 struct TestDriveApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TabView {
+                Tab("Basic", systemImage: "b.circle") {
+                    BasicArrangementView()
+                }
+                
+                Tab("Stacked", systemImage: "s.circle") {
+                    StackedScrollSampleView()
+                }
+                
+                Tab("Overlay", systemImage: "o.circle") {
+                    OverlaySampleView()
+                }
+                
+                Tab("Custom S", systemImage: "s.square") {
+                    CustomStackedSampleView()
+                }
+                
+                Tab("Custom O", systemImage: "o.square") {
+                    CustomOverlaySampleView()
+                }
+            }
         }
     }
 }
