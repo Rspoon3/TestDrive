@@ -31,6 +31,20 @@ struct ContentView: View {
             }
             .padding()
             
+            ForEach(QuickExportRange.allCases) { range in
+                Button("Export \(range.title)") {
+                    Task { try? await model.export(range: range) }
+                }
+                .padding()
+            }
+            
+            if !model.exportedURLs.isEmpty {
+                ShareLink(items: model.exportedURLs) {
+                    Label("Share Exported Files", systemImage: "square.and.arrow.up")
+                }
+                .padding()
+            }
+            
             Button("Import") {
                 Task {
                     try! await model.authorize()

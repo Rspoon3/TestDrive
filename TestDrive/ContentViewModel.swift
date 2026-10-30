@@ -17,6 +17,8 @@ final class ContentViewModel {
         case importing(String, Double)
     }
     var importFile = false
+    /// Files written by the most recent export, available to share.
+    var exportedURLs: [URL] = []
     var state: State = .idle
     let store = HKHealthStore()
     var startDate = Calendar.current.date(
@@ -103,8 +105,17 @@ final class ContentViewModel {
         )
     }
     
+    /// Exports samples from the preset range's start date through now.
+    /// - Parameter range: The quick export window to use.
+    func export(range: QuickExportRange) async throws {
+        startDate = range.startDate
+        try await authorize()
+        try await export()
+    }
+    
     func export() async throws {
         state = .exporting("Starting Export", 0)
+        exportedURLs = []
         defer { state = .idle }
         
         let count = supportedIDs.count
@@ -159,6 +170,10 @@ final class ContentViewModel {
         
         let sampleURL = directoryURL.appendingPathComponent(id.title)
         try data.write(to: sampleURL, options: .atomic)
+        
+        if !exportedURLs.contains(sampleURL) {
+            exportedURLs.append(sampleURL)
+        }
         
         print("\(id.title) exported to \(sampleURL.absoluteString)")
     }
