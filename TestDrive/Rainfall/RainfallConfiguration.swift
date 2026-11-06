@@ -19,6 +19,10 @@ struct RainfallConfiguration: Equatable {
     /// How much the sky darkens behind the rain, from `0...1`.
     var dimming: Double = 0.1
 
+    /// The fraction of drops, from `0...1`, that make a splash when they hit the ground. It also sets how wet the
+    /// ground looks.
+    var splashFraction: Double = 0.6
+
     /// Whether the storm throws lightning.
     var hasLightning = false
 
@@ -33,7 +37,8 @@ struct RainfallConfiguration: Equatable {
         dropCount: 60,
         speedMultiplier: 0.8,
         slantDegrees: 4,
-        dimming: 0.04
+        dimming: 0.04,
+        splashFraction: 0.25
     )
 
     /// A steady rain.
@@ -45,6 +50,7 @@ struct RainfallConfiguration: Equatable {
         speedMultiplier: 1.25,
         slantDegrees: 18,
         dimming: 0.22,
+        splashFraction: 1,
         hasLightning: true
     )
 }

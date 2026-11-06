@@ -13,7 +13,12 @@ struct ContentView: View {
     var body: some View {
         InviteFriendsView()
             .overlay { WeatherOverlayView(viewModel: weather) }
-            .overlay(alignment: .bottom) { WeatherPickerView(viewModel: weather) }
+            .overlay(alignment: .topTrailing) {
+                // Sits just left of the screen's edit button: 16pt margin + 52pt button + 12pt gap.
+                WeatherPickerView(viewModel: weather)
+                    .padding(.trailing, 80)
+                    .padding(.top, 4)
+            }
     }
 }
 

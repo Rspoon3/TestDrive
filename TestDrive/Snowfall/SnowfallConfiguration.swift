@@ -23,11 +23,20 @@ struct SnowfallConfiguration: Equatable {
     /// Opacity of a pulsing white haze over the scene, from `0...1`. Simulates the whiteout of a blizzard.
     var hazeOpacity: Double = 0
 
+    /// Scales how much each landing flake adds to the pile. More flakes and faster flakes already build it faster,
+    /// so this evens things out: light snow is boosted so a pile is still visible, and a blizzard is held back.
+    var depositScale: Double = 1
+
     /// Seed used to generate the flakes, so the same configuration always looks the same.
     var seed: UInt64 = 2026
 
     /// A light, slow snowfall with barely any wind.
-    static let gentle = SnowfallConfiguration(flakeCount: 70, speedMultiplier: 0.7, windStrength: 20)
+    static let gentle = SnowfallConfiguration(
+        flakeCount: 70,
+        speedMultiplier: 0.7,
+        windStrength: 20,
+        depositScale: 2.5
+    )
 
     /// A steady snowfall.
     static let medium = SnowfallConfiguration()
@@ -38,7 +47,8 @@ struct SnowfallConfiguration: Equatable {
         speedMultiplier: 2.4,
         windStrength: 200,
         windDrift: 320,
-        hazeOpacity: 0.22
+        hazeOpacity: 0.22,
+        depositScale: 0.5
     )
 
     /// The default snowfall.
