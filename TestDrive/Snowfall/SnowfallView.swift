@@ -40,18 +40,38 @@ struct SnowfallView: View {
         TimelineView(.animation(paused: reduceMotion)) { timeline in
             let elapsed = timeline.date.timeIntervalSince(startDate)
 
-            Canvas(opaque: false, rendersAsynchronously: true) { context, size in
-                drawFlakes(in: &context, size: size, elapsed: elapsed)
-            } symbols: {
-                ForEach(SnowSprite.allCases) { sprite in
-                    sprite.view
-                        .tag(sprite.rawValue)
+            ZStack {
+                if configuration.hazeOpacity > 0 {
+                    haze(elapsed: elapsed)
+                }
+
+                Canvas(opaque: false, rendersAsynchronously: true) { context, size in
+                    drawFlakes(in: &context, size: size, elapsed: elapsed)
+                } symbols: {
+                    ForEach(SnowSprite.allCases) { sprite in
+                        sprite.view
+                            .tag(sprite.rawValue)
+                    }
                 }
             }
         }
         .ignoresSafeArea()
         .allowsHitTesting(false)
         .accessibilityHidden(true)
+    }
+
+    // MARK: - Private Views
+
+    /// A slowly pulsing white veil, denser toward the ground, that sells the whiteout.
+    private func haze(elapsed: TimeInterval) -> some View {
+        let pulse = 0.8 + 0.2 * sin(elapsed * 0.4)
+        let opacity = configuration.hazeOpacity * pulse
+
+        return LinearGradient(
+            colors: [.white.opacity(opacity * 0.6), .white.opacity(opacity)],
+            startPoint: .top,
+            endPoint: .bottom
+        )
     }
 
     // MARK: - Private Helpers
@@ -63,7 +83,12 @@ struct SnowfallView: View {
         guard sprites.count == SnowSprite.allCases.count else { return }
 
         for flake in flakes {
-            let center = flake.position(at: elapsed, in: size, windStrength: configuration.windStrength)
+            let center = flake.position(
+                at: elapsed,
+                in: size,
+                windStrength: configuration.windStrength,
+                windDrift: configuration.windDrift
+            )
             let rect = CGRect(
                 x: center.x - flake.size / 2,
                 y: center.y - flake.size / 2,

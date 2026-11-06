@@ -86,8 +86,14 @@ struct SnowFlake: Equatable {
     ///   - time: Seconds since the snowfall started.
     ///   - bounds: The size of the area the snow falls through.
     ///   - windStrength: Maximum horizontal travel of the shared wind, in points.
+    ///   - windDrift: Sustained sideways speed of the wind, in points per second. Defaults to none.
     /// - Returns: The flake's center in the bounds' coordinate space.
-    func position(at time: TimeInterval, in bounds: CGSize, windStrength: CGFloat) -> CGPoint {
+    func position(
+        at time: TimeInterval,
+        in bounds: CGSize,
+        windStrength: CGFloat,
+        windDrift: CGFloat = 0
+    ) -> CGPoint {
         // Extra room off-screen so flakes enter and leave without popping.
         let margin = size * 2 + swayAmplitude + windStrength
         let loopHeight = bounds.height + margin * 2
@@ -105,17 +111,12 @@ struct SnowFlake: Equatable {
             + 0.3 * sin(time * swayFrequency * 2.3 + swayPhase * 1.7)
         let sway = CGFloat(flutter) * swayAmplitude
 
-        let rawX = startX * loopWidth + wind + sway
+        // Near flakes are pushed harder by the steady wind, which adds to the parallax.
+        let drift = windDrift * windFactor * CGFloat(time)
+
+        let rawX = startX * loopWidth + wind + sway + drift
         let x = rawX.positiveRemainder(dividingBy: loopWidth) - margin
 
         return CGPoint(x: x, y: y)
-    }
-}
-
-private extension CGFloat {
-    /// A remainder that is never negative, so flakes pushed off the left edge wrap to the right.
-    func positiveRemainder(dividingBy divisor: CGFloat) -> CGFloat {
-        let remainder = truncatingRemainder(dividingBy: divisor)
-        return remainder < 0 ? remainder + divisor : remainder
     }
 }

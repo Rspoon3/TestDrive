@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var weather = WeatherViewModel()
+
     var body: some View {
         InviteFriendsView()
-            .overlay { SnowfallView() }
+            .overlay { WeatherOverlayView(viewModel: weather) }
+            .overlay(alignment: .bottom) { WeatherPickerView(viewModel: weather) }
     }
 }
 
