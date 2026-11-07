@@ -56,7 +56,7 @@ struct FireworksView: View {
 
         for shell in FireworkShell.shells(at: elapsed, configuration: configuration) {
             if let rocket = shell.rocket(at: elapsed, in: size) {
-                drawRocket(rocket, in: &context)
+                drawRocket(rocket, hue: shell.hue, in: &context)
             }
 
             if let age = shell.burstAge(at: elapsed) {
@@ -65,22 +65,29 @@ struct FireworksView: View {
         }
     }
 
-    private func drawRocket(_ rocket: FireworkShell.Rocket, in context: inout GraphicsContext) {
-        var trail = Path()
-        trail.move(to: rocket.tail)
-        trail.addLine(to: rocket.head)
+    private func drawRocket(_ rocket: FireworkShell.Rocket, hue: Double, in context: inout GraphicsContext) {
+        guard let first = rocket.trail.first else { return }
 
-        let warmWhite = Color(red: 1, green: 0.92, blue: 0.75)
+        var trail = Path()
+        trail.move(to: first)
+        for point in rocket.trail.dropFirst() {
+            trail.addLine(to: point)
+        }
+
+        // Spiralling rockets burn in the color of the burst to come, which hints at what is about to happen.
+        let color = rocket.isSpiral
+            ? Color(hue: hue, saturation: 0.5, brightness: 1)
+            : Color(red: 1, green: 0.92, blue: 0.75)
 
         context.stroke(
             trail,
-            with: .color(warmWhite.opacity(0.35)),
-            style: StrokeStyle(lineWidth: 4, lineCap: .round)
+            with: .color(color.opacity(0.35)),
+            style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round)
         )
         context.stroke(
             trail,
-            with: .color(warmWhite.opacity(0.9)),
-            style: StrokeStyle(lineWidth: 1.8, lineCap: .round)
+            with: .color(color.opacity(0.9)),
+            style: StrokeStyle(lineWidth: 1.8, lineCap: .round, lineJoin: .round)
         )
     }
 

@@ -13,12 +13,16 @@ import Foundation
 struct FireworkShell: Equatable {
     /// The rocket while it climbs.
     struct Rocket: Equatable {
-        /// The glowing front of the rocket.
-        let head: CGPoint
+        /// Points along the rocket's recent path, oldest first. The last point is the glowing head. A straight rocket
+        /// has two points, and a spiralling one has enough to show the corkscrew.
+        let trail: [CGPoint]
 
-        /// A point a little way back along its path, giving it a tail.
-        let tail: CGPoint
+        /// Whether the rocket is corkscrewing, which gets it a colored tail.
+        let isSpiral: Bool
     }
+
+    /// How far a spiralling rocket swings from its straight line, in points.
+    private static let spiralRadius: CGFloat = 26
 
     /// One spark of the burst, drawn as a short streak.
     struct Spark: Equatable {
@@ -58,6 +62,10 @@ struct FireworkShell: Equatable {
 
     /// A value that varies the sparks from shell to shell.
     let seed: Double
+
+    /// How many full turns the rocket spirals on its way up. `0` climbs straight. Whole turns mean the corkscrew
+    /// unwinds exactly at the top, so the burst still happens at ``apex``.
+    let spiralTurns: Int
 
     // MARK: - Public Helpers
 
@@ -103,10 +111,17 @@ struct FireworkShell: Equatable {
         let progress = (time - launchTime) / Self.riseDuration
         guard progress >= 0, progress < 1 else { return nil }
 
-        return Rocket(
-            head: climbingPoint(progress: progress, in: bounds),
-            tail: climbingPoint(progress: max(0, progress - 0.1), in: bounds)
-        )
+        // A spiral needs a longer tail with several points to show the corkscrew, and a straight rocket only needs two.
+        let isSpiral = spiralTurns > 0
+        let tailSpan = isSpiral ? 0.28 : 0.1
+        let segments = isSpiral ? 14 : 1
+
+        let trail = (0...segments).map { step in
+            let behind = tailSpan * Double(segments - step) / Double(segments)
+            return climbingPoint(progress: max(0, progress - behind), in: bounds)
+        }
+
+        return Rocket(trail: trail, isSpiral: isSpiral)
     }
 
     /// How long ago the shell burst.
@@ -190,10 +205,21 @@ struct FireworkShell: Equatable {
         let top = apexPoint(in: bounds)
         let start = CGPoint(x: launchX * bounds.width, y: bounds.height * 1.02)
 
-        return CGPoint(
+        var point = CGPoint(
             x: start.x + (top.x - start.x) * eased,
             y: start.y + (top.y - start.y) * eased
         )
+
+        guard spiralTurns > 0 else { return point }
+
+        // Spin steadily while the climb slows, so the corkscrew tightens toward the top. Sideways is a full swing,
+        // and up and down is a flatter one, which reads as a helix seen from the side. Both are zero at the start and
+        // the end, because the turns are whole.
+        let angle = 2 * Double.pi * Double(spiralTurns) * progress
+        point.x += CGFloat(sin(angle)) * Self.spiralRadius
+        point.y += CGFloat(1 - cos(angle)) * Self.spiralRadius * 0.35
+
+        return point
     }
 
     /// A cheap, repeatable value from `0..<1` for a spark and a purpose (angle, speed, and so on).
@@ -224,6 +250,12 @@ struct FireworkShell: Equatable {
         let shift = Bool.random(using: &generator) ? 0.5 : 0.12
         let accentHue = kind == .willow ? hue : (hue + shift).truncatingRemainder(dividingBy: 1)
 
+        let seed = Double.random(in: 0...1_000, using: &generator)
+
+        // About a third of shells corkscrew up on the way to their burst.
+        let spirals = Double.random(in: 0...1, using: &generator) < 0.35
+        let spiralTurns = spirals ? Int.random(in: 3...5, using: &generator) : 0
+
         return FireworkShell(
             launchTime: launchTime,
             kind: kind,
@@ -231,7 +263,8 @@ struct FireworkShell: Equatable {
             apex: apex,
             hue: hue,
             accentHue: accentHue,
-            seed: Double.random(in: 0...1_000, using: &generator)
+            seed: seed,
+            spiralTurns: spiralTurns
         )
     }
 }
