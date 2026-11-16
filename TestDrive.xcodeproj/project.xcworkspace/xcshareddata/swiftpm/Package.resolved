@@ -1,0 +1,15 @@
+{
+  "originHash" : "584478e30a08c2d92d30509f9f060503b5d48f627588759e65f6f0a5722f0f1e",
+  "pins" : [
+    {
+      "identity" : "emitterbehaviors",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Rspoon3/EmitterBehaviors",
+      "state" : {
+        "revision" : "284a5ef40d7e4869ffb659b30254fc10fcb9579a",
+        "version" : "1.0.0"
+      }
+    }
+  ],
+  "version" : 3
+}

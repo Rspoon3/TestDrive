@@ -53,6 +53,15 @@ struct WeatherPickerView: View {
         case .off:
             EmptyView()
         case .snow:
+            Section("Implementation") {
+                Picker("Implementation", selection: snowEngineSelection) {
+                    ForEach(SnowEngine.allCases) { engine in
+                        Text(engine.rawValue).tag(engine)
+                    }
+                }
+                .pickerStyle(.inline)
+            }
+
             Section("Snow intensity") {
                 Picker("Snow intensity", selection: snowSelection) {
                     ForEach(SnowIntensity.allCases) { intensity in
@@ -112,6 +121,10 @@ struct WeatherPickerView: View {
 
     private var snowSelection: Binding<SnowIntensity> {
         Binding { viewModel.snowIntensity } set: { viewModel.setSnowIntensity($0) }
+    }
+
+    private var snowEngineSelection: Binding<SnowEngine> {
+        Binding { viewModel.snowEngine } set: { viewModel.setSnowEngine($0) }
     }
 
     private var rainSelection: Binding<RainIntensity> {

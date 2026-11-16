@@ -19,6 +19,9 @@ final class WeatherViewModel {
     /// The remembered snow intensity.
     private(set) var snowIntensity: SnowIntensity = .medium
 
+    /// Which implementation draws the snow.
+    private(set) var snowEngine: SnowEngine = .canvas
+
     /// The remembered rain intensity.
     private(set) var rainIntensity: RainIntensity = .regular
 
@@ -61,6 +64,16 @@ final class WeatherViewModel {
     /// - Parameter intensity: The new snow intensity.
     func setSnowIntensity(_ intensity: SnowIntensity) {
         snowIntensity = intensity
+    }
+
+    /// Changes which implementation draws the snow. The pile belongs to the Canvas snow, so it starts fresh whenever the
+    /// engine changes.
+    /// - Parameter engine: The new engine.
+    func setSnowEngine(_ engine: SnowEngine) {
+        guard engine != snowEngine else { return }
+
+        snowEngine = engine
+        snowPile = SnowPile()
     }
 
     /// Changes how hard it rains.

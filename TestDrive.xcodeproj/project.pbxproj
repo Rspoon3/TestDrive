@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		9483723A2EAE6B2F0094674D /* EmitterBehaviors in Frameworks */ = {isa = PBXBuildFile; productRef = 9483723C2EAE6B2F0094674D /* EmitterBehaviors */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		9483721C2EAE6B2F0094674D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -39,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9483723A2EAE6B2F0094674D /* EmitterBehaviors in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,6 +95,7 @@
 			);
 			name = TestDrive;
 			packageProductDependencies = (
+				9483723C2EAE6B2F0094674D /* EmitterBehaviors */,
 			);
 			productName = TestDrive;
 			productReference = 9483720E2EAE6B2E0094674D /* TestDrive.app */;
@@ -146,6 +152,9 @@
 			);
 			mainGroup = 948372052EAE6B2E0094674D;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				9483723B2EAE6B2F0094674D /* XCRemoteSwiftPackageReference "EmitterBehaviors" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9483720F2EAE6B2E0094674D /* Products */;
 			projectDirPath = "";
@@ -460,6 +469,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9483723B2EAE6B2F0094674D /* XCRemoteSwiftPackageReference "EmitterBehaviors" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Rspoon3/EmitterBehaviors";
+			requirement = {
+				kind = exactVersion;
+				version = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9483723C2EAE6B2F0094674D /* EmitterBehaviors */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9483723B2EAE6B2F0094674D /* XCRemoteSwiftPackageReference "EmitterBehaviors" */;
+			productName = EmitterBehaviors;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 948372062EAE6B2E0094674D /* Project object */;
 }

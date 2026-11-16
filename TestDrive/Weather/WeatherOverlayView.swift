@@ -25,10 +25,7 @@ struct WeatherOverlayView: View {
             case .off:
                 EmptyView()
             case .snow:
-                // No id here: the same view keeps running when the intensity changes, so the flakes can land on one
-                // continuous pile. The view eases the new flakes in itself.
-                SnowfallView(configuration: viewModel.snowIntensity.configuration, pile: viewModel.snowPile)
-                    .transition(.opacity)
+                snow
             case .rain:
                 RainfallView(configuration: viewModel.rainIntensity.configuration)
                     .id(viewModel.rainIntensity)
@@ -43,10 +40,29 @@ struct WeatherOverlayView: View {
             }
         }
         .animation(.easeInOut(duration: 0.6), value: viewModel.effect)
+        .animation(.easeInOut(duration: 0.6), value: viewModel.snowEngine)
         .animation(.easeInOut(duration: 0.6), value: viewModel.rainIntensity)
     }
 
     // MARK: - Private Views
+
+    @ViewBuilder
+    private var snow: some View {
+        switch viewModel.snowEngine {
+        case .canvas:
+            // No id here: the same view keeps running when the intensity changes, so the flakes can land on one
+            // continuous pile. The view eases the new flakes in itself.
+            SnowfallView(configuration: viewModel.snowIntensity.configuration, pile: viewModel.snowPile)
+                .transition(.opacity)
+        case .emitterBehaviors:
+            // Also no id: the emitter view rebuilds itself when the configuration changes.
+            EmitterSnowView(configuration: viewModel.snowIntensity.configuration)
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+                .transition(.opacity)
+        }
+    }
 
     @ViewBuilder
     private var confetti: some View {

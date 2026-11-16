@@ -25,7 +25,7 @@ Architectural decisions:
 
 ## Weather Picker
 A round menu button (`WeatherPickerView`) in the top right, next to the screen's edit button. Its icon follows the current effect. The menu chooses Off / Snow / Rain, plus an intensity list that changes with the effect:
-- Snow: Gentle, Medium, Blizzard
+- Snow: an implementation (SwiftUI Canvas or Emitter Behaviors), then Gentle, Medium, Blizzard
 - Rain: Sprinkle, Regular, Downpour
 
 Each effect remembers its own intensity, and the overlay crossfades between selections.
@@ -40,3 +40,15 @@ Both are skipped under Reduce Motion.
 
 ## Fireworks
 A Canvas fireworks show (`FireworksView`) over a darkened sky. Shells (`FireworkShell`) are launched from time slots seeded per slot, so the show is endless and reproducible with nothing stored. Three kinds: peony (round burst), ring, and willow (gold, drooping). A rocket climbs with an eased tail (about a third of rockets corkscrew up in a helix with a colored tail, using whole turns so the spiral unwinds exactly at the burst point), then bursts into sparks whose motion is solved in closed form with drag and gravity (`DragMotion`), so each spark's angle and speed come from a cheap hash of its index. Sparks are drawn as short streaks with additive blending, batched into a few paths per shell by color and brightness, with a flash at the moment of the burst. Show size: Sparse, Show, Finale. Skipped under Reduce Motion because it flashes.
+
+## Emitter Snow (EmitterBehaviors)
+A second snow implementation, chosen from the effects menu under Snow > Implementation, built with [EmitterBehaviors](https://github.com/Rspoon3/EmitterBehaviors) (`1.0.0`, the project's only package dependency). It is the `CAEmitterLayer` + private `CAEmitterBehavior` counterpart to the dependency-free Canvas snow, and takes the same Gentle / Medium / Blizzard settings. Lives in `TestDrive/EmitterSnow` (`EmitterSnowView`).
+
+Architectural decisions:
+- **Matching the Canvas snow:** flake size (2 to 14 pt), fall speed (22 to 112 pt/s), opacity and wind response come from the same formulas as `SnowFlake`, sliced into five depth bands (`SnowLayerStyle`). Each band is its own `CAEmitterLayer`, and its birth rate is solved from the screen height and fall speed so `flakeCount` flakes are on screen at once. Wind drift widens the emitter on the upwind side so the screen stays evenly covered.
+- **Falling:** flakes fall under gravity (`yAcceleration`), with `DragBehavior` capping each band at a steady speed (`gravity / drag`). Cell `velocity` is not used.
+- **Focus:** the opposite of the Canvas snow: far flakes use its softest sprite and near flakes its sharpest, which still has a soft edge. The sprites are the Canvas snow's own `SnowSprite` views, rendered once with `ImageRenderer`, so softness matches. As in iMessage confetti, the blur is baked into the sprite rather than applied as a layer filter.
+- **Motion:** two `WaveBehavior`s (a slow sway and a faster wobble), scaled by the configuration's `windStrength`, add sideways drift. `windDrift` becomes a sideways acceleration.
+- **Always snowing:** each emitter's `beginTime` is set in the past (pre-warmed) so flakes are already falling when it appears.
+- **Not included:** the snow pile and the blizzard haze, which belong to the Canvas version. Reduce Motion stops emitting.
+- **Private API:** `CAEmitterBehavior` is private. If it is missing on an OS, the drift and drag cap silently do nothing, so flakes fall straight down and keep accelerating.

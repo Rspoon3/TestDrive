@@ -36,6 +36,29 @@ struct WeatherViewModelTests {
         #expect(viewModel.snowPile === pile)
     }
 
+    @Test func snowDefaultsToTheCanvasEngine() {
+        #expect(WeatherViewModel().snowEngine == .canvas)
+    }
+
+    @Test func changingSnowEngineStartsAnEmptyPile() {
+        let viewModel = WeatherViewModel()
+        let pile = viewModel.snowPile
+
+        viewModel.setSnowEngine(.emitterBehaviors)
+
+        #expect(viewModel.snowEngine == .emitterBehaviors)
+        #expect(viewModel.snowPile !== pile)
+    }
+
+    @Test func choosingTheSameSnowEngineKeepsThePile() {
+        let viewModel = WeatherViewModel()
+        let pile = viewModel.snowPile
+
+        viewModel.setSnowEngine(.canvas)
+
+        #expect(viewModel.snowPile === pile)
+    }
+
     @Test func eachEffectRemembersItsIntensity() {
         let viewModel = WeatherViewModel()
 
