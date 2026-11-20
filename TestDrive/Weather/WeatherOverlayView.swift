@@ -61,6 +61,24 @@ struct WeatherOverlayView: View {
                 .allowsHitTesting(false)
                 .accessibilityHidden(true)
                 .transition(.opacity)
+        case .caml:
+            CAMLSnowView(intensity: viewModel.snowIntensity)
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+                .transition(.opacity)
+        case .metalShader:
+            MetalShaderSnowView(configuration: viewModel.snowIntensity.configuration)
+                .transition(.opacity)
+        case .metalInstanced:
+            InstancedSnowView(configuration: viewModel.snowIntensity.configuration)
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+                .transition(.opacity)
+        case .spriteKit:
+            SpriteKitSnowView(configuration: viewModel.snowIntensity.configuration)
+                .transition(.opacity)
         }
     }
 

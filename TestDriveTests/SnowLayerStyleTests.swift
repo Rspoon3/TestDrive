@@ -3,6 +3,7 @@
 //  TestDriveTests
 //
 
+import CoreGraphics
 import Testing
 @testable import TestDrive
 

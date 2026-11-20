@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<caml xmlns="http://www.apple.com/CoreAnimation/1.0">
+  <CALayer id="root" name="snow" bounds="0 0 390 844" position="195 422">
+    <sublayers>
+      <CAEmitterLayer id="band0" name="band0" bounds="0 0 390 844" position="195 422" emitterShape="line" emitterMode="volume" renderMode="unordered" emitterPosition="195.000 -10" emitterSize="390.000 1">
+        <emitterCells>
+          <CAEmitterCell name="flake0" birthRate="0.7713" lifetime="41.7479" scale="0.07000" scaleRange="0.00750" xAcceleration="0.0000" yAcceleration="23.8000">
+            <color value="1 1 1" opacity="0.4350"/>
+          </CAEmitterCell>
+        </emitterCells>
+        <emitterBehaviors>
+          <CAEmitterBehavior behavior="wave" force="12.5600 0 0" frequency="0.3"/>
+          <CAEmitterBehavior behavior="wave" force="4.7100 0 0" frequency="0.9"/>
+          <CAEmitterBehavior behavior="drag" drag="1"/>
+        </emitterBehaviors>
+      </CAEmitterLayer>
+      <CAEmitterLayer id="band1" name="band1" bounds="0 0 390 844" position="195 422" emitterShape="line" emitterMode="volume" renderMode="unordered" emitterPosition="195.000 -10" emitterSize="390.000 1">
+        <emitterCells>
+          <CAEmitterCell name="flake1" birthRate="1.0046" lifetime="32.0516" scale="0.10000" scaleRange="0.02250" xAcceleration="0.0000" yAcceleration="31.0000">
+            <color value="1 1 1" opacity="0.4750"/>
+          </CAEmitterCell>
+        </emitterCells>
+        <emitterBehaviors>
+          <CAEmitterBehavior behavior="wave" force="14.8000 0 0" frequency="0.3"/>
+          <CAEmitterBehavior behavior="wave" force="5.5500 0 0" frequency="0.9"/>
+          <CAEmitterBehavior behavior="drag" drag="1"/>
+        </emitterBehaviors>
+      </CAEmitterLayer>
+      <CAEmitterLayer id="band2" name="band2" bounds="0 0 390 844" position="195 422" emitterShape="line" emitterMode="volume" renderMode="unordered" emitterPosition="195.000 -10" emitterSize="390.000 1">
+        <emitterCells>
+          <CAEmitterCell name="flake2" birthRate="1.4713" lifetime="21.8855" scale="0.16000" scaleRange="0.03750" xAcceleration="0.0000" yAcceleration="45.4000">
+            <color value="1 1 1" opacity="0.5550"/>
+          </CAEmitterCell>
+        </emitterCells>
+        <emitterBehaviors>
+          <CAEmitterBehavior behavior="wave" force="19.2800 0 0" frequency="0.3"/>
+          <CAEmitterBehavior behavior="wave" force="7.2300 0 0" frequency="0.9"/>
+          <CAEmitterBehavior behavior="drag" drag="1"/>
+        </emitterBehaviors>
+      </CAEmitterLayer>
+      <CAEmitterLayer id="band3" name="band3" bounds="0 0 390 844" position="195 422" emitterShape="line" emitterMode="volume" renderMode="unordered" emitterPosition="195.000 -10" emitterSize="390.000 1">
+        <emitterCells>
+          <CAEmitterCell name="flake3" birthRate="2.1713" lifetime="14.8299" scale="0.25000" scaleRange="0.05250" xAcceleration="0.0000" yAcceleration="67.0000">
+            <color value="1 1 1" opacity="0.6750"/>
+          </CAEmitterCell>
+        </emitterCells>
+        <emitterBehaviors>
+          <CAEmitterBehavior behavior="wave" force="26.0000 0 0" frequency="0.3"/>
+          <CAEmitterBehavior behavior="wave" force="9.7500 0 0" frequency="0.9"/>
+          <CAEmitterBehavior behavior="drag" drag="1"/>
+        </emitterBehaviors>
+      </CAEmitterLayer>
+      <CAEmitterLayer id="band4" name="band4" bounds="0 0 390 844" position="195 422" emitterShape="line" emitterMode="volume" renderMode="unordered" emitterPosition="195.000 -10" emitterSize="390.000 1">
+        <emitterCells>
+          <CAEmitterCell name="flake4" birthRate="3.1046" lifetime="10.3716" scale="0.37000" scaleRange="0.06750" xAcceleration="0.0000" yAcceleration="95.8000">
+            <color value="1 1 1" opacity="0.8350"/>
+          </CAEmitterCell>
+        </emitterCells>
+        <emitterBehaviors>
+          <CAEmitterBehavior behavior="wave" force="34.9600 0 0" frequency="0.3"/>
+          <CAEmitterBehavior behavior="wave" force="13.1100 0 0" frequency="0.9"/>
+          <CAEmitterBehavior behavior="drag" drag="1"/>
+        </emitterBehaviors>
+      </CAEmitterLayer>
+    </sublayers>
+  </CALayer>
+</caml>
